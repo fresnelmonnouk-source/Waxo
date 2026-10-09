@@ -1,0 +1,986 @@
+{
+ "categories": [
+  {
+   "id": "maison",
+   "labelFr": "Maison",
+   "labelEn": "Home",
+   "bg": "#F3E3A6",
+   "sort": 1
+  },
+  {
+   "id": "cuisine",
+   "labelFr": "Cuisine",
+   "labelEn": "Kitchen",
+   "bg": "#F2D9C4",
+   "sort": 2
+  },
+  {
+   "id": "beaute",
+   "labelFr": "Beauté",
+   "labelEn": "Beauty",
+   "bg": "#F1DCD6",
+   "sort": 3
+  },
+  {
+   "id": "tech",
+   "labelFr": "Tech",
+   "labelEn": "Tech",
+   "bg": "#DCDDE8",
+   "sort": 4
+  },
+  {
+   "id": "bureau",
+   "labelFr": "Bureau",
+   "labelEn": "Office",
+   "bg": "#EDE4CF",
+   "sort": 5
+  },
+  {
+   "id": "voyage",
+   "labelFr": "Voyage",
+   "labelEn": "Travel",
+   "bg": "#D7E3D2",
+   "sort": 6
+  }
+ ],
+ "products": [
+  {
+   "id": "lampe",
+   "categoryId": "maison",
+   "price": 8900,
+   "comparePrice": null,
+   "stock": 5,
+   "sold": 412,
+   "ratingSeed": 4.7,
+   "ratingSeedCount": 188,
+   "keyword": "lampe",
+   "bg": "#F3E3A6",
+   "imageUrl": null,
+   "createdAt": "2026-04-12",
+   "fr": {
+    "name": "Lampe LED rechargeable",
+    "slug": "lampe",
+    "description": "Jusqu'à 10 h d'autonomie, 3 intensités. Idéale pendant les coupures de courant. Se recharge en USB-C."
+   }
+  },
+  {
+   "id": "ventilo",
+   "categoryId": "maison",
+   "price": 6000,
+   "comparePrice": null,
+   "stock": 12,
+   "sold": 236,
+   "ratingSeed": 4.4,
+   "ratingSeedCount": 77,
+   "keyword": "air",
+   "bg": "#D3E4E6",
+   "imageUrl": null,
+   "createdAt": "2026-05-02",
+   "fr": {
+    "name": "Mini ventilateur USB",
+    "slug": "ventilo",
+    "description": "Silencieux, 3 vitesses, batterie de 6 h. Se pose sur un bureau ou se tient à la main."
+   }
+  },
+  {
+   "id": "diffuseur",
+   "categoryId": "maison",
+   "price": 11500,
+   "comparePrice": null,
+   "stock": 6,
+   "sold": 41,
+   "ratingSeed": 4.6,
+   "ratingSeedCount": 21,
+   "keyword": "parfum",
+   "bg": "#E2DAE8",
+   "imageUrl": null,
+   "createdAt": "2026-09-24",
+   "fr": {
+    "name": "Diffuseur d'huiles essentielles",
+    "slug": "diffuseur",
+    "description": "Brume fine et lumière douce, réservoir de 300 ml, arrêt automatique. Parfume une chambre ou un salon pendant 8 h."
+   }
+  },
+  {
+   "id": "raquette",
+   "categoryId": "maison",
+   "price": 4500,
+   "comparePrice": null,
+   "stock": 28,
+   "sold": 351,
+   "ratingSeed": 4.6,
+   "ratingSeedCount": 163,
+   "keyword": "raquette",
+   "bg": "#DDE6C8",
+   "imageUrl": null,
+   "createdAt": "2026-03-20",
+   "fr": {
+    "name": "Raquette anti-moustiques rechargeable",
+    "slug": "raquette",
+    "description": "Grille à trois couches, lampe LED intégrée, recharge USB. Des soirées tranquilles sans produit chimique."
+   }
+  },
+  {
+   "id": "boites",
+   "categoryId": "cuisine",
+   "price": 7500,
+   "comparePrice": null,
+   "stock": 18,
+   "sold": 274,
+   "ratingSeed": 4.8,
+   "ratingSeedCount": 121,
+   "keyword": "boîtes",
+   "bg": "#F2D9C4",
+   "imageUrl": null,
+   "createdAt": "2026-04-28",
+   "fr": {
+    "name": "Set de 3 boîtes hermétiques",
+    "slug": "boites",
+    "description": "Verre borosilicate et couvercles à clips. Passent au micro-ondes et au congélateur. 400, 700 et 1 000 ml."
+   }
+  },
+  {
+   "id": "eplucheur",
+   "categoryId": "cuisine",
+   "price": 2000,
+   "comparePrice": null,
+   "stock": 35,
+   "sold": 189,
+   "ratingSeed": 4.3,
+   "ratingSeedCount": 59,
+   "keyword": "éplucher",
+   "bg": "#E3E8C9",
+   "imageUrl": null,
+   "createdAt": "2026-06-03",
+   "fr": {
+    "name": "Éplucheur multifonction",
+    "slug": "eplucheur",
+    "description": "3 lames : épluche, râpe en julienne, découpe. Inox, manche antidérapant. Passe au lave-vaisselle."
+   }
+  },
+  {
+   "id": "agrumes",
+   "categoryId": "cuisine",
+   "price": 4900,
+   "comparePrice": null,
+   "stock": 3,
+   "sold": 102,
+   "ratingSeed": 4.5,
+   "ratingSeedCount": 47,
+   "keyword": "citron",
+   "bg": "#EDE7B4",
+   "imageUrl": null,
+   "createdAt": "2026-07-15",
+   "fr": {
+    "name": "Bouteille presse-agrumes",
+    "slug": "agrumes",
+    "description": "Pressez une orange ou un citron directement dans la bouteille. 500 ml, sans BPA. Se démonte pour le lavage."
+   }
+  },
+  {
+   "id": "blender",
+   "categoryId": "cuisine",
+   "price": 12500,
+   "comparePrice": 15000,
+   "stock": 9,
+   "sold": 38,
+   "ratingSeed": 4.7,
+   "ratingSeedCount": 18,
+   "keyword": "smoothie",
+   "bg": "#F0D3C9",
+   "imageUrl": null,
+   "createdAt": "2026-09-30",
+   "fr": {
+    "name": "Blender portable USB",
+    "slug": "blender",
+    "description": "Gobelet de 400 ml, 6 lames inox, recharge USB-C. Un jus de fruits frais au bureau ou en déplacement."
+   }
+  },
+  {
+   "id": "brosse",
+   "categoryId": "beaute",
+   "price": 4500,
+   "comparePrice": 5500,
+   "stock": 9,
+   "sold": 167,
+   "ratingSeed": 4.5,
+   "ratingSeedCount": 88,
+   "keyword": "peau",
+   "bg": "#F1DCD6",
+   "imageUrl": null,
+   "createdAt": "2026-05-18",
+   "fr": {
+    "name": "Brosse nettoyante visage",
+    "slug": "brosse",
+    "description": "Silicone doux, étanche, rechargeable. Nettoie en profondeur sans irriter. 2 modes de vibration."
+   }
+  },
+  {
+   "id": "miroir",
+   "categoryId": "beaute",
+   "price": 3900,
+   "comparePrice": null,
+   "stock": 11,
+   "sold": 84,
+   "ratingSeed": 4.4,
+   "ratingSeedCount": 38,
+   "keyword": "miroir",
+   "bg": "#F0E1CF",
+   "imageUrl": null,
+   "createdAt": "2026-06-21",
+   "fr": {
+    "name": "Miroir LED de poche",
+    "slug": "miroir",
+    "description": "Double face dont une grossissante x3, éclairage LED rechargeable. Tient dans un sac à main."
+   }
+  },
+  {
+   "id": "pinceaux",
+   "categoryId": "beaute",
+   "price": 6500,
+   "comparePrice": null,
+   "stock": 15,
+   "sold": 52,
+   "ratingSeed": 4.8,
+   "ratingSeedCount": 26,
+   "keyword": "pinceaux",
+   "bg": "#EBD5E0",
+   "imageUrl": null,
+   "createdAt": "2026-09-18",
+   "fr": {
+    "name": "Set de 10 pinceaux de maquillage",
+    "slug": "pinceaux",
+    "description": "Poils synthétiques doux, manches en bois et trousse de rangement. Pour le teint, les yeux et les sourcils."
+   }
+  },
+  {
+   "id": "tondeuse",
+   "categoryId": "beaute",
+   "price": 13900,
+   "comparePrice": null,
+   "stock": 7,
+   "sold": 133,
+   "ratingSeed": 4.6,
+   "ratingSeedCount": 92,
+   "keyword": "barbe",
+   "bg": "#D8DCE0",
+   "imageUrl": null,
+   "createdAt": "2026-02-10",
+   "fr": {
+    "name": "Tondeuse barbe rechargeable",
+    "slug": "tondeuse",
+    "description": "5 sabots de 1 à 10 mm, lames inox, 90 minutes d'autonomie. Étanche, se rince sous l'eau."
+   }
+  },
+  {
+   "id": "chargeur",
+   "categoryId": "tech",
+   "price": 5900,
+   "comparePrice": null,
+   "stock": 31,
+   "sold": 389,
+   "ratingSeed": 4.6,
+   "ratingSeedCount": 142,
+   "keyword": "charge",
+   "bg": "#DCDDE8",
+   "imageUrl": null,
+   "createdAt": "2026-03-02",
+   "fr": {
+    "name": "Chargeur rapide 20 W USB-C",
+    "slug": "chargeur",
+    "description": "Recharge un smartphone à 50 % en 30 minutes. Compatible iPhone, Samsung, Tecno, Infinix. Câble inclus."
+   }
+  },
+  {
+   "id": "ecouteurs",
+   "categoryId": "tech",
+   "price": 14900,
+   "comparePrice": 18500,
+   "stock": 4,
+   "sold": 211,
+   "ratingSeed": 4.5,
+   "ratingSeedCount": 96,
+   "keyword": "son",
+   "bg": "#E6D3DE",
+   "imageUrl": null,
+   "createdAt": "2026-04-05",
+   "fr": {
+    "name": "Écouteurs sans fil",
+    "slug": "ecouteurs",
+    "description": "Bluetooth 5.3, 24 h d'écoute avec le boîtier. Micro pour les appels. Résistants à la sueur."
+   }
+  },
+  {
+   "id": "cables",
+   "categoryId": "tech",
+   "price": 2500,
+   "comparePrice": null,
+   "stock": 40,
+   "sold": 156,
+   "ratingSeed": 4.6,
+   "ratingSeedCount": 63,
+   "keyword": "câbles",
+   "bg": "#E9E2D3",
+   "imageUrl": null,
+   "createdAt": "2026-06-12",
+   "fr": {
+    "name": "Organisateur de câbles (x10)",
+    "slug": "cables",
+    "description": "Attaches en silicone réutilisables pour ranger chargeurs et câbles. Un bureau net en deux minutes."
+   }
+  },
+  {
+   "id": "batterie",
+   "categoryId": "tech",
+   "price": 9900,
+   "comparePrice": null,
+   "stock": 14,
+   "sold": 298,
+   "ratingSeed": 4.7,
+   "ratingSeedCount": 131,
+   "keyword": "énergie",
+   "bg": "#D5E0DA",
+   "imageUrl": null,
+   "createdAt": "2026-01-20",
+   "fr": {
+    "name": "Batterie externe 10 000 mAh",
+    "slug": "batterie",
+    "description": "Recharge un smartphone 2 à 3 fois. Deux ports USB et un port USB-C, indicateur de niveau. Format poche."
+   }
+  },
+  {
+   "id": "carnet",
+   "categoryId": "bureau",
+   "price": 3000,
+   "comparePrice": null,
+   "stock": 26,
+   "sold": 92,
+   "ratingSeed": 4.9,
+   "ratingSeedCount": 41,
+   "keyword": "notes",
+   "bg": "#EDE4CF",
+   "imageUrl": null,
+   "createdAt": "2026-07-01",
+   "fr": {
+    "name": "Carnet A5 pointillé",
+    "slug": "carnet",
+    "description": "160 pages en papier 100 g, couverture rigide, élastique et marque-page. Pour les listes, les cours, les idées."
+   }
+  },
+  {
+   "id": "support",
+   "categoryId": "bureau",
+   "price": 2900,
+   "comparePrice": null,
+   "stock": 22,
+   "sold": 205,
+   "ratingSeed": 4.5,
+   "ratingSeedCount": 112,
+   "keyword": "support",
+   "bg": "#DCE3EA",
+   "imageUrl": null,
+   "createdAt": "2026-05-09",
+   "fr": {
+    "name": "Support téléphone pliable",
+    "slug": "support",
+    "description": "Aluminium, angle réglable, compatible tablettes. Pour les appels vidéo, les recettes, les séries."
+   }
+  },
+  {
+   "id": "tapis",
+   "categoryId": "bureau",
+   "price": 3500,
+   "comparePrice": null,
+   "stock": 17,
+   "sold": 23,
+   "ratingSeed": 4.6,
+   "ratingSeedCount": 9,
+   "keyword": "souris",
+   "bg": "#D9E2D0",
+   "imageUrl": null,
+   "createdAt": "2026-09-27",
+   "fr": {
+    "name": "Tapis de souris ergonomique",
+    "slug": "tapis",
+    "description": "Repose-poignet en mousse à mémoire de forme, base antidérapante. Moins de fatigue après une longue journée."
+   }
+  },
+  {
+   "id": "surligneurs",
+   "categoryId": "bureau",
+   "price": 1500,
+   "comparePrice": null,
+   "stock": 48,
+   "sold": 118,
+   "ratingSeed": 4.7,
+   "ratingSeedCount": 34,
+   "keyword": "pastel",
+   "bg": "#F2E6C2",
+   "imageUrl": null,
+   "createdAt": "2026-08-19",
+   "fr": {
+    "name": "Lot de 6 surligneurs pastel",
+    "slug": "surligneurs",
+    "description": "Pointe biseautée, encre qui ne traverse pas le papier. Six couleurs douces pour les cours et les réunions."
+   }
+  },
+  {
+   "id": "gourde",
+   "categoryId": "voyage",
+   "price": 6500,
+   "comparePrice": 8000,
+   "stock": 23,
+   "sold": 445,
+   "ratingSeed": 4.8,
+   "ratingSeedCount": 214,
+   "keyword": "gourde",
+   "bg": "#D7E3D2",
+   "imageUrl": null,
+   "createdAt": "2026-02-25",
+   "fr": {
+    "name": "Gourde isotherme 750 ml",
+    "slug": "gourde",
+    "description": "Acier inoxydable double paroi. Garde l'eau fraîche 24 h et le thé chaud 12 h. Bouchon étanche, ne coule pas dans le sac."
+   }
+  },
+  {
+   "id": "trousse",
+   "categoryId": "voyage",
+   "price": 5500,
+   "comparePrice": null,
+   "stock": 14,
+   "sold": 74,
+   "ratingSeed": 4.7,
+   "ratingSeedCount": 54,
+   "keyword": "trousse",
+   "bg": "#D9DFCF",
+   "imageUrl": null,
+   "createdAt": "2026-06-30",
+   "fr": {
+    "name": "Trousse de toilette pliable",
+    "slug": "trousse",
+    "description": "Crochet pour l'accrocher, 4 compartiments, tissu imperméable. Se plie à plat dans la valise."
+   }
+  },
+  {
+   "id": "masque",
+   "categoryId": "voyage",
+   "price": 2500,
+   "comparePrice": null,
+   "stock": 19,
+   "sold": 131,
+   "ratingSeed": 4.6,
+   "ratingSeedCount": 73,
+   "keyword": "dodo",
+   "bg": "#D6D9E6",
+   "imageUrl": null,
+   "createdAt": "2026-07-22",
+   "fr": {
+    "name": "Masque de sommeil 3D",
+    "slug": "masque",
+    "description": "Bloque la lumière sans appuyer sur les yeux. Mousse légère, sangle réglable."
+   }
+  },
+  {
+   "id": "organiseurs",
+   "categoryId": "voyage",
+   "price": 7000,
+   "comparePrice": null,
+   "stock": 10,
+   "sold": 12,
+   "ratingSeed": 4.8,
+   "ratingSeedCount": 7,
+   "keyword": "valise",
+   "bg": "#E4DCCB",
+   "imageUrl": null,
+   "createdAt": "2026-10-04",
+   "fr": {
+    "name": "Organiseurs de valise (x6)",
+    "slug": "organiseurs",
+    "description": "Six pochettes de tailles différentes, tissu léger et fermetures solides. Une valise rangée, on retrouve tout."
+   }
+  }
+ ],
+ "reviews": [
+  {
+   "id": "r1",
+   "productId": "lampe",
+   "author": "Nadège K.",
+   "rating": 5,
+   "body": "Elle a tenu toute une soirée de coupure sans faiblir. Je l'utilise aussi pour lire le soir.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-29"
+  },
+  {
+   "id": "r2",
+   "productId": "lampe",
+   "author": "Hermann Q.",
+   "rating": 4,
+   "body": "Très bonne lumière. La recharge complète prend environ 4 h, à prévoir.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-02"
+  },
+  {
+   "id": "r3",
+   "productId": "ventilo",
+   "author": "Aïcha Y.",
+   "rating": 4,
+   "body": "Pratique au bureau quand la clim est en panne. Pas très puissant en vitesse 1.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-30"
+  },
+  {
+   "id": "r4",
+   "productId": "ventilo",
+   "author": "Brice L.",
+   "rating": 5,
+   "body": "Silencieux, je dors avec. La batterie tient la nuit en vitesse 2.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-07-14"
+  },
+  {
+   "id": "r5",
+   "productId": "diffuseur",
+   "author": "Carine M.",
+   "rating": 5,
+   "body": "Joli objet, la lumière est douce. Je le mets 2 h avant de dormir.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-10-03"
+  },
+  {
+   "id": "r6",
+   "productId": "diffuseur",
+   "author": "Romaric H.",
+   "rating": 4,
+   "body": "Bon diffuseur. Les huiles ne sont pas fournies, il faut les acheter à part.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-28"
+  },
+  {
+   "id": "r7",
+   "productId": "raquette",
+   "author": "Gildas T.",
+   "rating": 5,
+   "body": "Redoutable. Mes enfants dorment enfin tranquilles.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-15"
+  },
+  {
+   "id": "r8",
+   "productId": "raquette",
+   "author": "Jocelyne D.",
+   "rating": 4,
+   "body": "Efficace, la lampe attire bien les moustiques. Le bouton demande un peu de force.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-11"
+  },
+  {
+   "id": "r9",
+   "productId": "boites",
+   "author": "Carine M.",
+   "rating": 5,
+   "body": "Le verre est épais et les couvercles ferment vraiment bien. Rien n'a coulé dans mon sac.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-20"
+  },
+  {
+   "id": "r10",
+   "productId": "boites",
+   "author": "Fabrice K.",
+   "rating": 5,
+   "body": "Parfait pour emporter mon déjeuner. Ça passe au micro-ondes sans souci.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-25"
+  },
+  {
+   "id": "r11",
+   "productId": "eplucheur",
+   "author": "Ornella S.",
+   "rating": 4,
+   "body": "La lame julienne est top pour les carottes. Un peu petit pour l'igname.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-09"
+  },
+  {
+   "id": "r12",
+   "productId": "eplucheur",
+   "author": "Koffi A.",
+   "rating": 4,
+   "body": "Bon rapport qualité-prix, ça coupe bien.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-07-30"
+  },
+  {
+   "id": "r13",
+   "productId": "agrumes",
+   "author": "Bénédicte A.",
+   "rating": 5,
+   "body": "Je fais mon jus de citron le matin directement dans la bouteille. Facile à laver.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-26"
+  },
+  {
+   "id": "r14",
+   "productId": "agrumes",
+   "author": "Ulrich Z.",
+   "rating": 4,
+   "body": "Pratique, il faut juste bien serrer le bouchon.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-17"
+  },
+  {
+   "id": "r15",
+   "productId": "blender",
+   "author": "Mariam S.",
+   "rating": 5,
+   "body": "Smoothie mangue-banane en 30 secondes. La batterie tient plusieurs utilisations.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-10-05"
+  },
+  {
+   "id": "r16",
+   "productId": "blender",
+   "author": "Sènan T.",
+   "rating": 4,
+   "body": "Très pratique. Il faut couper les fruits en petits morceaux.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-10-02"
+  },
+  {
+   "id": "r17",
+   "productId": "brosse",
+   "author": "Fifamè G.",
+   "rating": 5,
+   "body": "Ma peau est plus nette après deux semaines. Douce, même sur peau sensible.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-18"
+  },
+  {
+   "id": "r18",
+   "productId": "brosse",
+   "author": "Grâce A.",
+   "rating": 4,
+   "body": "Bien, mais j'aurais aimé un troisième mode plus doux.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-04"
+  },
+  {
+   "id": "r19",
+   "productId": "miroir",
+   "author": "Aïcha Y.",
+   "rating": 4,
+   "body": "Tient dans mon sac, la lumière aide beaucoup pour retoucher le maquillage.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-07"
+  },
+  {
+   "id": "r20",
+   "productId": "miroir",
+   "author": "Carine M.",
+   "rating": 4,
+   "body": "Petit et pratique. Le côté grossissant est très utile.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-07-21"
+  },
+  {
+   "id": "r21",
+   "productId": "pinceaux",
+   "author": "Ornella S.",
+   "rating": 5,
+   "body": "Les poils sont très doux et ne se perdent pas. La trousse est jolie.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-10-01"
+  },
+  {
+   "id": "r22",
+   "productId": "pinceaux",
+   "author": "Nadège K.",
+   "rating": 5,
+   "body": "Super qualité pour le prix. Le pinceau à fond de teint est parfait.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-25"
+  },
+  {
+   "id": "r23",
+   "productId": "tondeuse",
+   "author": "Romaric H.",
+   "rating": 5,
+   "body": "Coupe nette, les sabots tiennent bien. Je l'utilise tous les deux jours.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-12"
+  },
+  {
+   "id": "r24",
+   "productId": "tondeuse",
+   "author": "Brice L.",
+   "rating": 4,
+   "body": "Bonne autonomie. Le cordon de charge est un peu court.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-02"
+  },
+  {
+   "id": "r25",
+   "productId": "chargeur",
+   "author": "Hermann Q.",
+   "rating": 5,
+   "body": "Mon Tecno se recharge deux fois plus vite qu'avec l'ancien chargeur.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-30"
+  },
+  {
+   "id": "r26",
+   "productId": "chargeur",
+   "author": "Abdou B.",
+   "rating": 4,
+   "body": "Fonctionne bien avec mon iPhone. Le câble fourni est un peu court.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-03"
+  },
+  {
+   "id": "r27",
+   "productId": "ecouteurs",
+   "author": "Gildas T.",
+   "rating": 4,
+   "body": "Bon son, bonne autonomie. Le micro est correct pour les appels.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-22"
+  },
+  {
+   "id": "r28",
+   "productId": "ecouteurs",
+   "author": "Fabrice K.",
+   "rating": 5,
+   "body": "Légers et confortables, je les garde toute la journée.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-28"
+  },
+  {
+   "id": "r29",
+   "productId": "cables",
+   "author": "Fabrice K.",
+   "rating": 5,
+   "body": "Mon bureau est enfin rangé. Les attaches sont solides.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-11"
+  },
+  {
+   "id": "r30",
+   "productId": "cables",
+   "author": "Jocelyne D.",
+   "rating": 4,
+   "body": "Simple et efficace, j'en ai mis dans mon sac aussi.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-14"
+  },
+  {
+   "id": "r31",
+   "productId": "batterie",
+   "author": "Koffi A.",
+   "rating": 5,
+   "body": "Indispensable pendant les délestages. Elle recharge mon téléphone presque 3 fois.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-10-04"
+  },
+  {
+   "id": "r32",
+   "productId": "batterie",
+   "author": "Sènan T.",
+   "rating": 4,
+   "body": "Bonne batterie, un peu lourde pour une poche de chemise.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-16"
+  },
+  {
+   "id": "r33",
+   "productId": "carnet",
+   "author": "Bénédicte A.",
+   "rating": 5,
+   "body": "Papier épais, l'encre ne traverse pas. Je l'adore.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-27"
+  },
+  {
+   "id": "r34",
+   "productId": "carnet",
+   "author": "Abdou B.",
+   "rating": 5,
+   "body": "Parfait pour mes cours. La couverture rigide protège bien.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-01"
+  },
+  {
+   "id": "r35",
+   "productId": "support",
+   "author": "Mariam S.",
+   "rating": 5,
+   "body": "Je regarde mes recettes dessus en cuisinant. Très stable.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-19"
+  },
+  {
+   "id": "r36",
+   "productId": "support",
+   "author": "Ulrich Z.",
+   "rating": 4,
+   "body": "Solide et pliable. L'angle se règle facilement.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-08"
+  },
+  {
+   "id": "r37",
+   "productId": "tapis",
+   "author": "Fabrice K.",
+   "rating": 5,
+   "body": "Mon poignet ne me fait plus mal le soir.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-10-03"
+  },
+  {
+   "id": "r38",
+   "productId": "tapis",
+   "author": "Carine M.",
+   "rating": 4,
+   "body": "Confortable, il ne glisse pas sur le bureau.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-30"
+  },
+  {
+   "id": "r39",
+   "productId": "surligneurs",
+   "author": "Ornella S.",
+   "rating": 5,
+   "body": "Les couleurs sont douces et ne bavent pas.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-14"
+  },
+  {
+   "id": "r40",
+   "productId": "surligneurs",
+   "author": "Grâce A.",
+   "rating": 4,
+   "body": "Bons surligneurs, la pointe permet de souligner fin ou large.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-21"
+  },
+  {
+   "id": "r41",
+   "productId": "gourde",
+   "author": "Koffi A.",
+   "rating": 5,
+   "body": "L'eau reste fraîche toute la journée, même dans la voiture.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-10-01"
+  },
+  {
+   "id": "r42",
+   "productId": "gourde",
+   "author": "Fifamè G.",
+   "rating": 5,
+   "body": "Elle ne coule pas dans mon sac. Très bonne qualité.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-13"
+  },
+  {
+   "id": "r43",
+   "productId": "trousse",
+   "author": "Hermann Q.",
+   "rating": 5,
+   "body": "Le crochet est très pratique à l'hôtel. Tout est bien rangé.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-06"
+  },
+  {
+   "id": "r44",
+   "productId": "trousse",
+   "author": "Aïcha Y.",
+   "rating": 4,
+   "body": "Bonne taille, tissu facile à nettoyer.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-19"
+  },
+  {
+   "id": "r45",
+   "productId": "masque",
+   "author": "Afi H.",
+   "rating": 5,
+   "body": "Il ne touche pas les yeux, je dors beaucoup mieux.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-09-15"
+  },
+  {
+   "id": "r46",
+   "productId": "masque",
+   "author": "Brice L.",
+   "rating": 4,
+   "body": "Bloque bien la lumière. La sangle pourrait être plus large.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-08-09"
+  },
+  {
+   "id": "r47",
+   "productId": "organiseurs",
+   "author": "Grâce A.",
+   "rating": 5,
+   "body": "Ma valise n'a jamais été aussi bien rangée.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-10-06"
+  },
+  {
+   "id": "r48",
+   "productId": "organiseurs",
+   "author": "Romaric H.",
+   "rating": 5,
+   "body": "Tissu léger mais solide, fermetures de bonne qualité.",
+   "verified": true,
+   "seed": true,
+   "createdAt": "2026-10-05"
+  }
+ ]
+}

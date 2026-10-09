@@ -1,0 +1,8 @@
+{
+  "Card": {
+    "add": "Ajouter au panier",
+    "soldOut": "Épuisé",
+    "favorite": "Ajouter aux favoris",
+    "unfavorite": "Retirer des favoris"
+  }
+}

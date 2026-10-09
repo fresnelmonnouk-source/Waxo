@@ -1,0 +1,8 @@
+{
+  "Card": {
+    "add": "Add to cart",
+    "soldOut": "Sold out",
+    "favorite": "Add to favourites",
+    "unfavorite": "Remove from favourites"
+  }
+}
