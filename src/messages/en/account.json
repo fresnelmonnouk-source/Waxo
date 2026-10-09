@@ -1,1 +1,465 @@
-{}
+{
+  "Info": {
+    "meta": {
+      "compte": "My account",
+      "connexion": "Sign in",
+      "inscription": "Create an account",
+      "suivi": "Track my order",
+      "favoris": "My favorites",
+      "contact": "Contact",
+      "about": "About",
+      "faq": "Frequently asked questions"
+    }
+  },
+  "Account": {
+    "loading": "Loading…",
+    "unavailable": "The service is temporarily unavailable. Please try again in a few minutes.",
+    "menu": {
+      "aria": "Profile menu",
+      "title": "My profile",
+      "login": "Sign in",
+      "loginAria": "Sign in",
+      "orders": "My orders",
+      "ordersMeta": "{count, plural, one {# order} other {# orders}}",
+      "info": "My details",
+      "infoMeta": "Address, newsletter",
+      "security": "Security",
+      "securityMeta": "Password",
+      "admin": "Open the back office ↗",
+      "logout": "Sign out",
+      "activeSub": "Order in progress · {total} · view tracking"
+    },
+    "page": {
+      "title": "My account",
+      "intro": "Sign in to track your orders, find your delivery details and review the products you bought.",
+      "login": "Sign in",
+      "signup": "Create an account",
+      "guestNote": "Ordered without an account? Track your order with its number on the <track>Order tracking</track> page.",
+      "hello": "Hello {first}",
+      "since": "Customer since {date}",
+      "admin": "Open the back office",
+      "logout": "Sign out",
+      "tabsAria": "My area",
+      "recoveryNote": "You are signed in thanks to the link we emailed you. Now choose a new password."
+    },
+    "tabs": {
+      "orders": "My orders",
+      "profile": "My details",
+      "security": "Security"
+    },
+    "orders": {
+      "empty": "No orders yet.",
+      "seeCatalog": "Browse the catalog",
+      "loadError": "We could not load your orders right now.",
+      "retry": "Try again",
+      "items": "{count, plural, one {# item} other {# items}}",
+      "cancelled": "This order was cancelled. An online payment is refunded to the payment method used.",
+      "delivery": "Delivery",
+      "payment": "Payment",
+      "subtotal": "Subtotal",
+      "shipping": "Delivery",
+      "free": "Free",
+      "total": "Total",
+      "question": "A question about this order? <contact>Contact us</contact> and quote order number {number}.",
+      "stepsAria": "Order progress"
+    },
+    "status": {
+      "nouvelle": "Received",
+      "preparation": "Being prepared",
+      "livraison": "Out for delivery",
+      "livree": "Delivered",
+      "annulee": "Cancelled"
+    },
+    "pay": {
+      "momo": "MTN MoMo",
+      "moov": "Moov Money",
+      "celtiis": "Celtiis Cash",
+      "carte": "Bank card",
+      "cod": "Pay on delivery"
+    },
+    "zone": {
+      "cotonou": "Cotonou & Calavi",
+      "autre": "Other cities in Benin"
+    },
+    "profile": {
+      "first": "First name",
+      "last": "Last name",
+      "phone": "Phone (WhatsApp)",
+      "email": "Email",
+      "emailNote": "To change your email address, write to us from the <contact>Contact</contact> page.",
+      "address": "Usual delivery address",
+      "addressPh": "Neighborhood and landmark",
+      "news": "Receive the newsletter by email",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Your details have been saved."
+    },
+    "security": {
+      "title": "Change password",
+      "current": "Current password",
+      "next": "New password",
+      "nextPh": "At least 8 characters",
+      "confirm": "Confirm",
+      "save": "Update",
+      "saving": "Updating…",
+      "saved": "Password updated.",
+      "footer": "To delete your account or export your data, write to us from the <contact>Contact</contact> page. We will never ask for your password."
+    },
+    "toast": {
+      "welcome": "Hello {first}, welcome.",
+      "bye": "You have been signed out. See you soon!"
+    }
+  },
+  "Auth": {
+    "dialogAria": "Sign in or sign up",
+    "close": "Close",
+    "tabLogin": "Sign in",
+    "tabSignup": "Create an account",
+    "id": "Email or phone",
+    "password": "Password",
+    "show": "Show",
+    "hide": "Hide",
+    "submitLogin": "Sign in",
+    "submitting": "Please wait…",
+    "forgotLink": "Forgot your password?",
+    "first": "First name",
+    "last": "Last name",
+    "phone": "Phone (WhatsApp)",
+    "phonePh": "01 97 00 00 00",
+    "email": "Email",
+    "passwordPh": "At least 8 characters",
+    "cgu": "I accept the <cgu>terms of use</cgu> and the <privacy>privacy policy</privacy>.",
+    "news": "Receive news by email (optional)",
+    "submitSignup": "Create my account",
+    "signupDone": "Account created. A confirmation email is on its way: click the link inside to activate your account, then sign in.",
+    "forgotTitle": "Forgot your password",
+    "forgotIntro": "Enter the email or phone number of your account. We will send you a link to choose a new password.",
+    "forgotSend": "Send the link",
+    "forgotSent": "If an account matches, you will receive a reset link by email within a few minutes.",
+    "back": "Back to sign in",
+    "page": {
+      "loginTitle": "Sign in",
+      "loginIntro": "Sign in to track your orders and find your delivery details.",
+      "signupTitle": "Create an account",
+      "signupIntro": "An account lets you track your orders and keep your delivery details. It stays optional for ordering.",
+      "linkError": "This link is no longer valid. Request a new one with “Forgot your password?”.",
+      "noAccount": "No account yet?",
+      "haveAccount": "Already have an account?"
+    },
+    "errors": {
+      "idRequired": "Enter your email or phone number.",
+      "passRequired": "Enter your password.",
+      "firstRequired": "Enter your first name.",
+      "lastRequired": "Enter your last name.",
+      "phoneInvalid": "A 10-digit number starting with 01.",
+      "emailInvalid": "Invalid email address.",
+      "passShort": "At least 8 characters.",
+      "passLong": "72 characters maximum.",
+      "passWeak": "Choose a stronger password.",
+      "cguRequired": "Accept the terms to create your account.",
+      "pwSame": "Choose a password different from the current one.",
+      "pwMismatch": "The two passwords do not match.",
+      "pwCurrentWrong": "Current password is incorrect.",
+      "tooLong": "Text too long.",
+      "invalidCredentials": "Incorrect email, phone number or password.",
+      "emailNotConfirmed": "Please confirm your email address first, using the link we sent you.",
+      "rateLimited": "Too many attempts. Please try again in a few minutes.",
+      "tooFast": "One moment, then try again in a few seconds.",
+      "unavailable": "The service is temporarily unavailable. Please try again in a few minutes.",
+      "unauthorized": "Your session has expired. Please sign in again.",
+      "network": "Could not connect. Check your network and try again.",
+      "invalid": "Please check the information entered.",
+      "generic": "Something went wrong. Please try again in a moment."
+    }
+  },
+  "Track": {
+    "eyebrow": "Tracking",
+    "title": "Track my order",
+    "intro": "Enter the order number you received on WhatsApp (WX-…) and the email or phone number used for the order.",
+    "number": "Order number",
+    "numberPh": "WX-10258",
+    "contact": "Email or phone of the order",
+    "contactPh": "The one given at checkout",
+    "submit": "Track my order",
+    "searching": "Searching…",
+    "notFound": "Order not found. Check the number and the email or phone you entered.",
+    "placedOn": "Order placed on {date}",
+    "items": "Items",
+    "total": "Total",
+    "again": "Search again",
+    "account": "Have an account? <account>See all your orders</account>.",
+    "help": "A question about this order? <contact>Contact us</contact> and quote order number {number}.",
+    "errors": {
+      "numberInvalid": "Invalid order number (e.g. WX-10258).",
+      "contactInvalid": "An email, or a 10-digit number starting with 01."
+    }
+  },
+  "Favorites": {
+    "eyebrow": "Favorites",
+    "title": "My favorites",
+    "count": "{count, plural, one {# product} other {# products}}",
+    "deviceNote": "Your favorites are saved on this device.",
+    "emptyTitle": "No favorites yet.",
+    "emptyText": "Tap the heart on a product to find it here.",
+    "cta": "Browse the catalog",
+    "error": "We could not load your favorites right now.",
+    "retry": "Try again",
+    "loading": "Loading your favorites…"
+  },
+  "Contact": {
+    "eyebrow": "Contact",
+    "title": "A question? Write to us.",
+    "intro": "We reply Monday to Saturday, 8 am to 7 pm. For an order in progress, WhatsApp is the fastest.",
+    "whatsapp": "WhatsApp",
+    "writeWa": "Write on WhatsApp →",
+    "phone": "Phone",
+    "call": "Call",
+    "email": "Email",
+    "write": "Write",
+    "noShopTitle": "No physical store",
+    "noShopText": "We deliver to your door in Cotonou, Calavi and across Benin. No in-store pickup.",
+    "faqHint": "Instant answers to common questions: <faq>frequently asked questions</faq>.",
+    "formTitle": "Contact form",
+    "name": "Name",
+    "contact": "Email or phone",
+    "contactPh": "So we can reply",
+    "subject": "Subject",
+    "subjects": {
+      "order": "Order",
+      "product": "Product",
+      "delivery": "Delivery",
+      "returns": "Return or exchange",
+      "other": "Other"
+    },
+    "orderNumber": "Order no.",
+    "orderNumberPh": "Optional, e.g. WX-10258",
+    "message": "Message",
+    "send": "Send message",
+    "sending": "Sending…",
+    "privacy": "Your details are only used to reply to you. <privacy>Privacy</privacy>",
+    "sentTitle": "Message sent.",
+    "sentText": "We reply Monday to Saturday, 8 am to 7 pm.",
+    "another": "Send another message",
+    "errors": {
+      "nameRequired": "Enter your name.",
+      "contactInvalid": "An email, or a 10-digit number starting with 01.",
+      "textShort": "Your message is too short.",
+      "textLong": "Your message is too long.",
+      "orderInvalid": "Invalid order number (e.g. WX-10258).",
+      "tooLong": "Text too long."
+    }
+  },
+  "About": {
+    "eyebrow": "About",
+    "title": "An online shop for small, useful things.",
+    "p1": "Wá xɔ means “come and buy” in Fon. We pick everyday items, store them ourselves in Cotonou and deliver them to your door, often the very next day.",
+    "p2": "We have no physical store. When you order, the product leaves straight from our stock: that is what lets us show real stock levels and deliver fast.",
+    "photo": "Team or stock photo to be added",
+    "c1t": "Everything is in stock with us",
+    "c1p": "What you see on the site is available. Stock is updated with every order.",
+    "c2t": "Everyday items",
+    "c2p": "For the home, kitchen, beauty, office, tech and travel, at small prices.",
+    "c3t": "A service close to you",
+    "c3p": "Confirmation on WhatsApp, home delivery, and exchange or refund within {days, plural, one {# day} other {# days}}.",
+    "ctaTitle": "A question before you order?",
+    "ctaCatalog": "Browse the catalog",
+    "ctaContact": "Contact us"
+  },
+  "Faq": {
+    "title": "Frequently asked questions",
+    "intro": "Can't find your answer? <contact>Write to us</contact>.",
+    "q1": "How long does delivery take?",
+    "a1": "In Cotonou and Calavi, you are delivered the next day for any order placed before {cutoff}:00, Monday to Saturday. In other cities in Benin, allow 48 to 72 hours.",
+    "q2": "How much does delivery cost?",
+    "a2": "{cotonou} in Cotonou and Calavi, free from {freeShip} of purchases. {autre} in other cities in Benin.",
+    "q3": "How can I pay?",
+    "a3": "By MTN MoMo, Moov Money, Celtiis Cash or bank card (Visa, Mastercard){cod}. We will never ask for your secret code.",
+    "cod": ", or on delivery, in cash or by Mobile Money",
+    "q4": "Do I need an account to order?",
+    "a4": "No. An account lets you track your orders, keep your delivery details and review products. Without an account, you can track your order with its number on the <track>Order tracking</track> page.",
+    "q5": "How do I track my order?",
+    "a5": "You receive a WhatsApp confirmation with your order number (WX-…). The status is visible in your customer area, or on the <track>Order tracking</track> page using that number.",
+    "q6": "Can I return a product?",
+    "a6": "Yes, within {days, plural, one {# day} other {# days}} of receiving it, for an unused product in its original packaging. Unsealed hygiene products are not taken back, unless faulty. <shipping>See the procedure</shipping>.",
+    "q7": "Are the products really in stock?",
+    "a7": "Yes. All our products are stored with us in Cotonou and the stock shown is updated with every order.",
+    "q8": "Do you deliver outside Benin?",
+    "a8": "Not at the moment. We only deliver within Benin.",
+    "stillTitle": "Still have a question?",
+    "contactCta": "Contact us"
+  },
+  "Legal": {
+    "navAria": "Legal pages",
+    "draft": "Template drafted for the mockup. Items in square brackets are to be completed and the whole must be reviewed by a lawyer before going live.",
+    "effective": "Effective October 8, 2026",
+    "nav": {
+      "cgv": "Terms of sale",
+      "cgu": "Terms of use",
+      "mentions": "Legal notice",
+      "privacy": "Privacy",
+      "shipping": "Delivery and returns"
+    },
+    "codCgv": ", as well as payment on delivery (cash or Mobile Money)",
+    "codShip": "If you chose payment on delivery, have the amount ready in cash or pay by Mobile Money.",
+    "cgv": {
+      "title": "Terms of sale",
+      "s1": {
+        "h": "1. Purpose",
+        "p": "These terms govern sales made on the Wá xɔ website between <tbc>[company name]</tbc>, <tbc>[legal form]</tbc>, registered in the RCCM under number <tbc>[number]</tbc>, IFU <tbc>[number]</tbc>, whose registered office is at <tbc>[address]</tbc>, Cotonou (“Wá xɔ”), and anyone who places an order (“the customer”). Confirming an order constitutes acceptance of these terms."
+      },
+      "s2": {
+        "h": "2. Products",
+        "p": "The products offered are those displayed on the site, while stocks last. Wá xɔ stores its products itself in Cotonou; the stock shown is updated with every order. Photos and descriptions are as accurate as possible; a slight difference in color or packaging is not a non-conformity."
+      },
+      "s3": {
+        "h": "3. Prices",
+        "p": "Prices are shown in CFA francs, all taxes included. Delivery fees are added to the price of the products and are shown before the order is confirmed. The price charged is the one displayed at the time of the order."
+      },
+      "s4": {
+        "h": "4. Ordering",
+        "p": "The customer selects products, provides delivery details, chooses a payment method and confirms the order. An order number (WX-…) is displayed and a confirmation is sent by WhatsApp or SMS. Wá xɔ may cancel an order in case of incomplete information, a product that has become unavailable or a payment incident; the customer is then fully refunded."
+      },
+      "s5": {
+        "h": "5. Payment",
+        "p": "Accepted methods: MTN MoMo, Moov Money, Celtiis Cash and Visa or Mastercard bank cards{cod}. Online payments are handled by an approved payment provider; Wá xɔ never has access to secret codes or full card numbers."
+      },
+      "s6": {
+        "h": "6. Delivery",
+        "p": "Cotonou and Calavi: next-day delivery for any order placed before {cutoff}:00, Monday to Saturday, for {cotonou}, free from {freeShip} of purchases. Other cities in Benin: within 48 to 72 hours, for {autre}. The courier calls the customer before arriving. If the customer is absent, a new delivery is offered; after two unsuccessful attempts, the order may be cancelled. No delivery outside Benin for now."
+      },
+      "s7": {
+        "h": "7. Exchange and refund",
+        "p": "The customer has {days, plural, one {# day} other {# days}} from receipt to request an exchange or a refund, without having to give a reason, for an unused, complete product in its original packaging. Unsealed hygiene or care products (face brush, trimmer, makeup brushes, for example) are neither taken back nor exchanged, unless faulty. The refund is made to the original payment method, or by Mobile Money for a payment on delivery, within {days, plural, one {# day} other {# days}} of receiving the returned product. The procedure is on the <shipping>Delivery and returns</shipping> page."
+      },
+      "s8": {
+        "h": "8. Faulty or non-conforming product",
+        "p": "Any defect or product error must be reported within 48 hours of receipt, with a photo. Wá xɔ exchanges or refunds the product and covers the return costs."
+      },
+      "s9": {
+        "h": "9. Personal data",
+        "p": "Data collected when ordering is processed in accordance with our <privacy>privacy policy</privacy>."
+      },
+      "s10": {
+        "h": "10. Governing law and disputes",
+        "p": "These terms are governed by Beninese law. In case of a dispute, the customer first contacts customer service to seek an amicable solution. Failing that, the dispute is brought before the competent courts of Cotonou."
+      }
+    },
+    "cgu": {
+      "title": "Terms of use",
+      "s1": {
+        "h": "1. Purpose",
+        "p": "These terms govern access to the Wá xɔ website and the use of its services: catalog, assistant, customer account and reviews. They supplement the <cgv>terms of sale</cgv>, which apply to every order."
+      },
+      "s2": {
+        "h": "2. Access to the site",
+        "p": "The site is free to access. Wá xɔ may suspend access for maintenance or updates."
+      },
+      "s3": {
+        "h": "3. Customer account",
+        "p": "An account is optional for ordering. It is required to track orders and publish a review. The customer provides accurate information and keeps their password confidential. They can edit their details from their area and may ask for their account to be deleted by writing to customer service."
+      },
+      "s4": {
+        "h": "4. Customer reviews",
+        "p": "Only registered customers can publish a review, one review per product. A review must reflect a real experience with the product. Insulting, discriminatory or defamatory remarks, advertising and third-party personal data are prohibited. Wá xɔ never edits the content of a review; it may hide a review that does not follow these rules. The “Verified purchase” badge indicates that the author received this product through a Wá xɔ order. Reviews are not paid for."
+      },
+      "s5": {
+        "h": "5. Assistant",
+        "p": "The assistant is an automated tool based on artificial intelligence. It helps you choose a product and answers common questions. Its answers may contain errors: the product page, the cart and the terms of sale prevail. Never share a password, Mobile Money code or card number in the conversation."
+      },
+      "s6": {
+        "h": "6. Intellectual property",
+        "p": "The Wá xɔ name, the logo, the texts and the photos on the site belong to <tbc>[company name]</tbc> or to their authors. Any reproduction without permission is prohibited."
+      },
+      "s7": {
+        "h": "7. Liability",
+        "p": "Wá xɔ strives for the accuracy of the information published but cannot guarantee the total absence of errors. It is not liable for damage caused by misuse of the site or an interruption of the service."
+      },
+      "s8": {
+        "h": "8. Changes",
+        "p": "These terms may change. The applicable version is the one published on this page."
+      }
+    },
+    "mentions": {
+      "title": "Legal notice",
+      "s1": {
+        "h": "Site publisher",
+        "p": "<tbc>[Company name or sole trader's name]</tbc>, <tbc>[legal form]</tbc>\nRCCM: <tbc>[number]</tbc> · IFU: <tbc>[number]</tbc>\nRegistered office: <tbc>[address]</tbc>, Cotonou, Benin\nWhatsApp: {phone} · Email: {email}"
+      },
+      "s2": {
+        "h": "Publication director",
+        "p": "<tbc>[First name Last name]</tbc>"
+      },
+      "s3": {
+        "h": "Hosting",
+        "p": "<tbc>[Host name]</tbc>, <tbc>[address]</tbc>, <tbc>[phone]</tbc>"
+      },
+      "s4": {
+        "h": "Personal data protection",
+        "p": "In accordance with Law No. 2017-20 of April 20, 2018 on the Digital Code in the Republic of Benin, as amended by Law No. 2020-35 of January 6, 2021, the site is declared to the Personal Data Protection Authority (APDP): receipt no. <tbc>[to be completed]</tbc>. Your rights are detailed in the <privacy>privacy policy</privacy>."
+      },
+      "s5": {
+        "h": "Intellectual property",
+        "p": "The site's content is protected. See article 6 of the <cgu>terms of use</cgu>."
+      }
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "s1": {
+        "h": "Data controller",
+        "p": "<tbc>[Company name]</tbc>, <tbc>[address]</tbc>, Cotonou. Contact: {email}."
+      },
+      "s2": {
+        "h": "Data collected",
+        "p": "For an order: name, phone, delivery address, products ordered and chosen payment method. For an account: first name, last name, phone, email, password (stored in encrypted form), order history and published reviews. For the newsletter: email or WhatsApp number. For contact and the assistant: the content of your messages. Online payments are handled directly by our payment provider; Wá xɔ keeps neither secret codes nor full card numbers."
+      },
+      "s3": {
+        "h": "Use",
+        "p": "Preparing, delivering and tracking your orders; contacting you about an order; managing your account and reviews; sending you the newsletter if you asked for it; replying to your messages; improving the site."
+      },
+      "s4": {
+        "h": "Recipients",
+        "p": "The Wá xɔ team, the courier (name, phone and address only), the payment provider, the site host and the provider of the artificial intelligence technology behind the assistant, to generate answers. Your data is never sold."
+      },
+      "s5": {
+        "h": "Retention period",
+        "p": "Account: until deleted, or 3 years after your last activity. Orders and invoices: for the period required by accounting regulations. Newsletter: until you unsubscribe. Messages: 1 year."
+      },
+      "s6": {
+        "h": "Your rights",
+        "p": "You can access your data, correct it, object to its use or ask for its deletion by writing to {email}. You can also contact the Personal Data Protection Authority (APDP, apdp.bj)."
+      },
+      "s7": {
+        "h": "Storage on your device",
+        "p": "The site stores on your device your cart, the products you viewed (for the personalized selection) and your sign-in session. <tbc>[State here the audience measurement tool, if any.]</tbc>"
+      },
+      "s8": {
+        "h": "Security",
+        "p": "Exchanges with the site are encrypted (HTTPS) and access to data is restricted to authorized people."
+      }
+    },
+    "shipping": {
+      "title": "Delivery and returns",
+      "colZone": "Zone",
+      "colDelay": "Lead time",
+      "colFee": "Fee",
+      "r1z": "Cotonou and Calavi",
+      "r1d": "Next day, order before {cutoff}:00, Monday to Saturday",
+      "r1f": "{cotonou}, free from {freeShip}",
+      "r2z": "Other cities in Benin",
+      "r2d": "48 to 72 hours",
+      "r2f": "{autre}",
+      "r3z": "Outside Benin",
+      "r3d": "Not available yet",
+      "r3f": "–",
+      "dayH": "On delivery day",
+      "dayP": "You receive a WhatsApp confirmation with the delivery time slot. The courier calls you before arriving. {cod}",
+      "returnH": "Returning a product",
+      "step1": "Write to us within {days, plural, one {# day} other {# days}} of receipt, on WhatsApp or via the <contact>contact form</contact>, with your order number.",
+      "step2": "In Cotonou and Calavi, our courier collects the product from you. Elsewhere in Benin, we tell you how to send it to us.",
+      "step3": "After checking, we exchange the product or refund you within {days, plural, one {# day} other {# days}}.",
+      "condH": "Conditions",
+      "condP": "Unused product, complete and in its original packaging. Unsealed hygiene products are excluded, unless faulty. The return is free in case of a defect or an error on our side. <tbc>[State who pays for the return on a change of mind outside Cotonou.]</tbc>",
+      "cta": "Contact customer service"
+    }
+  }
+}

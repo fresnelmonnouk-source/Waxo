@@ -1,34 +1,27 @@
-import { use } from "react";
-import { hasLocale, useTranslations } from "next-intl";
+import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Link } from "@/i18n/navigation";
+import { getShopData } from "@/components/shop/data";
+import { HomeHero } from "@/components/shop/HomeHero";
+import { BestSellers, CategoryTiles, HomeCatalog, HowItWorks } from "@/components/shop/HomeSections";
+import { Selection } from "@/components/shop/Selection";
 import { routing } from "@/i18n/routing";
 
-// Page d'attente du jalon J0 : sert à vérifier tokens, polices, i18n. Remplacée au jalon J1.
-export default function HomePage({ params }: PageProps<"/[lang]">) {
-  const { lang } = use(params);
+// Accueil : héro, rayons, aperçu du catalogue, sélection, meilleures ventes, « Comment ça marche ». Page statique.
+export default async function HomePage({ params }: PageProps<"/[lang]">) {
+  const { lang } = await params;
   if (!hasLocale(routing.locales, lang)) notFound();
   setRequestLocale(lang);
-  const t = useTranslations();
+  const data = await getShopData(lang);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-[1280px] flex-col items-start justify-center gap-6 px-5">
-      <span className="font-display text-[25px] leading-none font-bold tracking-[-0.03em]">
-        Wá x<span className="text-terracotta">ɔ</span>
-      </span>
-      <h1 className="font-display max-w-[14ch] text-[60px] leading-[1.05] font-bold tracking-[-0.04em]">
-        {t("Home.title")}
-      </h1>
-      <p className="text-muted text-lg">{t("Home.soon")}</p>
-      <nav aria-label={t("Lang.label")} className="flex gap-3">
-        <Link href="/" locale="fr" className="rounded-full border border-border-strong px-4 py-2 text-sm">
-          {t("Lang.fr")}
-        </Link>
-        <Link href="/" locale="en" className="rounded-full border border-border-strong px-4 py-2 text-sm">
-          {t("Lang.en")}
-        </Link>
-      </nav>
+    <main data-screen-label="Accueil">
+      <HomeHero products={data.products} settings={data.settings} bestIds={data.bestIds} newIds={data.newIds} />
+      <CategoryTiles categories={data.categories} />
+      <HomeCatalog products={data.products} total={data.products.length} />
+      <Selection products={data.products} newIds={data.newIds} bestIds={data.bestIds} />
+      <BestSellers products={data.products} bestIds={data.bestIds} />
+      <HowItWorks />
     </main>
   );
 }

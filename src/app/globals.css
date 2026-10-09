@@ -46,49 +46,53 @@
   --radius-block: var(--radius-block);
 }
 
-* {
-  box-sizing: border-box;
-}
+/* Règles de base dans @layer base : sinon, en Tailwind v4, le CSS non layeré écrase tous les utilitaires
+   (ex. un bouton bg-ink text-cream hériterait la couleur d encre). */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
 
-html,
-body {
-  margin: 0;
-  background: var(--cream);
-  color: var(--ink);
-  font-family: var(--font-onest), system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
+  html,
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-onest), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
 
-a {
-  color: var(--ink);
-  text-underline-offset: 3px;
-}
-a:hover {
-  color: var(--terracotta-deep);
-}
+  a {
+    color: var(--ink);
+    text-underline-offset: 3px;
+  }
+  a:hover {
+    color: var(--terracotta-deep);
+  }
 
-input,
-select,
-button,
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-}
-input:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid var(--ink);
-  outline-offset: 1px;
-}
-button:focus-visible,
-a:focus-visible,
-[role="button"]:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
-}
-::placeholder {
-  color: var(--placeholder);
+  input,
+  select,
+  button,
+  textarea {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid var(--ink);
+    outline-offset: 1px;
+  }
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  ::placeholder {
+    color: var(--placeholder);
+  }
 }
 
 @keyframes wxpulse {

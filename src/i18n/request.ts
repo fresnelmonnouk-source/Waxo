@@ -18,5 +18,5 @@ export default getRequestConfig(async ({ requestLocale }) => {
       }
     }),
   );
-  return { locale, messages: Object.assign({}, ...parts) };
+  return { locale, timeZone: "Africa/Porto-Novo", messages: Object.assign({}, ...parts) };
 });

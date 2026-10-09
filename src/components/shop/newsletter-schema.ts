@@ -1,0 +1,46 @@
+import { z } from "zod";
+
+/**
+ * Validation de l'inscription à la newsletter (partagée : formulaire client + route API).
+ * Règles de la maquette : e-mail valide, ou numéro WhatsApp béninois de 10 chiffres commençant par 01
+ * (après retrait du préfixe 229 éventuel).
+ */
+export const MIN_FILL_MS = 2500; // délai minimal entre l'affichage du formulaire et l'envoi (anti-robot)
+
+export const digits = (s: string) => s.replace(/\D/g, "");
+
+/** « +229 01 97 00 00 00 » → « 0197000000 ». */
+export function normPhone(s: string): string {
+  let d = digits(s);
+  if (d.length === 13 && d.startsWith("229")) d = d.slice(3);
+  return d;
+}
+export const validPhone = (s: string) => /^01\d{8}$/.test(normPhone(s));
+export const validEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s.trim()) && s.trim().length <= 200;
+
+export const newsletterSchema = z
+  .object({
+    channel: z.enum(["email", "whatsapp"]),
+    value: z.string().trim().min(3).max(200),
+    website: z.string().max(200).optional(), // honeypot : doit rester vide
+    t: z.number().optional(), // horodatage (ms) de l'affichage du formulaire
+  })
+  .strict()
+  .superRefine((v, ctx) => {
+    const ok = v.channel === "email" ? validEmail(v.value) : validPhone(v.value);
+    if (!ok) ctx.addIssue({ code: "custom", path: ["value"], message: "invalid_value" });
+  });
+
+export type NewsletterInput = z.infer<typeof newsletterSchema>;
+
+/** Valeur à enregistrer : e-mail en minuscules, numéro normalisé sur 10 chiffres. */
+export function storedValue(v: Pick<NewsletterInput, "channel" | "value">): string {
+  return v.channel === "email" ? v.value.trim().toLowerCase() : normPhone(v.value);
+}
+
+/** Vrai si le formulaire a été rempli « trop vite » ou sans horodatage plausible (robot). */
+export function isTooFast(t: number | undefined, now: number): boolean {
+  if (typeof t !== "number" || !Number.isFinite(t)) return true;
+  if (t > now + 5000) return true; // horloge dans le futur : forgé
+  return now - t < MIN_FILL_MS;
+}

@@ -418,7 +418,8 @@ begin
   end loop;
 
   v_free := coalesce((v_ship ->> 'freeFrom')::int, 0);
-  v_fee := case when v_free > 0 and v_sub >= v_free then 0
+  -- Franco : Cotonou & Calavi seulement (règle de la maquette) ; autres villes = tarif plein.
+  v_fee := case when p_zone = 'cotonou' and v_free > 0 and v_sub >= v_free then 0
                 when p_zone = 'cotonou' then coalesce((v_ship ->> 'cotonou')::int, 0)
                 else coalesce((v_ship ->> 'autre')::int, 0) end;
 
