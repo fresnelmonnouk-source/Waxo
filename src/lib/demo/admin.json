@@ -1,0 +1,3489 @@
+{
+ "orders": [
+  {
+   "id": "WX-10262",
+   "date": "2026-10-08T09:41:00",
+   "uid": null,
+   "name": "Ulrich Zinsou",
+   "phone": "0167001122",
+   "address": "Cadjèhoun, derrière la station",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "ventilo",
+     "name": "Mini ventilateur USB",
+     "price": 6000,
+     "qty": 1
+    }
+   ],
+   "sub": 6000,
+   "ship": 1000,
+   "total": 7000,
+   "status": "nouvelle"
+  },
+  {
+   "id": "WX-10261",
+   "date": "2026-10-08T08:15:00",
+   "uid": "u_koffi",
+   "name": "Koffi Agossou",
+   "phone": "0196554433",
+   "address": "Akpakpa, rue du marché Dantokpa",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "blender",
+     "name": "Blender portable USB",
+     "price": 12500,
+     "qty": 1
+    },
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 19000,
+   "ship": 0,
+   "total": 19000,
+   "status": "nouvelle"
+  },
+  {
+   "id": "WX-10260",
+   "date": "2026-10-07T17:22:00",
+   "uid": null,
+   "name": "Grâce Adjovi",
+   "phone": "0195332211",
+   "address": "Gbégamey, immeuble jaune, 2e étage",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "boites",
+     "name": "Set de 3 boîtes hermétiques",
+     "price": 7500,
+     "qty": 1
+    },
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 1
+    }
+   ],
+   "sub": 9500,
+   "ship": 1000,
+   "total": 10500,
+   "status": "preparation"
+  },
+  {
+   "id": "WX-10258",
+   "date": "2026-10-06T19:05:00",
+   "uid": "u_afi",
+   "name": "Afi Houngbédji",
+   "phone": "0197112233",
+   "address": "Fidjrossè, après la pharmacie, portail bleu",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    },
+    {
+     "pid": "cables",
+     "name": "Organisateur de câbles (x10)",
+     "price": 2500,
+     "qty": 1
+    }
+   ],
+   "sub": 11400,
+   "ship": 1000,
+   "total": 12400,
+   "status": "livraison",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10255",
+   "date": "2026-10-03T11:30:00",
+   "uid": "u_rodrigue",
+   "name": "Rodrigue Dossou",
+   "phone": "0161223344",
+   "address": "Porto-Novo, Ouando",
+   "zone": "autre",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    },
+    {
+     "pid": "support",
+     "name": "Support téléphone pliable",
+     "price": 2900,
+     "qty": 1
+    }
+   ],
+   "sub": 12800,
+   "ship": 2500,
+   "total": 15300,
+   "status": "livree"
+  },
+  {
+   "id": "WX-10252",
+   "date": "2026-10-01T14:10:00",
+   "uid": null,
+   "name": "Sènan Tossou",
+   "phone": "0166445566",
+   "address": "Agla, carrefour Hlazounto",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 2
+    }
+   ],
+   "sub": 9000,
+   "ship": 1000,
+   "total": 10000,
+   "status": "livree"
+  },
+  {
+   "id": "WX-10249",
+   "date": "2026-09-28T10:02:00",
+   "uid": "u_mariam",
+   "name": "Mariam Soulé",
+   "phone": "0194887766",
+   "address": "Calavi, Zopah, près de l'église",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "pinceaux",
+     "name": "Set de 10 pinceaux de maquillage",
+     "price": 6500,
+     "qty": 1
+    },
+    {
+     "pid": "brosse",
+     "name": "Brosse nettoyante visage",
+     "price": 4500,
+     "qty": 1
+    },
+    {
+     "pid": "miroir",
+     "name": "Miroir LED de poche",
+     "price": 3900,
+     "qty": 1
+    }
+   ],
+   "sub": 14900,
+   "ship": 1000,
+   "total": 15900,
+   "status": "livree"
+  },
+  {
+   "id": "WX-10244",
+   "date": "2026-09-21T16:48:00",
+   "uid": "u_koffi",
+   "name": "Koffi Agossou",
+   "phone": "0196554433",
+   "address": "Akpakpa, rue du marché Dantokpa",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "ecouteurs",
+     "name": "Écouteurs sans fil",
+     "price": 14900,
+     "qty": 1
+    },
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    }
+   ],
+   "sub": 20800,
+   "ship": 0,
+   "total": 20800,
+   "status": "livree"
+  },
+  {
+   "id": "WX-10231",
+   "date": "2026-09-12T12:20:00",
+   "uid": "u_afi",
+   "name": "Afi Houngbédji",
+   "phone": "0197112233",
+   "address": "Fidjrossè, après la pharmacie, portail bleu",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    },
+    {
+     "pid": "masque",
+     "name": "Masque de sommeil 3D",
+     "price": 2500,
+     "qty": 1
+    }
+   ],
+   "sub": 9000,
+   "ship": 1000,
+   "total": 10000,
+   "status": "livree"
+  },
+  {
+   "id": "WX-10230",
+   "date": "2026-10-05T15:49:00.000Z",
+   "uid": null,
+   "name": "Carine Mensah",
+   "phone": "0161099314",
+   "address": "Fidjrossè",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 1
+    },
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    }
+   ],
+   "sub": 11900,
+   "ship": 1000,
+   "total": 12900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10229",
+   "date": "2026-10-05T14:31:00.000Z",
+   "uid": null,
+   "name": "Bénédicte Ahouansou",
+   "phone": "0192733911",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "boites",
+     "name": "Set de 3 boîtes hermétiques",
+     "price": 7500,
+     "qty": 1
+    },
+    {
+     "pid": "ventilo",
+     "name": "Mini ventilateur USB",
+     "price": 6000,
+     "qty": 1
+    }
+   ],
+   "sub": 13500,
+   "ship": 1000,
+   "total": 14500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10228",
+   "date": "2026-10-05T13:46:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0168240707",
+   "address": "Abomey, centre-ville",
+   "zone": "autre",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    },
+    {
+     "pid": "ventilo",
+     "name": "Mini ventilateur USB",
+     "price": 6000,
+     "qty": 1
+    },
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 24800,
+   "ship": 2500,
+   "total": 27300,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10227",
+   "date": "2026-10-05T12:17:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0192217395",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    },
+    {
+     "pid": "pinceaux",
+     "name": "Set de 10 pinceaux de maquillage",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 13000,
+   "ship": 1000,
+   "total": 14000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10226",
+   "date": "2026-10-05T11:58:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0164081539",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 8900,
+   "ship": 1000,
+   "total": 9900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10225",
+   "date": "2026-10-05T07:57:00.000Z",
+   "uid": null,
+   "name": "Désiré Houessou",
+   "phone": "0160627564",
+   "address": "Zogbo",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 8900,
+   "ship": 1000,
+   "total": 9900,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10224",
+   "date": "2026-10-04T17:09:00.000Z",
+   "uid": null,
+   "name": "Abdou Bio",
+   "phone": "0165243483",
+   "address": "Zogbo",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "surligneurs",
+     "name": "Lot de 6 surligneurs pastel",
+     "price": 1500,
+     "qty": 1
+    },
+    {
+     "pid": "ecouteurs",
+     "name": "Écouteurs sans fil",
+     "price": 14900,
+     "qty": 1
+    }
+   ],
+   "sub": 16400,
+   "ship": 0,
+   "total": 16400,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10223",
+   "date": "2026-10-04T17:08:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0164322104",
+   "address": "Gbégamey",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 2
+    },
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 1
+    }
+   ],
+   "sub": 11000,
+   "ship": 1000,
+   "total": 12000,
+   "status": "annulee",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10222",
+   "date": "2026-10-04T15:28:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0164785568",
+   "address": "Haie Vive",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 1
+    }
+   ],
+   "sub": 2000,
+   "ship": 1000,
+   "total": 3000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10221",
+   "date": "2026-10-04T15:04:00.000Z",
+   "uid": null,
+   "name": "Abdou Bio",
+   "phone": "0197659753",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "boites",
+     "name": "Set de 3 boîtes hermétiques",
+     "price": 7500,
+     "qty": 1
+    }
+   ],
+   "sub": 7500,
+   "ship": 1000,
+   "total": 8500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10220",
+   "date": "2026-10-04T12:44:00.000Z",
+   "uid": null,
+   "name": "Bénédicte Ahouansou",
+   "phone": "0161336234",
+   "address": "Bohicon, centre-ville",
+   "zone": "autre",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "boites",
+     "name": "Set de 3 boîtes hermétiques",
+     "price": 7500,
+     "qty": 1
+    }
+   ],
+   "sub": 7500,
+   "ship": 2500,
+   "total": 10000,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10219",
+   "date": "2026-10-04T11:55:00.000Z",
+   "uid": null,
+   "name": "Gildas Tchibozo",
+   "phone": "0191903290",
+   "address": "Akpakpa",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    },
+    {
+     "pid": "masque",
+     "name": "Masque de sommeil 3D",
+     "price": 2500,
+     "qty": 1
+    }
+   ],
+   "sub": 8400,
+   "ship": 1000,
+   "total": 9400,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10218",
+   "date": "2026-10-03T16:10:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0168092508",
+   "address": "Cadjèhoun",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    }
+   ],
+   "sub": 9900,
+   "ship": 1000,
+   "total": 10900,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10217",
+   "date": "2026-10-03T14:52:00.000Z",
+   "uid": null,
+   "name": "Brice Lawson",
+   "phone": "0195800689",
+   "address": "Sainte-Rita",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "tapis",
+     "name": "Tapis de souris ergonomique",
+     "price": 3500,
+     "qty": 1
+    },
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 2
+    }
+   ],
+   "sub": 15300,
+   "ship": 0,
+   "total": 15300,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10216",
+   "date": "2026-10-03T14:26:00.000Z",
+   "uid": null,
+   "name": "Désiré Houessou",
+   "phone": "0164239572",
+   "address": "Abomey, centre-ville",
+   "zone": "autre",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    },
+    {
+     "pid": "surligneurs",
+     "name": "Lot de 6 surligneurs pastel",
+     "price": 1500,
+     "qty": 1
+    }
+   ],
+   "sub": 11400,
+   "ship": 2500,
+   "total": 13900,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10215",
+   "date": "2026-10-01T16:24:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0195437205",
+   "address": "Zogbo",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10214",
+   "date": "2026-10-01T14:41:00.000Z",
+   "uid": null,
+   "name": "Désiré Houessou",
+   "phone": "0193752001",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "organiseurs",
+     "name": "Organiseurs de valise (x6)",
+     "price": 7000,
+     "qty": 2
+    }
+   ],
+   "sub": 14000,
+   "ship": 1000,
+   "total": 15000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10213",
+   "date": "2026-10-01T12:12:00.000Z",
+   "uid": null,
+   "name": "Carine Mensah",
+   "phone": "0165136635",
+   "address": "Ouidah, centre-ville",
+   "zone": "autre",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "surligneurs",
+     "name": "Lot de 6 surligneurs pastel",
+     "price": 1500,
+     "qty": 1
+    }
+   ],
+   "sub": 1500,
+   "ship": 2500,
+   "total": 4000,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10212",
+   "date": "2026-10-01T08:00:00.000Z",
+   "uid": null,
+   "name": "Désiré Houessou",
+   "phone": "0162281892",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "tondeuse",
+     "name": "Tondeuse barbe rechargeable",
+     "price": 13900,
+     "qty": 1
+    },
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    },
+    {
+     "pid": "miroir",
+     "name": "Miroir LED de poche",
+     "price": 3900,
+     "qty": 1
+    }
+   ],
+   "sub": 26700,
+   "ship": 0,
+   "total": 26700,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10211",
+   "date": "2026-09-29T15:25:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0190671061",
+   "address": "Akpakpa",
+   "zone": "cotonou",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "ecouteurs",
+     "name": "Écouteurs sans fil",
+     "price": 14900,
+     "qty": 2
+    }
+   ],
+   "sub": 29800,
+   "ship": 0,
+   "total": 29800,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10210",
+   "date": "2026-09-29T11:20:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0160728213",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "ecouteurs",
+     "name": "Écouteurs sans fil",
+     "price": 14900,
+     "qty": 1
+    }
+   ],
+   "sub": 14900,
+   "ship": 1000,
+   "total": 15900,
+   "status": "annulee",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10209",
+   "date": "2026-09-28T08:08:00.000Z",
+   "uid": null,
+   "name": "Romaric Hounsa",
+   "phone": "0161245701",
+   "address": "Akpakpa",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "support",
+     "name": "Support téléphone pliable",
+     "price": 2900,
+     "qty": 1
+    }
+   ],
+   "sub": 2900,
+   "ship": 1000,
+   "total": 3900,
+   "status": "annulee",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10208",
+   "date": "2026-09-26T16:28:00.000Z",
+   "uid": null,
+   "name": "Brice Lawson",
+   "phone": "0196244463",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    }
+   ],
+   "sub": 5900,
+   "ship": 1000,
+   "total": 6900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10207",
+   "date": "2026-09-26T15:08:00.000Z",
+   "uid": null,
+   "name": "Gildas Tchibozo",
+   "phone": "0190706980",
+   "address": "Sainte-Rita",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "cables",
+     "name": "Organisateur de câbles (x10)",
+     "price": 2500,
+     "qty": 1
+    }
+   ],
+   "sub": 2500,
+   "ship": 1000,
+   "total": 3500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10206",
+   "date": "2026-09-24T18:33:00.000Z",
+   "uid": null,
+   "name": "Jocelyne Dossa",
+   "phone": "0195515272",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "carnet",
+     "name": "Carnet A5 pointillé",
+     "price": 3000,
+     "qty": 1
+    }
+   ],
+   "sub": 3000,
+   "ship": 1000,
+   "total": 4000,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10205",
+   "date": "2026-09-24T14:22:00.000Z",
+   "uid": null,
+   "name": "Carine Mensah",
+   "phone": "0164014410",
+   "address": "Godomey",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    }
+   ],
+   "sub": 9900,
+   "ship": 1000,
+   "total": 10900,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10204",
+   "date": "2026-09-24T08:39:00.000Z",
+   "uid": null,
+   "name": "Bénédicte Ahouansou",
+   "phone": "0196882567",
+   "address": "Sainte-Rita",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "trousse",
+     "name": "Trousse de toilette pliable",
+     "price": 5500,
+     "qty": 1
+    }
+   ],
+   "sub": 5500,
+   "ship": 1000,
+   "total": 6500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10203",
+   "date": "2026-09-23T11:46:00.000Z",
+   "uid": null,
+   "name": "Laure Agbodjan",
+   "phone": "0163740617",
+   "address": "Porto-Novo, centre-ville",
+   "zone": "autre",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "tondeuse",
+     "name": "Tondeuse barbe rechargeable",
+     "price": 13900,
+     "qty": 1
+    }
+   ],
+   "sub": 13900,
+   "ship": 2500,
+   "total": 16400,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10202",
+   "date": "2026-09-22T15:03:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0161173896",
+   "address": "Cadjèhoun",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    },
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 2
+    }
+   ],
+   "sub": 23700,
+   "ship": 0,
+   "total": 23700,
+   "status": "annulee",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10201",
+   "date": "2026-09-22T06:21:00.000Z",
+   "uid": null,
+   "name": "Bénédicte Ahouansou",
+   "phone": "0165117222",
+   "address": "Fidjrossè",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "tondeuse",
+     "name": "Tondeuse barbe rechargeable",
+     "price": 13900,
+     "qty": 1
+    }
+   ],
+   "sub": 13900,
+   "ship": 1000,
+   "total": 14900,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10200",
+   "date": "2026-09-21T13:58:00.000Z",
+   "uid": null,
+   "name": "Nadège Kpossou",
+   "phone": "0191245679",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "pinceaux",
+     "name": "Set de 10 pinceaux de maquillage",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10199",
+   "date": "2026-09-20T10:56:00.000Z",
+   "uid": null,
+   "name": "Romaric Hounsa",
+   "phone": "0162338781",
+   "address": "Lokossa, centre-ville",
+   "zone": "autre",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "cables",
+     "name": "Organisateur de câbles (x10)",
+     "price": 2500,
+     "qty": 1
+    }
+   ],
+   "sub": 2500,
+   "ship": 2500,
+   "total": 5000,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10198",
+   "date": "2026-09-19T17:16:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0169915366",
+   "address": "Akpakpa",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    }
+   ],
+   "sub": 5900,
+   "ship": 1000,
+   "total": 6900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10197",
+   "date": "2026-09-19T13:42:00.000Z",
+   "uid": null,
+   "name": "Romaric Hounsa",
+   "phone": "0196978402",
+   "address": "Abomey, centre-ville",
+   "zone": "autre",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "surligneurs",
+     "name": "Lot de 6 surligneurs pastel",
+     "price": 1500,
+     "qty": 1
+    }
+   ],
+   "sub": 1500,
+   "ship": 2500,
+   "total": 4000,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10196",
+   "date": "2026-09-16T13:19:00.000Z",
+   "uid": null,
+   "name": "Ornella Sossa",
+   "phone": "0199086120",
+   "address": "Sainte-Rita",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    }
+   ],
+   "sub": 9900,
+   "ship": 1000,
+   "total": 10900,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10195",
+   "date": "2026-09-16T11:18:00.000Z",
+   "uid": null,
+   "name": "Romaric Hounsa",
+   "phone": "0198377767",
+   "address": "Bohicon, centre-ville",
+   "zone": "autre",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "tondeuse",
+     "name": "Tondeuse barbe rechargeable",
+     "price": 13900,
+     "qty": 1
+    }
+   ],
+   "sub": 13900,
+   "ship": 2500,
+   "total": 16400,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10194",
+   "date": "2026-09-15T14:56:00.000Z",
+   "uid": null,
+   "name": "Fabrice Kiki",
+   "phone": "0161214834",
+   "address": "Zogbo",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    },
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    }
+   ],
+   "sub": 12400,
+   "ship": 1000,
+   "total": 13400,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10193",
+   "date": "2026-09-14T10:14:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0193202452",
+   "address": "Akpakpa",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "masque",
+     "name": "Masque de sommeil 3D",
+     "price": 2500,
+     "qty": 1
+    },
+    {
+     "pid": "miroir",
+     "name": "Miroir LED de poche",
+     "price": 3900,
+     "qty": 1
+    }
+   ],
+   "sub": 6400,
+   "ship": 1000,
+   "total": 7400,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10192",
+   "date": "2026-09-12T16:14:00.000Z",
+   "uid": null,
+   "name": "Brice Lawson",
+   "phone": "0169490103",
+   "address": "Gbégamey",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "surligneurs",
+     "name": "Lot de 6 surligneurs pastel",
+     "price": 1500,
+     "qty": 1
+    },
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 2
+    }
+   ],
+   "sub": 21300,
+   "ship": 0,
+   "total": 21300,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10191",
+   "date": "2026-09-12T11:43:00.000Z",
+   "uid": null,
+   "name": "Brice Lawson",
+   "phone": "0193348183",
+   "address": "Cadjèhoun",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    }
+   ],
+   "sub": 5900,
+   "ship": 1000,
+   "total": 6900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10190",
+   "date": "2026-09-12T08:48:00.000Z",
+   "uid": null,
+   "name": "Romaric Hounsa",
+   "phone": "0165214816",
+   "address": "Gbégamey",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 2
+    }
+   ],
+   "sub": 9000,
+   "ship": 1000,
+   "total": 10000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10189",
+   "date": "2026-09-10T17:39:00.000Z",
+   "uid": null,
+   "name": "Laure Agbodjan",
+   "phone": "0190403984",
+   "address": "Bohicon, centre-ville",
+   "zone": "autre",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 1
+    },
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    },
+    {
+     "pid": "cables",
+     "name": "Organisateur de câbles (x10)",
+     "price": 2500,
+     "qty": 1
+    }
+   ],
+   "sub": 15900,
+   "ship": 2500,
+   "total": 18400,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10188",
+   "date": "2026-09-09T06:38:00.000Z",
+   "uid": null,
+   "name": "Carine Mensah",
+   "phone": "0194064419",
+   "address": "Godomey",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    }
+   ],
+   "sub": 9900,
+   "ship": 1000,
+   "total": 10900,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10187",
+   "date": "2026-09-09T06:30:00.000Z",
+   "uid": null,
+   "name": "Brice Lawson",
+   "phone": "0190379515",
+   "address": "Akpakpa",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 2
+    }
+   ],
+   "sub": 4000,
+   "ship": 1000,
+   "total": 5000,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10186",
+   "date": "2026-09-08T17:08:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0196205126",
+   "address": "Sainte-Rita",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "agrumes",
+     "name": "Bouteille presse-agrumes",
+     "price": 4900,
+     "qty": 2
+    },
+    {
+     "pid": "boites",
+     "name": "Set de 3 boîtes hermétiques",
+     "price": 7500,
+     "qty": 1
+    }
+   ],
+   "sub": 17300,
+   "ship": 0,
+   "total": 17300,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10185",
+   "date": "2026-09-08T09:55:00.000Z",
+   "uid": null,
+   "name": "Nadège Kpossou",
+   "phone": "0169625788",
+   "address": "Parakou, centre-ville",
+   "zone": "autre",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "blender",
+     "name": "Blender portable USB",
+     "price": 12500,
+     "qty": 1
+    }
+   ],
+   "sub": 12500,
+   "ship": 2500,
+   "total": 15000,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10184",
+   "date": "2026-09-07T17:22:00.000Z",
+   "uid": null,
+   "name": "Romaric Hounsa",
+   "phone": "0197758326",
+   "address": "Haie Vive",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    }
+   ],
+   "sub": 5900,
+   "ship": 1000,
+   "total": 6900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10183",
+   "date": "2026-09-07T06:45:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0168504197",
+   "address": "Fidjrossè",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "ecouteurs",
+     "name": "Écouteurs sans fil",
+     "price": 14900,
+     "qty": 2
+    }
+   ],
+   "sub": 29800,
+   "ship": 0,
+   "total": 29800,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10182",
+   "date": "2026-09-06T14:04:00.000Z",
+   "uid": null,
+   "name": "Aïcha Yessoufou",
+   "phone": "0166121672",
+   "address": "Akpakpa",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 1
+    }
+   ],
+   "sub": 4500,
+   "ship": 1000,
+   "total": 5500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10181",
+   "date": "2026-09-05T18:21:00.000Z",
+   "uid": null,
+   "name": "Bénédicte Ahouansou",
+   "phone": "0161168738",
+   "address": "Gbégamey",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "masque",
+     "name": "Masque de sommeil 3D",
+     "price": 2500,
+     "qty": 1
+    },
+    {
+     "pid": "boites",
+     "name": "Set de 3 boîtes hermétiques",
+     "price": 7500,
+     "qty": 1
+    }
+   ],
+   "sub": 10000,
+   "ship": 1000,
+   "total": 11000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10180",
+   "date": "2026-09-05T07:44:00.000Z",
+   "uid": null,
+   "name": "Romaric Hounsa",
+   "phone": "0161916633",
+   "address": "Zogbo",
+   "zone": "cotonou",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "boites",
+     "name": "Set de 3 boîtes hermétiques",
+     "price": 7500,
+     "qty": 1
+    }
+   ],
+   "sub": 7500,
+   "ship": 1000,
+   "total": 8500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10179",
+   "date": "2026-09-04T08:31:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0167910638",
+   "address": "Haie Vive",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10178",
+   "date": "2026-09-03T17:56:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0164696813",
+   "address": "Cadjèhoun",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 1
+    }
+   ],
+   "sub": 2000,
+   "ship": 1000,
+   "total": 3000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10177",
+   "date": "2026-09-03T15:52:00.000Z",
+   "uid": null,
+   "name": "Prince Ahyi",
+   "phone": "0161406027",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "agrumes",
+     "name": "Bouteille presse-agrumes",
+     "price": 4900,
+     "qty": 2
+    },
+    {
+     "pid": "miroir",
+     "name": "Miroir LED de poche",
+     "price": 3900,
+     "qty": 1
+    },
+    {
+     "pid": "carnet",
+     "name": "Carnet A5 pointillé",
+     "price": 3000,
+     "qty": 1
+    }
+   ],
+   "sub": 16700,
+   "ship": 0,
+   "total": 16700,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10176",
+   "date": "2026-09-03T06:33:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0192232529",
+   "address": "Cocotomey",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10175",
+   "date": "2026-09-01T18:37:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0168305802",
+   "address": "Haie Vive",
+   "zone": "cotonou",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "carnet",
+     "name": "Carnet A5 pointillé",
+     "price": 3000,
+     "qty": 1
+    }
+   ],
+   "sub": 3000,
+   "ship": 1000,
+   "total": 4000,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10174",
+   "date": "2026-08-31T11:43:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0164608409",
+   "address": "Cadjèhoun",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "carnet",
+     "name": "Carnet A5 pointillé",
+     "price": 3000,
+     "qty": 1
+    }
+   ],
+   "sub": 3000,
+   "ship": 1000,
+   "total": 4000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10173",
+   "date": "2026-08-30T14:17:00.000Z",
+   "uid": null,
+   "name": "Carine Mensah",
+   "phone": "0195749171",
+   "address": "Cocotomey",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 1
+    },
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 8500,
+   "ship": 1000,
+   "total": 9500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10172",
+   "date": "2026-08-29T16:39:00.000Z",
+   "uid": null,
+   "name": "Gildas Tchibozo",
+   "phone": "0164420055",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "pinceaux",
+     "name": "Set de 10 pinceaux de maquillage",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10171",
+   "date": "2026-08-29T10:05:00.000Z",
+   "uid": null,
+   "name": "Brice Lawson",
+   "phone": "0192863991",
+   "address": "Fidjrossè",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "support",
+     "name": "Support téléphone pliable",
+     "price": 2900,
+     "qty": 1
+    }
+   ],
+   "sub": 2900,
+   "ship": 1000,
+   "total": 3900,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10170",
+   "date": "2026-08-29T07:06:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0160467913",
+   "address": "Calavi, Kpota",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "pinceaux",
+     "name": "Set de 10 pinceaux de maquillage",
+     "price": 6500,
+     "qty": 1
+    },
+    {
+     "pid": "ecouteurs",
+     "name": "Écouteurs sans fil",
+     "price": 14900,
+     "qty": 1
+    },
+    {
+     "pid": "agrumes",
+     "name": "Bouteille presse-agrumes",
+     "price": 4900,
+     "qty": 2
+    }
+   ],
+   "sub": 31200,
+   "ship": 0,
+   "total": 31200,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10169",
+   "date": "2026-08-28T16:42:00.000Z",
+   "uid": null,
+   "name": "Ornella Sossa",
+   "phone": "0164088601",
+   "address": "Cocotomey",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 2
+    }
+   ],
+   "sub": 11800,
+   "ship": 1000,
+   "total": 12800,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10168",
+   "date": "2026-08-28T14:07:00.000Z",
+   "uid": null,
+   "name": "Romaric Hounsa",
+   "phone": "0192383938",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "ecouteurs",
+     "name": "Écouteurs sans fil",
+     "price": 14900,
+     "qty": 1
+    }
+   ],
+   "sub": 14900,
+   "ship": 1000,
+   "total": 15900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10167",
+   "date": "2026-08-27T12:33:00.000Z",
+   "uid": null,
+   "name": "Ornella Sossa",
+   "phone": "0165415994",
+   "address": "Cadjèhoun",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 8900,
+   "ship": 1000,
+   "total": 9900,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10166",
+   "date": "2026-08-27T10:11:00.000Z",
+   "uid": null,
+   "name": "Mariette Akpovi",
+   "phone": "0192010455",
+   "address": "Godomey",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 2
+    },
+    {
+     "pid": "support",
+     "name": "Support téléphone pliable",
+     "price": 2900,
+     "qty": 2
+    },
+    {
+     "pid": "tondeuse",
+     "name": "Tondeuse barbe rechargeable",
+     "price": 13900,
+     "qty": 2
+    }
+   ],
+   "sub": 45400,
+   "ship": 0,
+   "total": 45400,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10165",
+   "date": "2026-08-26T18:22:00.000Z",
+   "uid": null,
+   "name": "Carine Mensah",
+   "phone": "0197303663",
+   "address": "Gbégamey",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "masque",
+     "name": "Masque de sommeil 3D",
+     "price": 2500,
+     "qty": 1
+    }
+   ],
+   "sub": 2500,
+   "ship": 1000,
+   "total": 3500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10164",
+   "date": "2026-08-26T11:37:00.000Z",
+   "uid": null,
+   "name": "Laure Agbodjan",
+   "phone": "0160655389",
+   "address": "Haie Vive",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "masque",
+     "name": "Masque de sommeil 3D",
+     "price": 2500,
+     "qty": 1
+    },
+    {
+     "pid": "agrumes",
+     "name": "Bouteille presse-agrumes",
+     "price": 4900,
+     "qty": 1
+    },
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 13900,
+   "ship": 1000,
+   "total": 14900,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10163",
+   "date": "2026-08-26T06:09:00.000Z",
+   "uid": null,
+   "name": "Romaric Hounsa",
+   "phone": "0162982128",
+   "address": "Godomey",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10162",
+   "date": "2026-08-25T14:15:00.000Z",
+   "uid": null,
+   "name": "Abdou Bio",
+   "phone": "0161234229",
+   "address": "Zogbo",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 8900,
+   "ship": 1000,
+   "total": 9900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10161",
+   "date": "2026-08-23T18:17:00.000Z",
+   "uid": null,
+   "name": "Mariette Akpovi",
+   "phone": "0194416800",
+   "address": "Godomey",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "carnet",
+     "name": "Carnet A5 pointillé",
+     "price": 3000,
+     "qty": 1
+    },
+    {
+     "pid": "diffuseur",
+     "name": "Diffuseur d'huiles essentielles",
+     "price": 11500,
+     "qty": 1
+    }
+   ],
+   "sub": 14500,
+   "ship": 1000,
+   "total": 15500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10160",
+   "date": "2026-08-21T16:33:00.000Z",
+   "uid": null,
+   "name": "Abdou Bio",
+   "phone": "0162435804",
+   "address": "Zogbo",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "support",
+     "name": "Support téléphone pliable",
+     "price": 2900,
+     "qty": 1
+    }
+   ],
+   "sub": 2900,
+   "ship": 1000,
+   "total": 3900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10159",
+   "date": "2026-08-21T06:53:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0197194399",
+   "address": "Ouidah, centre-ville",
+   "zone": "autre",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 8900,
+   "ship": 2500,
+   "total": 11400,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10158",
+   "date": "2026-08-19T07:53:00.000Z",
+   "uid": null,
+   "name": "Abdou Bio",
+   "phone": "0164824457",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "cables",
+     "name": "Organisateur de câbles (x10)",
+     "price": 2500,
+     "qty": 1
+    },
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 1
+    }
+   ],
+   "sub": 4500,
+   "ship": 1000,
+   "total": 5500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10157",
+   "date": "2026-08-18T17:41:00.000Z",
+   "uid": null,
+   "name": "Ornella Sossa",
+   "phone": "0192713936",
+   "address": "Cadjèhoun",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10156",
+   "date": "2026-08-17T11:07:00.000Z",
+   "uid": null,
+   "name": "Désiré Houessou",
+   "phone": "0160805632",
+   "address": "Fidjrossè",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "tondeuse",
+     "name": "Tondeuse barbe rechargeable",
+     "price": 13900,
+     "qty": 2
+    }
+   ],
+   "sub": 27800,
+   "ship": 0,
+   "total": 27800,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10155",
+   "date": "2026-08-17T06:43:00.000Z",
+   "uid": null,
+   "name": "Jocelyne Dossa",
+   "phone": "0199120338",
+   "address": "Lokossa, centre-ville",
+   "zone": "autre",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "surligneurs",
+     "name": "Lot de 6 surligneurs pastel",
+     "price": 1500,
+     "qty": 2
+    },
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 2
+    }
+   ],
+   "sub": 12000,
+   "ship": 2500,
+   "total": 14500,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10154",
+   "date": "2026-08-16T17:58:00.000Z",
+   "uid": null,
+   "name": "Ornella Sossa",
+   "phone": "0162410460",
+   "address": "Haie Vive",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    }
+   ],
+   "sub": 9900,
+   "ship": 1000,
+   "total": 10900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10153",
+   "date": "2026-08-16T11:09:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0167271465",
+   "address": "Sainte-Rita",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 2
+    },
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 2
+    }
+   ],
+   "sub": 23800,
+   "ship": 0,
+   "total": 23800,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10152",
+   "date": "2026-08-16T09:30:00.000Z",
+   "uid": null,
+   "name": "Fabrice Kiki",
+   "phone": "0194683553",
+   "address": "Lokossa, centre-ville",
+   "zone": "autre",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 2
+    }
+   ],
+   "sub": 9000,
+   "ship": 2500,
+   "total": 11500,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10151",
+   "date": "2026-08-15T06:30:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0194026501",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "surligneurs",
+     "name": "Lot de 6 surligneurs pastel",
+     "price": 1500,
+     "qty": 1
+    },
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    },
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 16900,
+   "ship": 0,
+   "total": 16900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10150",
+   "date": "2026-08-13T15:55:00.000Z",
+   "uid": null,
+   "name": "Ornella Sossa",
+   "phone": "0162129984",
+   "address": "Godomey",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "carnet",
+     "name": "Carnet A5 pointillé",
+     "price": 3000,
+     "qty": 1
+    }
+   ],
+   "sub": 3000,
+   "ship": 1000,
+   "total": 4000,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10149",
+   "date": "2026-08-11T16:29:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0162401864",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "masque",
+     "name": "Masque de sommeil 3D",
+     "price": 2500,
+     "qty": 1
+    }
+   ],
+   "sub": 2500,
+   "ship": 1000,
+   "total": 3500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10148",
+   "date": "2026-08-11T10:48:00.000Z",
+   "uid": null,
+   "name": "Laure Agbodjan",
+   "phone": "0198138189",
+   "address": "Sainte-Rita",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "brosse",
+     "name": "Brosse nettoyante visage",
+     "price": 4500,
+     "qty": 2
+    }
+   ],
+   "sub": 9000,
+   "ship": 1000,
+   "total": 10000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10147",
+   "date": "2026-08-11T08:07:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0194140024",
+   "address": "Bohicon, centre-ville",
+   "zone": "autre",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 8900,
+   "ship": 2500,
+   "total": 11400,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10146",
+   "date": "2026-08-10T08:54:00.000Z",
+   "uid": null,
+   "name": "Abdou Bio",
+   "phone": "0168745897",
+   "address": "Akpakpa",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    }
+   ],
+   "sub": 9900,
+   "ship": 1000,
+   "total": 10900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10145",
+   "date": "2026-08-10T08:50:00.000Z",
+   "uid": null,
+   "name": "Fabrice Kiki",
+   "phone": "0161574995",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    }
+   ],
+   "sub": 5900,
+   "ship": 1000,
+   "total": 6900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10144",
+   "date": "2026-08-09T18:45:00.000Z",
+   "uid": null,
+   "name": "Abdou Bio",
+   "phone": "0167250883",
+   "address": "Vèdoko",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10143",
+   "date": "2026-08-09T14:22:00.000Z",
+   "uid": null,
+   "name": "Aïcha Yessoufou",
+   "phone": "0161661845",
+   "address": "Fidjrossè",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "ecouteurs",
+     "name": "Écouteurs sans fil",
+     "price": 14900,
+     "qty": 1
+    },
+    {
+     "pid": "surligneurs",
+     "name": "Lot de 6 surligneurs pastel",
+     "price": 1500,
+     "qty": 1
+    }
+   ],
+   "sub": 16400,
+   "ship": 0,
+   "total": 16400,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10142",
+   "date": "2026-08-07T16:58:00.000Z",
+   "uid": null,
+   "name": "Laure Agbodjan",
+   "phone": "0198724905",
+   "address": "Parakou, centre-ville",
+   "zone": "autre",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    },
+    {
+     "pid": "boites",
+     "name": "Set de 3 boîtes hermétiques",
+     "price": 7500,
+     "qty": 1
+    }
+   ],
+   "sub": 14000,
+   "ship": 2500,
+   "total": 16500,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10141",
+   "date": "2026-08-07T13:54:00.000Z",
+   "uid": null,
+   "name": "Mariette Akpovi",
+   "phone": "0168592849",
+   "address": "Porto-Novo, centre-ville",
+   "zone": "autre",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "tondeuse",
+     "name": "Tondeuse barbe rechargeable",
+     "price": 13900,
+     "qty": 1
+    }
+   ],
+   "sub": 13900,
+   "ship": 2500,
+   "total": 16400,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10140",
+   "date": "2026-08-06T08:15:00.000Z",
+   "uid": null,
+   "name": "Jocelyne Dossa",
+   "phone": "0162116018",
+   "address": "Sainte-Rita",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 1
+    }
+   ],
+   "sub": 4500,
+   "ship": 1000,
+   "total": 5500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10139",
+   "date": "2026-08-05T18:47:00.000Z",
+   "uid": null,
+   "name": "Abdou Bio",
+   "phone": "0195562943",
+   "address": "Akpakpa",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "support",
+     "name": "Support téléphone pliable",
+     "price": 2900,
+     "qty": 1
+    },
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 11800,
+   "ship": 1000,
+   "total": 12800,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10138",
+   "date": "2026-08-05T13:01:00.000Z",
+   "uid": null,
+   "name": "Prince Ahyi",
+   "phone": "0191234547",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10137",
+   "date": "2026-08-02T07:16:00.000Z",
+   "uid": null,
+   "name": "Aïcha Yessoufou",
+   "phone": "0164549960",
+   "address": "Cocotomey",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "tondeuse",
+     "name": "Tondeuse barbe rechargeable",
+     "price": 13900,
+     "qty": 1
+    },
+    {
+     "pid": "blender",
+     "name": "Blender portable USB",
+     "price": 12500,
+     "qty": 1
+    }
+   ],
+   "sub": 26400,
+   "ship": 0,
+   "total": 26400,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10136",
+   "date": "2026-07-31T17:43:00.000Z",
+   "uid": null,
+   "name": "Brice Lawson",
+   "phone": "0169367576",
+   "address": "Gbégamey",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "ventilo",
+     "name": "Mini ventilateur USB",
+     "price": 6000,
+     "qty": 1
+    }
+   ],
+   "sub": 6000,
+   "ship": 1000,
+   "total": 7000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10135",
+   "date": "2026-07-30T17:25:00.000Z",
+   "uid": null,
+   "name": "Nadège Kpossou",
+   "phone": "0193641115",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    },
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 2
+    }
+   ],
+   "sub": 21700,
+   "ship": 0,
+   "total": 21700,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10134",
+   "date": "2026-07-30T07:46:00.000Z",
+   "uid": null,
+   "name": "Désiré Houessou",
+   "phone": "0167227149",
+   "address": "Godomey",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    },
+    {
+     "pid": "carnet",
+     "name": "Carnet A5 pointillé",
+     "price": 3000,
+     "qty": 1
+    }
+   ],
+   "sub": 11900,
+   "ship": 1000,
+   "total": 12900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10133",
+   "date": "2026-07-28T06:16:00.000Z",
+   "uid": null,
+   "name": "Prince Ahyi",
+   "phone": "0167625962",
+   "address": "Ouidah, centre-ville",
+   "zone": "autre",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "ventilo",
+     "name": "Mini ventilateur USB",
+     "price": 6000,
+     "qty": 1
+    },
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 1
+    }
+   ],
+   "sub": 10500,
+   "ship": 2500,
+   "total": 13000,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10132",
+   "date": "2026-07-27T09:52:00.000Z",
+   "uid": null,
+   "name": "Brice Lawson",
+   "phone": "0190540352",
+   "address": "Sainte-Rita",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    },
+    {
+     "pid": "trousse",
+     "name": "Trousse de toilette pliable",
+     "price": 5500,
+     "qty": 1
+    }
+   ],
+   "sub": 12000,
+   "ship": 1000,
+   "total": 13000,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10131",
+   "date": "2026-07-23T16:44:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0194284413",
+   "address": "Cadjèhoun",
+   "zone": "cotonou",
+   "pay": "moov",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    },
+    {
+     "pid": "tondeuse",
+     "name": "Tondeuse barbe rechargeable",
+     "price": 13900,
+     "qty": 1
+    },
+    {
+     "pid": "batterie",
+     "name": "Batterie externe 10 000 mAh",
+     "price": 9900,
+     "qty": 1
+    }
+   ],
+   "sub": 30300,
+   "ship": 0,
+   "total": 30300,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10130",
+   "date": "2026-07-23T12:43:00.000Z",
+   "uid": null,
+   "name": "Fifamè Gbaguidi",
+   "phone": "0165973706",
+   "address": "Gbégamey",
+   "zone": "cotonou",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "carnet",
+     "name": "Carnet A5 pointillé",
+     "price": 3000,
+     "qty": 1
+    },
+    {
+     "pid": "ecouteurs",
+     "name": "Écouteurs sans fil",
+     "price": 14900,
+     "qty": 1
+    }
+   ],
+   "sub": 17900,
+   "ship": 0,
+   "total": 17900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10129",
+   "date": "2026-07-23T09:37:00.000Z",
+   "uid": null,
+   "name": "Nadège Kpossou",
+   "phone": "0163413617",
+   "address": "Ouidah, centre-ville",
+   "zone": "autre",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "pinceaux",
+     "name": "Set de 10 pinceaux de maquillage",
+     "price": 6500,
+     "qty": 2
+    }
+   ],
+   "sub": 13000,
+   "ship": 2500,
+   "total": 15500,
+   "status": "livree",
+   "courier": "c3"
+  },
+  {
+   "id": "WX-10128",
+   "date": "2026-07-21T15:15:00.000Z",
+   "uid": null,
+   "name": "Gildas Tchibozo",
+   "phone": "0161483981",
+   "address": "Fidjrossè",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "annulee",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10127",
+   "date": "2026-07-21T13:26:00.000Z",
+   "uid": null,
+   "name": "Aïcha Yessoufou",
+   "phone": "0190452928",
+   "address": "Fidjrossè",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 8900,
+   "ship": 1000,
+   "total": 9900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10126",
+   "date": "2026-07-21T13:16:00.000Z",
+   "uid": null,
+   "name": "Carine Mensah",
+   "phone": "0191545035",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "brosse",
+     "name": "Brosse nettoyante visage",
+     "price": 4500,
+     "qty": 1
+    },
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 13400,
+   "ship": 1000,
+   "total": 14400,
+   "status": "livree",
+   "courier": "c2"
+  },
+  {
+   "id": "WX-10125",
+   "date": "2026-07-18T18:28:00.000Z",
+   "uid": null,
+   "name": "Hermann Quenum",
+   "phone": "0166145846",
+   "address": "Zogbo",
+   "zone": "cotonou",
+   "pay": "carte",
+   "items": [
+    {
+     "pid": "raquette",
+     "name": "Raquette anti-moustiques rechargeable",
+     "price": 4500,
+     "qty": 1
+    },
+    {
+     "pid": "eplucheur",
+     "name": "Éplucheur multifonction",
+     "price": 2000,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10124",
+   "date": "2026-07-17T06:33:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0199167313",
+   "address": "Agla",
+   "zone": "cotonou",
+   "pay": "celtiis",
+   "items": [
+    {
+     "pid": "agrumes",
+     "name": "Bouteille presse-agrumes",
+     "price": 4900,
+     "qty": 1
+    },
+    {
+     "pid": "chargeur",
+     "name": "Chargeur rapide 20 W USB-C",
+     "price": 5900,
+     "qty": 1
+    }
+   ],
+   "sub": 10800,
+   "ship": 1000,
+   "total": 11800,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10123",
+   "date": "2026-07-16T10:06:00.000Z",
+   "uid": null,
+   "name": "Mariette Akpovi",
+   "phone": "0162527245",
+   "address": "Haie Vive",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "cables",
+     "name": "Organisateur de câbles (x10)",
+     "price": 2500,
+     "qty": 1
+    }
+   ],
+   "sub": 2500,
+   "ship": 1000,
+   "total": 3500,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10122",
+   "date": "2026-07-16T06:55:00.000Z",
+   "uid": null,
+   "name": "Yasmine Chabi",
+   "phone": "0169725729",
+   "address": "Zogbo",
+   "zone": "cotonou",
+   "pay": "momo",
+   "items": [
+    {
+     "pid": "lampe",
+     "name": "Lampe LED rechargeable",
+     "price": 8900,
+     "qty": 1
+    }
+   ],
+   "sub": 8900,
+   "ship": 1000,
+   "total": 9900,
+   "status": "livree",
+   "courier": "c1"
+  },
+  {
+   "id": "WX-10121",
+   "date": "2026-07-13T10:28:00.000Z",
+   "uid": null,
+   "name": "Carine Mensah",
+   "phone": "0162208314",
+   "address": "Calavi, Kpota",
+   "zone": "cotonou",
+   "pay": "cod",
+   "items": [
+    {
+     "pid": "gourde",
+     "name": "Gourde isotherme 750 ml",
+     "price": 6500,
+     "qty": 1
+    }
+   ],
+   "sub": 6500,
+   "ship": 1000,
+   "total": 7500,
+   "status": "livree",
+   "courier": "c2"
+  }
+ ],
+ "clients": [
+  {
+   "id": "u_afi",
+   "first": "Afi",
+   "last": "Houngbédji",
+   "phone": "0197112233",
+   "email": "afi@exemple.bj",
+   "address": "Fidjrossè, après la pharmacie, portail bleu",
+   "news": true,
+   "created": "2026-09-12"
+  },
+  {
+   "id": "u_koffi",
+   "first": "Koffi",
+   "last": "Agossou",
+   "phone": "0196554433",
+   "email": "koffi.a@exemple.bj",
+   "address": "Akpakpa, rue du marché Dantokpa",
+   "news": true,
+   "created": "2026-08-30"
+  },
+  {
+   "id": "u_mariam",
+   "first": "Mariam",
+   "last": "Soulé",
+   "phone": "0194887766",
+   "email": "mariam.s@exemple.bj",
+   "address": "Calavi, Zopah, près de l'église",
+   "news": false,
+   "created": "2026-09-27"
+  },
+  {
+   "id": "u_rodrigue",
+   "first": "Rodrigue",
+   "last": "Dossou",
+   "phone": "0161223344",
+   "email": "rodrigue.d@exemple.bj",
+   "address": "Porto-Novo, Ouando",
+   "news": false,
+   "created": "2026-10-02"
+  }
+ ],
+ "messages": [
+  {
+   "id": "m1",
+   "name": "Hermann Quenum",
+   "contact": "0162334455",
+   "subject": "Livraison",
+   "orderId": "",
+   "text": "Bonjour, livrez-vous à Parakou ? Si oui, en combien de jours ?",
+   "date": "2026-10-07T10:12:00",
+   "done": false
+  },
+  {
+   "id": "m2",
+   "name": "Carine Mensah",
+   "contact": "carine.m@exemple.bj",
+   "subject": "Produit",
+   "orderId": "",
+   "text": "Le diffuseur fonctionne-t-il avec n'importe quelle huile essentielle ?",
+   "date": "2026-10-06T16:40:00",
+   "done": true
+  }
+ ],
+ "subs": [
+  {
+   "id": "s1",
+   "channel": "email",
+   "value": "afi@exemple.bj",
+   "date": "2026-09-12"
+  },
+  {
+   "id": "s2",
+   "channel": "whatsapp",
+   "value": "0196554433",
+   "date": "2026-09-21"
+  },
+  {
+   "id": "s3",
+   "channel": "email",
+   "value": "nadege.k@exemple.bj",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "s4",
+   "channel": "whatsapp",
+   "value": "0167889900",
+   "date": "2026-10-02"
+  },
+  {
+   "id": "s5",
+   "channel": "email",
+   "value": "b.lokossou@exemple.bj",
+   "date": "2026-10-06"
+  }
+ ],
+ "couriers": [
+  {
+   "id": "c1",
+   "name": "Rachidi Alassane",
+   "phone": "0166112200",
+   "zone": "cotonou",
+   "active": true
+  },
+  {
+   "id": "c2",
+   "name": "Eustache Hounkpè",
+   "phone": "0197445566",
+   "zone": "cotonou",
+   "active": true
+  },
+  {
+   "id": "c3",
+   "name": "Transporteur interurbain",
+   "phone": "0161778899",
+   "zone": "autre",
+   "active": true
+  }
+ ],
+ "ledger": [
+  {
+   "id": "l1",
+   "date": "2026-07-15",
+   "cat": "stock",
+   "label": "Réassort : lampes, batteries, chargeurs",
+   "amount": 380000
+  },
+  {
+   "id": "l2",
+   "date": "2026-07-20",
+   "cat": "loyer",
+   "label": "Loyer du dépôt, juillet",
+   "amount": 40000
+  },
+  {
+   "id": "l3",
+   "date": "2026-08-02",
+   "cat": "stock",
+   "label": "Réassort cuisine et voyage",
+   "amount": 290000
+  },
+  {
+   "id": "l4",
+   "date": "2026-08-05",
+   "cat": "loyer",
+   "label": "Loyer du dépôt, août",
+   "amount": 40000
+  },
+  {
+   "id": "l5",
+   "date": "2026-08-10",
+   "cat": "pub",
+   "label": "Publicité Facebook et Instagram",
+   "amount": 35000
+  },
+  {
+   "id": "l6",
+   "date": "2026-08-20",
+   "cat": "emballage",
+   "label": "Sachets kraft et papier bulle",
+   "amount": 14000
+  },
+  {
+   "id": "l7",
+   "date": "2026-08-31",
+   "cat": "livraison",
+   "label": "Livreurs, août",
+   "amount": 26000
+  },
+  {
+   "id": "l8",
+   "date": "2026-09-01",
+   "cat": "stock",
+   "label": "Réassort beauté et bureau",
+   "amount": 310000
+  },
+  {
+   "id": "l9",
+   "date": "2026-09-05",
+   "cat": "loyer",
+   "label": "Loyer du dépôt, septembre",
+   "amount": 40000
+  },
+  {
+   "id": "l10",
+   "date": "2026-09-08",
+   "cat": "pub",
+   "label": "Publicité Facebook et Instagram",
+   "amount": 45000
+  },
+  {
+   "id": "l11",
+   "date": "2026-09-15",
+   "cat": "pub",
+   "label": "Statuts WhatsApp sponsorisés (influenceuse)",
+   "amount": 20000
+  },
+  {
+   "id": "l12",
+   "date": "2026-09-22",
+   "cat": "autre",
+   "label": "Hébergement du site et nom de domaine",
+   "amount": 15000
+  },
+  {
+   "id": "l13",
+   "date": "2026-09-30",
+   "cat": "livraison",
+   "label": "Livreurs, septembre",
+   "amount": 34000
+  },
+  {
+   "id": "l14",
+   "date": "2026-10-01",
+   "cat": "stock",
+   "label": "Nouveautés : blender, organiseurs, tapis",
+   "amount": 265000
+  },
+  {
+   "id": "l15",
+   "date": "2026-10-03",
+   "cat": "pub",
+   "label": "Publicité Facebook et Instagram",
+   "amount": 30000
+  },
+  {
+   "id": "l16",
+   "date": "2026-10-05",
+   "cat": "loyer",
+   "label": "Loyer du dépôt, octobre",
+   "amount": 40000
+  },
+  {
+   "id": "l17",
+   "date": "2026-10-06",
+   "cat": "emballage",
+   "label": "Cartons d'expédition",
+   "amount": 12000
+  }
+ ],
+ "expenseCats": {
+  "stock": [
+   "Achat de stock",
+   "#E8E4F5",
+   "#4B3A8C"
+  ],
+  "pub": [
+   "Publicité",
+   "#FFF4D6",
+   "#8A5A00"
+  ],
+  "livraison": [
+   "Livraison",
+   "#DDEBF7",
+   "#1D4F7A"
+  ],
+  "emballage": [
+   "Emballage",
+   "#EDE4CF",
+   "#4A443C"
+  ],
+  "loyer": [
+   "Loyer et charges",
+   "#F1DCD6",
+   "#9A3412"
+  ],
+  "salaire": [
+   "Salaires",
+   "#E5EFE7",
+   "#1F6B4A"
+  ],
+  "autre": [
+   "Autre",
+   "#E2DCCF",
+   "#4A443C"
+  ]
+ },
+ "cost": {
+  "lampe": 4600,
+  "ventilo": 3100,
+  "diffuseur": 6200,
+  "raquette": 2100,
+  "boites": 3900,
+  "eplucheur": 800,
+  "agrumes": 2400,
+  "blender": 7400,
+  "brosse": 2000,
+  "miroir": 1800,
+  "pinceaux": 2900,
+  "tondeuse": 7800,
+  "chargeur": 2700,
+  "ecouteurs": 8600,
+  "cables": 900,
+  "batterie": 5600,
+  "carnet": 1300,
+  "support": 1100,
+  "tapis": 1500,
+  "surligneurs": 600,
+  "gourde": 3300,
+  "trousse": 2500,
+  "masque": 900,
+  "organiseurs": 3400
+ },
+ "settings": {
+  "shopName": "Wá xɔ",
+  "whatsapp": "+229 01 00 00 00 00",
+  "email": "contact@waxo.bj",
+  "hours": "Du lundi au samedi, de 8 h à 19 h",
+  "shipCotonou": 1000,
+  "shipOther": 2500,
+  "freeShip": 15000,
+  "cutoff": 18,
+  "pay": {
+   "momo": true,
+   "moov": true,
+   "celtiis": true,
+   "carte": true,
+   "cod": true
+  },
+  "autoDraft": true,
+  "aiSign": "L'équipe Wá xɔ"
+ },
+ "status": {
+  "nouvelle": [
+   "Reçue",
+   "#FFF4D6",
+   "#8A5A00"
+  ],
+  "preparation": [
+   "En préparation",
+   "#E8E4F5",
+   "#4B3A8C"
+  ],
+  "livraison": [
+   "En livraison",
+   "#DDEBF7",
+   "#1D4F7A"
+  ],
+  "livree": [
+   "Livrée",
+   "#E5EFE7",
+   "#1F6B4A"
+  ],
+  "annulee": [
+   "Annulée",
+   "#F6E1DA",
+   "#9A3412"
+  ]
+ },
+ "kb": [
+  {
+   "id": "kb1",
+   "tag": "Livraison",
+   "title": "Délais et frais de livraison",
+   "text": "Cotonou et Calavi : livraison le lendemain pour toute commande passée avant 18 h, du lundi au samedi, 1 000 F, offerte dès 15 000 F d'achat. Autres villes du Bénin (Porto-Novo, Parakou, Bohicon, Abomey, Ouidah, Natitingou…) : 48 à 72 h, 2 500 F, par transporteur interurbain. Pas de livraison hors du Bénin pour le moment.",
+   "keywords": "livrer livreur délai quand combien jours ville parakou porto-novo bohicon abomey ouidah natitingou lokossa expédition envoi frais"
+  },
+  {
+   "id": "kb2",
+   "tag": "Livraison",
+   "title": "Le jour de la livraison",
+   "text": "Le client reçoit une confirmation WhatsApp avec le créneau. Le livreur appelle avant d'arriver. Si le client est absent, la livraison est reprogrammée le jour ouvré suivant sans frais. Après deux tentatives, la commande est annulée et remboursée.",
+   "keywords": "absent créneau appel heure reporter reprogrammer tentative"
+  },
+  {
+   "id": "kb3",
+   "tag": "Paiement",
+   "title": "Moyens de paiement",
+   "text": "Paiements acceptés : MTN MoMo, Moov Money, Celtiis Cash, carte Visa ou Mastercard, et paiement à la livraison en espèces ou Mobile Money. Aucun membre de l'équipe ne demande jamais de code secret.",
+   "keywords": "payer paiement momo moov celtiis carte visa mastercard espèces cash livraison code"
+  },
+  {
+   "id": "kb4",
+   "tag": "Retours",
+   "title": "Échange et remboursement",
+   "text": "7 jours après réception pour demander un échange ou un remboursement, pour un produit non utilisé, complet et dans son emballage d'origine. Produits d'hygiène descellés exclus sauf défaut. À Cotonou et Calavi le livreur reprend le produit. Remboursement sous 7 jours sur le moyen de paiement utilisé.",
+   "keywords": "retour retourner rembourser remboursement échanger échange défaut cassé abîmé"
+  },
+  {
+   "id": "kb5",
+   "tag": "Retours",
+   "title": "Produit défectueux ou erreur",
+   "text": "Un défaut ou une erreur de produit est à signaler dans les 48 h avec une photo. Wá xɔ échange ou rembourse et prend en charge les frais de retour.",
+   "keywords": "défectueux marche pas panne cassé erreur mauvais produit photo garantie"
+  },
+  {
+   "id": "kb6",
+   "tag": "Compte",
+   "title": "Commander sans compte",
+   "text": "On peut commander sans compte, tout est confirmé par WhatsApp. Un compte permet de suivre ses commandes et de publier un avis. En créant un compte avec le même numéro, les commandes passées s'y rattachent automatiquement.",
+   "keywords": "compte inscription inscrire suivre commande avis connexion mot de passe"
+  },
+  {
+   "id": "kb7",
+   "tag": "Boutique",
+   "title": "Qui sommes-nous",
+   "text": "Wá xɔ (« venez acheter » en fon) est une boutique en ligne basée à Cotonou, sans magasin physique. Tout le stock est chez nous, à Cotonou : le stock affiché est réel. Service client par WhatsApp du lundi au samedi de 8 h à 19 h.",
+   "keywords": "boutique magasin adresse passer récupérer retrait horaires contact whatsapp stock"
+  },
+  {
+   "id": "kb8",
+   "tag": "Produit",
+   "title": "Diffuseur : quelles huiles ?",
+   "text": "Le diffuseur fonctionne avec toutes les huiles essentielles pures ou parfums hydrosolubles : 3 à 5 gouttes pour 300 ml d'eau. Les huiles ne sont pas fournies. Ne pas utiliser d'huiles végétales épaisses.",
+   "keywords": "diffuseur huile essentielle parfum gouttes eau"
+  },
+  {
+   "id": "kb9",
+   "tag": "Produit",
+   "title": "Compatibilité des chargeurs et batteries",
+   "text": "Le chargeur 20 W et la batterie externe sont compatibles avec iPhone, Samsung, Tecno, Infinix, Itel et la plupart des smartphones USB-C. Pour un iPhone ancien, il faut un câble Lightning (non fourni).",
+   "keywords": "compatible iphone samsung tecno infinix itel câble lightning usb charge"
+  }
+ ]
+}
