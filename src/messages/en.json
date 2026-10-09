@@ -1,0 +1,15 @@
+{
+  "Brand": {
+    "name": "Wá xɔ",
+    "tagline": "Shop from home"
+  },
+  "Home": {
+    "title": "Small useful things, delivered tomorrow.",
+    "soon": "The shop is coming soon."
+  },
+  "Lang": {
+    "label": "Language",
+    "fr": "Français",
+    "en": "English"
+  }
+}

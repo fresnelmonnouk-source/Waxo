@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
+/* Tokens de la charte Wá xɔ v1 (octobre 2026). Source : docs/maquettes/Charte graphique Waxo.dc.html */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #141210;
+  --cream: #f4f1ea;
+  --terracotta: #e2552b; /* le « ɔ », numéros, petits accents — jamais en fond de texte blanc */
+  --terracotta-deep: #c2410c; /* badges promo, erreurs — accepte le texte blanc */
+  --sun: #ffc93c; /* assistant IA et CTA secondaires, texte encre dessus */
+  --sun-hover: #f5b800;
+  --leaf: #1f6b4a; /* validation, en stock, achat vérifié */
+  --leaf-bg: #e5efe7;
+
+  --text: #4a443c;
+  --muted: #6b645a;
+  --placeholder: #78716a;
+  --border: #e2dccf;
+  --border-strong: #d6cfc0;
+  --card: #ffffff;
+
+  --radius-field: 12px;
+  --radius-card: 20px;
+  --radius-block: 32px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-cream: var(--cream);
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-deep: var(--terracotta-deep);
+  --color-sun: var(--sun);
+  --color-sun-hover: var(--sun-hover);
+  --color-leaf: var(--leaf);
+  --color-leaf-bg: var(--leaf-bg);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-card: var(--card);
+
+  --font-sans: var(--font-onest), system-ui, sans-serif;
+  --font-display: var(--font-unbounded), sans-serif;
+
+  --radius-field: var(--radius-field);
+  --radius-card: var(--radius-card);
+  --radius-block: var(--radius-block);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-onest), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--ink);
+  text-underline-offset: 3px;
+}
+a:hover {
+  color: var(--terracotta-deep);
+}
+
+input,
+select,
+button,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+::placeholder {
+  color: var(--placeholder);
+}
+
+@keyframes wxpulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes wxup {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

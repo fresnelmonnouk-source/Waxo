@@ -1,0 +1,15 @@
+{
+  "Brand": {
+    "name": "Wá xɔ",
+    "tagline": "Shopper depuis chez vous"
+  },
+  "Home": {
+    "title": "Les petites choses utiles, livrées demain.",
+    "soon": "La boutique arrive bientôt."
+  },
+  "Lang": {
+    "label": "Langue",
+    "fr": "Français",
+    "en": "English"
+  }
+}
