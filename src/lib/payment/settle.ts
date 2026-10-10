@@ -1,6 +1,7 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendOrderEmail } from "@/lib/email";
+import { sendShopNewOrderEmail } from "@/lib/email/shop";
 import { auditSnapshot, isApproved, type FedapayTransaction } from "./transaction";
 
 /**
@@ -48,7 +49,7 @@ export async function settleApprovedTransaction(tx: FedapayTransaction, eventId:
 
   if (result === "paid") {
     // Non bloquant : un échec d'e-mail ne remet jamais en cause un paiement enregistré.
-    await sendOrderEmail(orderId, "paid").catch(() => undefined);
+    await Promise.allSettled([sendOrderEmail(orderId, "paid"), sendShopNewOrderEmail(orderId)]);
   } else if (result === "amount_mismatch" || result === "order_cancelled") {
     // Cas à traiter à la main (remboursement / écart) : visible dans les logs, sans donnée personnelle.
     console.error(`[payment] ${result} order=${orderId} tx=${tx.id}`);

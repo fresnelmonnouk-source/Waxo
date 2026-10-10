@@ -140,7 +140,7 @@ describe("POST /api/auth/signup", () => {
     expect(r).toMatchObject({ status: 200, json: { ok: true, status: "confirm" } });
     const arg = signUp.mock.calls[0][0];
     expect(arg.email).toBe("afi@exemple.bj");
-    expect(arg.options.data).toEqual({ first_name: "Afi", last_name: "Houngbédji", phone: "0197000000" });
+    expect(arg.options.data).toEqual({ first_name: "Afi", last_name: "Houngbédji", phone: "0197000000", locale: "fr" }); // locale = langue des e-mails de compte
     expect(JSON.stringify(arg)).not.toContain("admin");
     expect(arg.options.emailRedirectTo).toMatch(/\/api\/auth\/callback\/fr\/signup$/);
   });

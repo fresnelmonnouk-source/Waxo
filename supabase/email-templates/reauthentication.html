@@ -1,0 +1,85 @@
+{{ if and .Data .Data.locale (eq .Data.locale "en") }}<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>Your verification code</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&amp;family=Unbounded:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+  body{margin:0;padding:0;-webkit-text-size-adjust:100%;}
+  a{color:#9A3412;}
+  @media (max-width:480px){ .wx-pad{padding-left:20px!important;padding-right:20px!important;} .wx-h1{font-size:24px!important;} }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#F4F1EA;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Enter this code to confirm the operation.&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F1EA;">
+<tr><td align="center" style="padding:28px 12px 32px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;">
+<tr><td class="wx-pad" bgcolor="#141210" style="background:#141210;border-radius:24px 24px 0 0;padding:26px 32px 28px;">
+<img src="{{ .SiteURL }}/email/logo-light.png" width="142" height="32" alt="Wá xɔ" style="display:block;border:0;outline:none;width:142px;height:32px;font:700 24px/32px 'Unbounded','Segoe UI',Helvetica,Arial,sans-serif;color:#F4F1EA;">
+<div style="height:26px;line-height:26px;font-size:0;">&nbsp;</div>
+<div style="padding:0 0 10px;font:600 12px/1.3 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#E2552B;">Account security</div>
+<h1 class="wx-h1" style="margin:0;font:700 28px/1.15 'Unbounded','Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:-0.6px;color:#F4F1EA;">Your verification code</h1>
+</td></tr>
+<tr><td class="wx-pad" bgcolor="#FFFFFF" style="background:#FFFFFF;border-radius:0 0 24px 24px;padding:28px 32px 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="padding:0 0 16px;font:600 16px/1.6 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#141210;">Hello,</td></tr>
+<tr><td style="padding:0 0 16px;font:400 16px/1.6 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#4A443C;">Enter this code to confirm the current operation on your account. It is valid for one hour.</td></tr>
+<tr><td style="padding:4px 0 20px;"><div style="display:inline-block;background:#F4F1EA;border-radius:16px;padding:14px 22px;font:700 30px/1 'Unbounded','Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:6px;color:#141210;">{{ .Token }}</div></td></tr>
+<tr><td style="padding:0 0 18px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAF8F3;border-left:3px solid #E2552B;border-radius:0 12px 12px 0;"><tr><td style="padding:12px 14px;font:400 14px/1.55 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#4A443C;">Never share this code, not even with the Wá xɔ team. Didn&#39;t start anything? Change your password.</td></tr></table></td></tr>
+<tr><td style="padding:0 0 16px;font:600 16px/1.6 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#141210;">The Wá xɔ team</td></tr>
+</table>
+</td></tr>
+<tr><td style="padding:14px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFFFF;border-radius:18px;"><tr><td class="wx-pad" style="padding:16px 32px;font:400 14px/1.55 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#4A443C;"><strong style="color:#141210;">A question?</strong><br>Message us from the <a href="{{ .SiteURL }}/en/contact" style="color:#141210;font-weight:600;">Contact</a> page.</td></tr></table></td></tr>
+<tr><td style="padding:22px 8px 0;font:400 12px/1.7 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#6B645A;">Wá xɔ · Useful little things, delivered tomorrow · Cotonou, Benin<br>You are receiving this email following an action on your Wá xɔ account.<br>We will never ask for your password or your Mobile Money PIN.</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>{{ else }}<!doctype html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>Votre code de vérification</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&amp;family=Unbounded:wght@700&amp;display=swap" rel="stylesheet">
+<style>
+  body{margin:0;padding:0;-webkit-text-size-adjust:100%;}
+  a{color:#9A3412;}
+  @media (max-width:480px){ .wx-pad{padding-left:20px!important;padding-right:20px!important;} .wx-h1{font-size:24px!important;} }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#F4F1EA;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Saisissez ce code pour confirmer l&#39;opération.&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F1EA;">
+<tr><td align="center" style="padding:28px 12px 32px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;">
+<tr><td class="wx-pad" bgcolor="#141210" style="background:#141210;border-radius:24px 24px 0 0;padding:26px 32px 28px;">
+<img src="{{ .SiteURL }}/email/logo-light.png" width="142" height="32" alt="Wá xɔ" style="display:block;border:0;outline:none;width:142px;height:32px;font:700 24px/32px 'Unbounded','Segoe UI',Helvetica,Arial,sans-serif;color:#F4F1EA;">
+<div style="height:26px;line-height:26px;font-size:0;">&nbsp;</div>
+<div style="padding:0 0 10px;font:600 12px/1.3 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#E2552B;">Sécurité du compte</div>
+<h1 class="wx-h1" style="margin:0;font:700 28px/1.15 'Unbounded','Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:-0.6px;color:#F4F1EA;">Votre code de vérification</h1>
+</td></tr>
+<tr><td class="wx-pad" bgcolor="#FFFFFF" style="background:#FFFFFF;border-radius:0 0 24px 24px;padding:28px 32px 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="padding:0 0 16px;font:600 16px/1.6 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#141210;">Bonjour,</td></tr>
+<tr><td style="padding:0 0 16px;font:400 16px/1.6 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#4A443C;">Saisissez ce code pour confirmer l&#39;opération en cours sur votre compte. Il est valable une heure.</td></tr>
+<tr><td style="padding:4px 0 20px;"><div style="display:inline-block;background:#F4F1EA;border-radius:16px;padding:14px 22px;font:700 30px/1 'Unbounded','Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:6px;color:#141210;">{{ .Token }}</div></td></tr>
+<tr><td style="padding:0 0 18px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAF8F3;border-left:3px solid #E2552B;border-radius:0 12px 12px 0;"><tr><td style="padding:12px 14px;font:400 14px/1.55 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#4A443C;">Ne communiquez ce code à personne, pas même à l&#39;équipe Wá xɔ. Vous n&#39;êtes à l&#39;origine de rien ? Changez votre mot de passe.</td></tr></table></td></tr>
+<tr><td style="padding:0 0 16px;font:600 16px/1.6 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#141210;">L&#39;équipe Wá xɔ</td></tr>
+</table>
+</td></tr>
+<tr><td style="padding:14px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFFFF;border-radius:18px;"><tr><td class="wx-pad" style="padding:16px 32px;font:400 14px/1.55 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#4A443C;"><strong style="color:#141210;">Une question ?</strong><br>Écrivez-nous depuis la page <a href="{{ .SiteURL }}/fr/contact" style="color:#141210;font-weight:600;">Contact</a> du site.</td></tr></table></td></tr>
+<tr><td style="padding:22px 8px 0;font:400 12px/1.7 'Onest','Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#6B645A;">Wá xɔ · Les petites choses utiles, livrées demain · Cotonou, Bénin<br>Vous recevez cet e-mail à la suite d&#39;une action sur votre compte Wá xɔ.<br>Nous ne vous demanderons jamais votre mot de passe ni votre code secret Mobile Money.</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>{{ end }}

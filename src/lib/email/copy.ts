@@ -314,3 +314,75 @@ export const EMAIL_FOOTER: Record<EmailLocale, string[]> = {
 };
 
 export const ITEMS_QTY_LABEL: Record<EmailLocale, string> = { fr: "Qté", en: "Qty" };
+
+/** Habillage du nouveau design (titres du bandeau, étapes du suivi, encadré) : libellés d'interface, pas du texte de Marcus. */
+export const EMAIL_UI: Record<
+  EmailLocale,
+  {
+    heading: Record<OrderEmailKind, { online: string; cod?: string }>;
+    steps: string[];
+    order: string;
+    delivery: string;
+    payment: string;
+    payOnline: string;
+    payCod: string;
+    paid: string;
+    toPay: string;
+    items: string;
+    helpTitle: string;
+    helpText: string;
+  }
+> = {
+  fr: {
+    heading: {
+      confirmation: { online: "Commande bien reçue", cod: "Commande confirmée" },
+      paid: { online: "Paiement reçu, merci" },
+      preparation: { online: "On prépare votre commande" },
+      livraison: { online: "Votre commande est en route" },
+      livree: { online: "Commande livrée" },
+      annulee: { online: "Commande annulée" },
+    },
+    steps: ["Reçue", "Préparée", "En route", "Livrée"],
+    order: "Commande",
+    delivery: "Livraison prévue",
+    payment: "Paiement",
+    payOnline: "Mobile Money ou carte",
+    payCod: "À la livraison",
+    paid: "Payée",
+    toPay: "À régler",
+    items: "Vos articles",
+    helpTitle: "Une question ?",
+    helpText: "Écrivez-nous sur WhatsApp au {{whatsapp}} en indiquant votre numéro de commande.",
+  },
+  en: {
+    heading: {
+      confirmation: { online: "Order received", cod: "Order confirmed" },
+      paid: { online: "Payment received, thank you" },
+      preparation: { online: "We are packing your order" },
+      livraison: { online: "Your order is on its way" },
+      livree: { online: "Order delivered" },
+      annulee: { online: "Order cancelled" },
+    },
+    steps: ["Received", "Packed", "On its way", "Delivered"],
+    order: "Order",
+    delivery: "Expected delivery",
+    payment: "Payment",
+    payOnline: "Mobile Money or card",
+    payCod: "On delivery",
+    paid: "Paid",
+    toPay: "To pay",
+    items: "Your items",
+    helpTitle: "A question?",
+    helpText: "Message us on WhatsApp at {{whatsapp}} with your order number.",
+  },
+};
+
+/** Étape du suivi atteinte par chaque e-mail (null = pas de suivi : annulation). */
+export const EMAIL_STEP: Record<OrderEmailKind, number | null> = {
+  confirmation: 0,
+  paid: 0,
+  preparation: 1,
+  livraison: 2,
+  livree: 3,
+  annulee: null,
+};

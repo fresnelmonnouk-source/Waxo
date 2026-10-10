@@ -4,6 +4,7 @@ import { createSessionClient } from "@/lib/supabase/server";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { getPaymentProvider } from "@/lib/payment";
 import { sendOrderEmail } from "@/lib/email";
+import { sendShopNewOrderEmail } from "@/lib/email/shop";
 import { withTimeout } from "@/lib/auth/timeout";
 import { getPacksEnabled } from "@/lib/catalog/packs";
 import {
@@ -203,7 +204,8 @@ export async function POST(request: Request) {
     if (pay === "cod") {
       // Paiement à la livraison : commande confirmée directement. L'e-mail ne bloque jamais la réponse
       // (et n'est pas renvoyé en cas de rejeu : garde anti-doublon de sendOrderEmail).
-      await withTimeout(sendOrderEmail(placed.orderId, "confirmation"), 3000).catch(() => undefined);
+      // + alerte « nouvelle commande » à la boutique, en parallèle.
+      await withTimeout(Promise.allSettled([sendOrderEmail(placed.orderId, "confirmation"), sendShopNewOrderEmail(placed.orderId)]), 3000).catch(() => undefined);
       return NextResponse.json({ ok: true, order, payment: { kind: "cod" } });
     }
     if (alreadyPaid) return NextResponse.json({ ok: true, order, payment: { kind: "paid" } });

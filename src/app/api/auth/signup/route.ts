@@ -35,7 +35,8 @@ export async function POST(req: Request) {
         password: v.password,
         options: {
           emailRedirectTo: `${siteOrigin(req)}/api/auth/callback/${lang}/signup`,
-          data: { first_name: v.firstName, last_name: v.lastName, phone: v.phone },
+          // `locale` : langue des e-mails de compte (modèles Supabase, voir scripts/gen-auth-emails.mjs).
+          data: { first_name: v.firstName, last_name: v.lastName, phone: v.phone, locale: lang },
         },
       }),
       8000,

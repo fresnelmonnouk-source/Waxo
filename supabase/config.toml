@@ -1,0 +1,48 @@
+# Généré par scripts/gen-auth-emails.mjs — ne pas éditer à la main (modifier le script puis le relancer).
+# Pousser : npx supabase config push --project-ref btarkkjimnkmiaxzonzq   (voir docs/emails/supabase-auth.md)
+project_id = "waxo"
+
+[auth]
+site_url = "https://www.waxo.boutique"
+additional_redirect_urls = ["https://www.waxo.boutique/api/auth/callback/**", "https://waxo.boutique/api/auth/callback/**", "http://localhost:3007/api/auth/callback/**"]
+
+[auth.email]
+enable_confirmations = true
+
+# Envois par heure une fois le SMTP Resend branché (sans SMTP personnalisé, Supabase plafonne à quelques e-mails par heure).
+[auth.rate_limit]
+email_sent = 60
+
+[auth.email.template.confirmation]
+subject = "Confirmez votre adresse e-mail · Wá xɔ"
+content_path = "./supabase/email-templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Réinitialisez votre mot de passe · Wá xɔ"
+content_path = "./supabase/email-templates/recovery.html"
+
+[auth.email.template.email_change]
+subject = "Confirmez votre nouvelle adresse e-mail · Wá xɔ"
+content_path = "./supabase/email-templates/email_change.html"
+
+[auth.email.template.magic_link]
+subject = "Votre lien de connexion · Wá xɔ"
+content_path = "./supabase/email-templates/magic_link.html"
+
+[auth.email.template.invite]
+subject = "Vous êtes invité(e) sur Wá xɔ"
+content_path = "./supabase/email-templates/invite.html"
+
+[auth.email.template.reauthentication]
+subject = "Votre code de vérification · Wá xɔ"
+content_path = "./supabase/email-templates/reauthentication.html"
+
+[auth.email.notification.password_changed]
+enabled = true
+subject = "Votre mot de passe a été modifié · Wá xɔ"
+content_path = "./supabase/email-templates/password_changed_notification.html"
+
+[auth.email.notification.email_changed]
+enabled = true
+subject = "L'adresse e-mail de votre compte a été modifiée · Wá xɔ"
+content_path = "./supabase/email-templates/email_changed_notification.html"

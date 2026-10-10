@@ -75,7 +75,11 @@ describe("gabarits e-mail", () => {
       "paid",
     );
     expect(evil.html).not.toContain("<script>");
-    expect(evil.html).not.toContain("<img");
+    expect(evil.html).not.toContain("<img src=x");
+    expect(evil.html).not.toContain("onerror");
+    // Seule image autorisée : le logo de la marque, servi par le site.
+    expect(evil.html.match(/<img /g) ?? []).toHaveLength(1);
+    expect(evil.html).toContain('src="https://waxo.bj/email/logo-light.png"');
     expect(evil.html).toContain("&lt;script&gt;");
     const crlf = renderOrderEmail({ ...base, number: "WX-1\r\nBcc: x@evil" }, "paid");
     expect(crlf.subject).not.toMatch(/[\r\n]/);
