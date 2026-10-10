@@ -26,9 +26,11 @@ export function resetRateLimit(): void {
   buckets.clear();
 }
 
-/** IP du client derrière le proxy (Vercel renseigne x-forwarded-for). « unknown » si absente. */
+/**
+ * IP du client. Sur Vercel `x-vercel-forwarded-for` / `x-real-ip` sont écrits par la plateforme (non falsifiables) ;
+ * `x-forwarded-for` n'est qu'un dernier recours. « unknown » si rien : seau commun, volontairement plus strict pour tous.
+ */
 export function clientIp(headers: Headers): string {
-  const fwd = headers.get("x-forwarded-for");
-  const first = fwd?.split(",")[0]?.trim();
-  return first || headers.get("x-real-ip")?.trim() || "unknown";
+  const pick = (v: string | null) => v?.split(",")[0]?.trim().slice(0, 64) || "";
+  return pick(headers.get("x-vercel-forwarded-for")) || pick(headers.get("x-real-ip")) || pick(headers.get("x-forwarded-for")) || "unknown";
 }

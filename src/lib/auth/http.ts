@@ -1,4 +1,5 @@
 import "server-only";
+import { clientIp as ipFromHeaders } from "@/lib/checkout/rate-limit";
 
 /** Réponse JSON jamais mise en cache (données de session / formulaires). */
 export function json(body: unknown, status = 200): Response {
@@ -10,8 +11,7 @@ export const fail = (code: string, status: number, extra?: Record<string, unknow
   json({ ok: false, code, ...extra }, status);
 
 export function clientIp(req: Request): string {
-  const fwd = req.headers.get("x-forwarded-for");
-  return (fwd?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown").trim().slice(0, 64) || "unknown";
+  return ipFromHeaders(req.headers);
 }
 
 /** Corps JSON borné (20 Ko par défaut). Renvoie null si illisible ou trop gros. */

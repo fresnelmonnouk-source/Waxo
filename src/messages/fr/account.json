@@ -152,6 +152,7 @@
       "firstRequired": "Indiquez votre prénom.",
       "lastRequired": "Indiquez votre nom.",
       "phoneInvalid": "Numéro à 10 chiffres commençant par 01.",
+      "phoneTaken": "Ce numéro est déjà utilisé par un autre compte.",
       "emailInvalid": "Adresse e-mail invalide.",
       "passShort": "8 caractères minimum.",
       "passLong": "72 caractères maximum.",

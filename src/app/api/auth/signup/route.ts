@@ -1,13 +1,13 @@
 import { fail, isLocale, json, clientIp, readJson, siteOrigin } from "@/lib/auth/http";
 import { checkBot } from "@/lib/auth/bot-guard";
-import { createRateLimiter } from "@/lib/auth/rate-limit";
+import { createSharedLimiter } from "@/lib/ratelimit";
 import { withTimeout } from "@/lib/auth/timeout";
 import { fieldErrors, signupSchema } from "@/lib/auth/validation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { createSessionClient } from "@/lib/supabase/server";
 
-const limiter = createRateLimiter({ windowMs: 10 * 60_000, max: 6 });
+const limiter = createSharedLimiter({ name: "auth-signup-limiter", windowMs: 10 * 60_000, max: 6 });
 
 /**
  * Inscription : prénom, nom, téléphone, e-mail, mot de passe ≥ 8.
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
   const verdict = checkBot(body);
   if (verdict === "honeypot") return json({ ok: true, status: "confirm" }); // le robot croit avoir réussi
   if (verdict === "tooFast") return fail("tooFast", 429);
-  if (!limiter.hit(clientIp(req))) return fail("rateLimited", 429);
+  if (!(await limiter.hit(clientIp(req)))) return fail("rateLimited", 429);
 
   const parsed = signupSchema.safeParse(body);
   if (!parsed.success) return fail("invalid", 422, { fields: fieldErrors(parsed.error) });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { freeShippingEnabled } from "@/lib/checkout/shipping";
 import { CURRENCIES, isCurrency } from "@/lib/currency/core";
 import { setCurrency, useCurrency, usePrice } from "@/lib/currency/client";
 
@@ -13,7 +14,9 @@ export function TopBar({ freeFrom, cod }: { freeFrom: number; cod: boolean }) {
   return (
     <div className="bg-ink text-cream flex flex-wrap items-center justify-center gap-x-7 gap-y-[6px] px-4 py-[9px] text-center text-[13px]">
       <span className="whitespace-nowrap max-[979px]:hidden">{t("delivery")}</span>
-      <span className="text-sun whitespace-nowrap">{t("freeShip", { amount: price(freeFrom) })}</span>
+      {freeShippingEnabled({ freeFrom }) ? (
+        <span className="text-sun whitespace-nowrap">{t("freeShip", { amount: price(freeFrom) })}</span>
+      ) : null}
       {cod ? <span className="whitespace-nowrap max-[979px]:hidden">{t("cod")}</span> : null}
       <label className="inline-flex items-center gap-[6px] whitespace-nowrap">
         <span className="sr-only">{tc("label")}</span>

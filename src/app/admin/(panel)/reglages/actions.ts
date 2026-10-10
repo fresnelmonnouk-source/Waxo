@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { assertAdmin } from "@/lib/admin/guard";
-import { createRateLimiter } from "@/lib/auth/rate-limit";
+import { createSharedLimiter } from "@/lib/ratelimit";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { createSessionClient } from "@/lib/supabase/server";
 import { tryAdminClient, withTimeout } from "@/lib/settings/db";
@@ -97,7 +97,7 @@ export async function deleteKbEntryAction(id: unknown): Promise<ActionResult> {
 }
 
 // ───────────────────────── Mot de passe de l'administrateur connecté ─────────────────────────
-const pwLimiter = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 5 });
+const pwLimiter = createSharedLimiter({ name: "admin-panel-reglages-pwLimiter", windowMs: 10 * 60 * 1000, max: 5 });
 const pwSchema = z
   .object({
     current: z.string().min(1, "Mot de passe incorrect.").max(200, "Mot de passe incorrect."),
@@ -116,7 +116,7 @@ export async function changePasswordAction(input: unknown): Promise<ActionResult
     for (const i of parsed.error.issues) fe[i.path[0] === "next" ? "next" : "current"] ??= i.message;
     return fail("invalid", "Vérifiez les champs.", fe);
   }
-  if (!pwLimiter.hit(admin.id)) return fail("rate_limited");
+  if (!(await pwLimiter.hit(admin.id))) return fail("rate_limited");
   const { current, next } = parsed.data;
   if (current === next) return fail("invalid", "Choisissez un mot de passe différent.", { next: "Identique à l'actuel." });
   try {

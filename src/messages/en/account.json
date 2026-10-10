@@ -152,6 +152,7 @@
       "firstRequired": "Enter your first name.",
       "lastRequired": "Enter your last name.",
       "phoneInvalid": "A 10-digit number starting with 01.",
+      "phoneTaken": "This number is already used by another account.",
       "emailInvalid": "Invalid email address.",
       "passShort": "At least 8 characters.",
       "passLong": "72 characters maximum.",

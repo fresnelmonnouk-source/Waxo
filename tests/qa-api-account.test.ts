@@ -1,6 +1,7 @@
 // QA (Nadia) — routes compte / contact / suivi / newsletter / catalogue : chemins négatifs, anti-énumération, colonnes protégées.
 // Supabase, session et catalogue sont simulés (aucun réseau). Les modules de route ont des limiteurs globaux : vi.resetModules() à chaque test.
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { signRecovery } from "@/lib/auth/recovery";
 
 const admin = vi.hoisted(() => ({ create: vi.fn() }));
 const env = vi.hoisted(() => ({ get: vi.fn() }));
@@ -251,7 +252,7 @@ describe("POST /api/auth/login", () => {
   });
   // Risque QA-10 (faible) : la clé du verrou est `id.toLowerCase()` BRUTE. Pour un téléphone, « 0197000000 », « 01 97 00 00 00 »
   // et « +229 0197000000 » sont trois clés différentes : le verrou par identifiant se contourne (reste le seuil par IP : 20/10 min).
-  it.fails("QA-10 : le verrou par identifiant ignore le format de saisie d'un téléphone", async () => {
+  it("QA-10 : le verrou par identifiant ignore le format de saisie d'un téléphone", async () => {
     identify.resolveEmail.mockResolvedValue("v@exemple.bj");
     signIn.mockResolvedValue({ error: { code: "invalid_credentials", status: 400 } });
     const formats = ["0197000000", "01 97 00 00 00", "+229 0197000000", "01-97-00-00-00", "01.97.00.00.00", "229 0197000000", "0197000000 ", "+229 01 97 00 00 00", " 01 97000000"];
@@ -302,7 +303,9 @@ describe("GET /api/auth/callback/[lang]/[kind]", () => {
   beforeEach(() => {
     exchange.mockReset();
     session.create.mockResolvedValue({ auth: { exchangeCodeForSession: exchange } });
+    vi.stubEnv("RECOVERY_COOKIE_SECRET", "test-recovery-secret");
   });
+  afterEach(() => vi.unstubAllEnvs());
   const go = async (lang: string, kind: string, qs = "?code=abc") => {
     const m = await import("@/app/api/auth/callback/[lang]/[kind]/route");
     const res = await m.GET(new Request(`http://localhost/api/auth/callback/${lang}/${kind}${qs}`), { params: Promise.resolve({ lang, kind }) });
@@ -330,6 +333,14 @@ describe("GET /api/auth/callback/[lang]/[kind]", () => {
     const r = await go("fr", "recovery");
     expect(r.location).toBe("http://localhost/fr/compte?tab=security&recovery=1");
     expect(cookieStore.set.mock.calls[0][2]).toMatchObject({ httpOnly: true, sameSite: "lax", path: "/api", maxAge: 900 });
+    expect(cookieStore.set.mock.calls[0][1]).toMatch(/^u1\.\d+\.[0-9a-f]{64}$/); // signé, pas l'id nu
+  });
+  it("réinitialisation sans secret serveur → aucun cookie posé (l'ancien mot de passe reste exigé)", async () => {
+    vi.stubEnv("RECOVERY_COOKIE_SECRET", "");
+    vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "");
+    exchange.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+    expect((await go("fr", "recovery")).location).toBe("http://localhost/fr/compte?tab=security&recovery=1");
+    expect(cookieStore.set).not.toHaveBeenCalled();
   });
   it("OPEN REDIRECT : langue piégée ou `kind` inattendu → jamais de redirection hors du site", async () => {
     exchange.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
@@ -417,7 +428,9 @@ describe("POST /api/me/password", () => {
     pub.create.mockReturnValue({ auth: { signInWithPassword: probe } });
     userMod.getSessionContext.mockResolvedValue({ sb: { auth: { updateUser } }, userId: "u1", email: "afi@exemple.bj", meta: {}, createdAt: "" });
     cookieStore.get.mockReturnValue(undefined);
+    vi.stubEnv("RECOVERY_COOKIE_SECRET", "test-recovery-secret");
   });
+  afterEach(() => vi.unstubAllEnvs());
   const send = (b: unknown) => call("@/app/api/me/password/route", "POST", req("/api/me/password", b));
 
   it("sans ancien mot de passe ni lien de réinitialisation → 422 passRequired, rien modifié", async () => {
@@ -441,14 +454,27 @@ describe("POST /api/me/password", () => {
     expect((await send({ current: "ancien-mdp-1", next: "court" })).status).toBe(422);
   });
   it("lien de réinitialisation valide : pas d'ancien mot de passe, cookie effacé après usage", async () => {
-    cookieStore.get.mockReturnValue({ value: "u1" });
+    cookieStore.get.mockReturnValue({ value: signRecovery("u1") });
     expect((await send({ next: "nouveau-mdp-1", recovery: true })).json).toEqual({ ok: true });
     expect(probe).not.toHaveBeenCalled();
     expect(cookieStore.set).toHaveBeenCalledWith("wx_recovery", "", expect.objectContaining({ maxAge: 0 }));
   });
   it("cookie de récupération d'un AUTRE utilisateur → refusé", async () => {
-    cookieStore.get.mockReturnValue({ value: "u2" });
+    cookieStore.get.mockReturnValue({ value: signRecovery("u2") });
     expect((await send({ next: "nouveau-mdp-1", recovery: true })).status).toBe(422);
+  });
+  it("FORGE : cookie = simple id de l'utilisateur (ancien format, lisible via /api/me) → refusé, ancien mot de passe exigé", async () => {
+    cookieStore.get.mockReturnValue({ value: "u1" });
+    expect((await send({ next: "nouveau-mdp-1", recovery: true })).status).toBe(422);
+    expect(updateUser).not.toHaveBeenCalled();
+  });
+  it("cookie expiré ou à signature altérée → refusé", async () => {
+    cookieStore.get.mockReturnValue({ value: signRecovery("u1", Date.now() - 16 * 60_000) });
+    expect((await send({ next: "nouveau-mdp-1", recovery: true })).status).toBe(422);
+    const ok = signRecovery("u1") as string;
+    cookieStore.get.mockReturnValue({ value: ok.slice(0, -1) + (ok.endsWith("0") ? "1" : "0") });
+    expect((await send({ next: "nouveau-mdp-1", recovery: true })).status).toBe(422);
+    expect(updateUser).not.toHaveBeenCalled();
   });
   it("Supabase rejette le nouveau mot de passe (faible) → 422 passWeak ; panne → 502", async () => {
     probe.mockResolvedValue({ error: null });
@@ -558,6 +584,14 @@ describe("GET /api/checkout/config", () => {
     catalog.getSettings.mockResolvedValue(settings);
     catalog.getProducts.mockResolvedValue([p("a", 5000, 3)]);
     expect((await get("?ids=a,fantome")).json?.stock).toEqual({ a: 3 });
+  });
+  it("QA-8 : `stale` liste les ids absents du catalogue qui ne sont PAS des UUID (restes de démo), jamais un UUID", async () => {
+    const UUID = "3f2b8c1e-5a47-4d9a-9b1e-7c2d4e6f8a10";
+    catalog.getSettings.mockResolvedValue(settings);
+    catalog.getProducts.mockResolvedValue([p("a", 5000, 3)]);
+    // Catalogue de démo servi par erreur (base lente) : un vrai UUID de client n'est jamais déclaré périmé.
+    expect((await get(`?ids=a,lampe,air,${UUID}`)).json?.stale).toEqual(["lampe", "air"]);
+    expect((await get("?ids=a")).json?.stale).toEqual([]);
   });
   it("catalogue en panne → 200 { ok: false } : jamais de 5xx, le tiroir garde ses réglages par défaut", async () => {
     catalog.getSettings.mockRejectedValue(new Error("db"));

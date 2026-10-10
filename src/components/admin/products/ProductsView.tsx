@@ -101,16 +101,12 @@ export function ProductsView({ data }: { data: ProductsData }) {
     });
   };
 
-  const low = data.products.filter((p) => view(p).stock <= LOW_STOCK).length;
-
   return (
     <div className="flex flex-col gap-5">
       <SourceNotice source={data.source} truncated={data.truncated} noun="produits" />
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <span className="text-sm text-[#4A443C]">
-          {plural(data.products.length, "produit", "produits")} · {low} en stock faible
-        </span>
+      {/* Le compteur « N produits · M en stock faible » est déjà dans le sous-titre de la page (shell/meta.ts), comme dans la maquette. */}
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <button
           type="button"
           onClick={() => setEditing({ product: null })}

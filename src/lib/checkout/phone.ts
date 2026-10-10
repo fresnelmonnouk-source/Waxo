@@ -3,10 +3,14 @@
 
 export const digits = (s: unknown): string => String(s ?? "").replace(/\D/g, "");
 
-/** « +229 01 97 00 00 00 » → « 0197000000 ». Les autres formats sont rendus tels quels (chiffres seuls). */
+/**
+ * UNE SEULE implémentation (checkout, compte, suivi, newsletter la réutilisent : QA-3).
+ * « +229 01 97 00 00 00 » / « 00229… » / « 229… » → « 0197000000 ». Les autres formats sont rendus tels quels (chiffres seuls).
+ */
 export function normPhone(s: unknown): string {
   let d = digits(s);
-  if (d.length === 13 && d.startsWith("229")) d = d.slice(3);
+  if (d.length === 15 && d.startsWith("00229")) d = d.slice(5);
+  else if (d.length === 13 && d.startsWith("229")) d = d.slice(3);
   return d;
 }
 

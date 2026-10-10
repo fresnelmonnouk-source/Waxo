@@ -80,7 +80,7 @@ describe("panier : ajout et fusion", () => {
   });
   // BUG QA-7 (faible) : un `qty` négatif sur une ligne EXISTANTE n'est pas borné (1 + (-5) = -4 stocké puis filtré au rechargement :
   // la ligne disparaît en silence). Aucun appelant actuel ne passe de négatif ; à garder en tête si une API « retirer 1 » apparaît.
-  it.fails("QA-7 : ajouter une quantité négative à une ligne existante ne produit jamais une quantité < 1", async () => {
+  it("QA-7 : ajouter une quantité négative à une ligne existante ne produit jamais une quantité < 1", async () => {
     const cart = await loadCart();
     cart.add(line("a"), 1);
     cart.add(line("a"), -5);
@@ -170,15 +170,17 @@ describe("panier : stockage corrompu ou bloqué", () => {
       cart.clear();
     }).not.toThrow();
   });
-  // BUG QA-8 (moyen, latent) : le panier garde les identifiants vus en MODE DÉMO (« lampe », « air »…, non-UUID). Une fois
-  // Supabase branché, ces lignes restent dans le localStorage des testeurs et POST /api/checkout répond 422 cart_invalid
-  // à chaque tentative, sans que l'écran dise quel article retirer. Fix : filtrer à la lecture (ou à l'ouverture de /commande)
-  // les lignes dont l'id n'est pas un UUID.
-  it.fails("QA-8 : une ligne dont l'id n'est pas un UUID est écartée au chargement", async () => {
-    ls.data.set(CART, JSON.stringify([{ ...line("lampe"), qty: 1 }]));
+  // QA-8 (corrigé) : les restes de la démo (« lampe », « air »…, non-UUID) sont retirés après vérification serveur
+  // (CartSanitizer + /api/checkout/config → `stale`) plutôt qu'à la lecture, pour ne jamais vider le panier d'un vrai client.
+  it("QA-8 : removeMany retire les lignes listées (produits et packs) et laisse les autres", async () => {
     const cart = await loadCart();
+    cart.add(line("lampe"));
+    cart.add(line("air"), 2);
     cart.add(line("3f2b8c1e-5a47-4d9a-9b1e-7c2d4e6f8a10"));
+    cart.removeMany(["lampe", "air", "inconnu"]);
     expect(stored().map((l) => l.id)).toEqual(["3f2b8c1e-5a47-4d9a-9b1e-7c2d4e6f8a10"]);
+    cart.removeMany([]);
+    expect(stored()).toHaveLength(1);
   });
 });
 

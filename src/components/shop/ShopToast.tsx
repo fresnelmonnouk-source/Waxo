@@ -15,7 +15,9 @@ export function ShopToast() {
       ? t("added", { name: toast.name })
       : toast.kind === "soldOut"
         ? t("soldOut")
-        : t("maxStock", { n: toast.n });
+        : toast.kind === "staleRemoved"
+          ? t("staleRemoved")
+          : t("maxStock", { n: toast.n });
 
   return (
     <div

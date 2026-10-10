@@ -65,7 +65,8 @@
       "added": "{name} ajouté au panier",
       "viewCart": "Voir le panier",
       "soldOut": "Ce produit est épuisé pour le moment.",
-      "maxStock": "{n, plural, one {Stock maximum atteint : # disponible.} other {Stock maximum atteint : # disponibles.}}"
+      "maxStock": "{n, plural, one {Stock maximum atteint : # disponible.} other {Stock maximum atteint : # disponibles.}}",
+      "staleRemoved": "Un article qui n'existe plus a été retiré de votre panier."
     },
     "currency": {
       "label": "Devise d'affichage",

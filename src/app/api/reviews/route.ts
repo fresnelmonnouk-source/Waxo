@@ -3,7 +3,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createSessionClient } from "@/lib/supabase/server";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { API_STATUS, apiMessage, type ApiErrorCode, type ApiLang } from "@/lib/checkout/errors";
-import { clientIp, rateLimit } from "@/lib/checkout/rate-limit";
+import { clientIp } from "@/lib/checkout/rate-limit";
+import { rateLimitShared } from "@/lib/ratelimit";
 import { looksLikeBot, reviewSchema } from "@/lib/checkout/schema";
 
 /**
@@ -29,7 +30,7 @@ function displayName(first: string, last: string): string {
 export async function POST(request: Request) {
   let lang: ApiLang = "fr";
   try {
-    if (!rateLimit(`reviews:${clientIp(request.headers)}`, RATE_LIMIT.max, RATE_LIMIT.windowMs)) {
+    if (!(await rateLimitShared(`reviews:${clientIp(request.headers)}`, RATE_LIMIT.max, RATE_LIMIT.windowMs))) {
       return fail(lang, "rate_limited");
     }
 
@@ -104,6 +105,8 @@ export async function POST(request: Request) {
       })
       .select("id,created_at")
       .single();
+    // Course (double-tap, deux onglets) : l'index unique (0010) refuse le 2e avis → même réponse que le contrôle ci-dessus.
+    if (error?.code === "23505") return fail(lang, "already_reviewed");
     if (error || !inserted) return fail(lang, "server_error");
 
     return NextResponse.json({

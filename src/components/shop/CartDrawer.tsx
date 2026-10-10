@@ -8,6 +8,7 @@ import {
   DEFAULT_PAY,
   DEFAULT_SHIPPING,
   enabledPayMethods,
+  freeShippingEnabled,
   freeShippingPercent,
   freeShippingRemaining,
   type PayConfig,
@@ -169,6 +170,7 @@ function DrawerContent() {
 
         {count > 0 ? (
           <>
+            {freeShippingEnabled(shipping) ? (
             <div className="flex flex-col gap-2 border-b border-border px-[22px] py-3.5">
               <span className="text-[14px]">
                 {remaining > 0 ? t("shipRemaining", { amount: fmt(remaining) }) : t("shipFree")}
@@ -180,6 +182,7 @@ function DrawerContent() {
                 />
               </div>
             </div>
+            ) : null}
 
             <div className="flex flex-1 flex-col overflow-y-auto px-[22px] py-1.5">
               {lines.map((l) => {

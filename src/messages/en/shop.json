@@ -65,7 +65,8 @@
       "added": "{name} added to the cart",
       "viewCart": "View cart",
       "soldOut": "This product is sold out for now.",
-      "maxStock": "{n, plural, one {Maximum stock reached: # available.} other {Maximum stock reached: # available.}}"
+      "maxStock": "{n, plural, one {Maximum stock reached: # available.} other {Maximum stock reached: # available.}}",
+      "staleRemoved": "An item that no longer exists was removed from your cart."
     },
     "currency": {
       "label": "Display currency",

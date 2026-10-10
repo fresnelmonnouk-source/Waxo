@@ -2,6 +2,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { AssistantWidget } from "@/components/assistant/AssistantWidget";
+import { CartSanitizer } from "@/components/shop/CartSanitizer";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import { DEFAULT_SETTINGS, getShopData } from "@/components/shop/data";
 import { Footer } from "@/components/shop/Footer";
@@ -11,6 +12,9 @@ import { ShopToast } from "@/components/shop/ShopToast";
 import { TopBar } from "@/components/shop/TopBar";
 import { CurrencyProvider } from "@/lib/currency/client";
 import { routing } from "@/i18n/routing";
+
+/** ISR : prix, stocks et réglages de TOUTES les pages de la boutique se rafraîchissent toutes les 2 min (sinon ils restent figés jusqu'au prochain déploiement — T5). */
+export const revalidate = 120;
 
 /**
  * Coque de la boutique : bandeau, en-tête collant, contenu, newsletter, pied de page, tiroir panier et messages éphémères.
@@ -40,6 +44,7 @@ export default async function ShopLayout({ children, params }: LayoutProps<"/[la
       <Newsletter />
       <Footer brand={settings.brand} cod={settings.pay.cod} lang={lang} defaultHours={DEFAULT_SETTINGS.brand.hours} />
       <CartDrawer />
+      <CartSanitizer />
       <ShopToast />
       <AssistantWidget />
     </CurrencyProvider>

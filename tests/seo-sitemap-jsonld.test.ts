@@ -85,3 +85,16 @@ describe("pageMetadata", () => {
     expect(pageMetadata({ lang: "fr", path: "/compte", title: "Compte", noindex: true }).robots).toEqual({ index: false, follow: false });
   });
 });
+
+describe("sitemap : fiches pack", () => {
+  it("chaque pack apparaît en FR et EN avec ses hreflang, sous /packs/", () => {
+    const e = buildSitemap([], BASE, [{ id: "k1", slugs: { fr: "pack-cuisine", en: "kitchen-pack" } }]);
+    const fr = e.find((x) => x.url === `${BASE}/fr/packs/pack-cuisine`);
+    expect(fr).toBeTruthy();
+    expect(fr?.alternates.languages.en).toBe(`${BASE}/en/packs/kitchen-pack`);
+    expect(e.some((x) => x.url === `${BASE}/en/packs/kitchen-pack`)).toBe(true);
+  });
+  it("sans packs : sitemap inchangé", () => {
+    expect(buildSitemap([], BASE).length).toBe(buildSitemap([], BASE, []).length);
+  });
+});

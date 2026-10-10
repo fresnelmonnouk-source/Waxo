@@ -10,6 +10,7 @@ import type { Locale } from "@/i18n/routing";
  */
 
 const SAFE_ID = /^[A-Za-z0-9_-]{1,64}$/;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
@@ -33,13 +34,18 @@ export async function GET(request: Request) {
     // Packs du panier : stock = min des stocks des produits / quantité (calculé par getPacks).
     for (const k of packs) if (ids.has(k.id)) stock[k.id] = k.stock;
 
+    // Ids du panier absents du catalogue ET qui ne sont pas des UUID (restes de la démo) : à retirer côté navigateur.
+    // Jamais un UUID : si la base est lente et que le catalogue retombe sur la démo, un vrai panier ne doit pas être vidé.
+    const known = new Set([...products.map((p) => p.id), ...packs.map((k) => k.id)]);
+    const stale = [...ids].filter((id) => !known.has(id) && !UUID.test(id));
+
     const upsell = products
       .filter((p) => !ids.has(p.id) && p.price <= 3000 && p.stock > 0)
       .slice(0, 2)
       .map((p) => ({ id: p.id, slug: p.slug, name: p.name, price: p.price, bg: p.bg, imageUrl: p.imageUrl }));
 
     return NextResponse.json(
-      { ok: true, shipping: settings.shipping, pay: settings.pay, stock, upsell },
+      { ok: true, shipping: settings.shipping, pay: settings.pay, stock, upsell, stale },
       { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } },
     );
   } catch {

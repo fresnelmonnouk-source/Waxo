@@ -4,6 +4,7 @@ import { createSessionClient } from "@/lib/supabase/server";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { getPaymentProvider } from "@/lib/payment";
 import { sendOrderEmail } from "@/lib/email";
+import { withTimeout } from "@/lib/auth/timeout";
 import {
   API_STATUS,
   apiMessage,
@@ -12,7 +13,8 @@ import {
   type ApiLang,
 } from "@/lib/checkout/errors";
 import { normPhone } from "@/lib/checkout/phone";
-import { clientIp, rateLimit } from "@/lib/checkout/rate-limit";
+import { clientIp } from "@/lib/checkout/rate-limit";
+import { rateLimitShared } from "@/lib/ratelimit";
 import { checkoutSchema } from "@/lib/checkout/schema";
 import { GUARD_MESSAGES, parseIdemKey, submitTiming, withinQuantityCaps } from "./guard";
 
@@ -79,7 +81,7 @@ async function findByIdem(admin: AdminClient, key: string): Promise<(Placed & { 
 export async function POST(request: Request) {
   let lang: ApiLang = "fr";
   try {
-    if (!rateLimit(`checkout:${clientIp(request.headers)}`, RATE_LIMIT.max, RATE_LIMIT.windowMs)) {
+    if (!(await rateLimitShared(`checkout:${clientIp(request.headers)}`, RATE_LIMIT.max, RATE_LIMIT.windowMs))) {
       return fail(lang, "rate_limited");
     }
 
@@ -99,6 +101,14 @@ export async function POST(request: Request) {
     if (verdict === "bot") return fail(lang, "invalid_request");
     if (verdict === "too_fast") return failGuard(lang, "too_fast");
 
+    // Base absente (mode démo / pas encore branchée) : 503 net AVANT de juger le panier — sinon les ids de démo reçoivent un trompeur 422 (QA-2).
+    let admin: AdminClient;
+    try {
+      admin = createAdminClient();
+    } catch {
+      return fail(lang, "unavailable");
+    }
+
     const parsed = checkoutSchema.safeParse(raw);
     if (!parsed.success) {
       const heads = parsed.error.issues.map((i) => i.path.map(String));
@@ -111,19 +121,12 @@ export async function POST(request: Request) {
     lang = input.lang;
     if (!withinQuantityCaps(input.items)) return failGuard(lang, "quantity_limit");
 
-    let admin: AdminClient;
-    try {
-      admin = createAdminClient();
-    } catch {
-      return fail(lang, "unavailable");
-    }
-
     // Compte connecté éventuel : rattache la commande. Invité par défaut ; jamais bloquant.
     let userId: string | null = null;
     if (supabasePublicEnv()) {
       try {
         const sb = await createSessionClient();
-        const { data } = await sb.auth.getUser();
+        const { data } = await withTimeout(sb.auth.getUser(), 2000); // jamais bloquant : sans réponse → commande en invité
         userId = data.user?.id ?? null;
       } catch {
         userId = null;
@@ -197,7 +200,7 @@ export async function POST(request: Request) {
     if (pay === "cod") {
       // Paiement à la livraison : commande confirmée directement. L'e-mail ne bloque jamais la réponse
       // (et n'est pas renvoyé en cas de rejeu : garde anti-doublon de sendOrderEmail).
-      await sendOrderEmail(placed.orderId, "confirmation").catch(() => undefined);
+      await withTimeout(sendOrderEmail(placed.orderId, "confirmation"), 3000).catch(() => undefined);
       return NextResponse.json({ ok: true, order, payment: { kind: "cod" } });
     }
     if (alreadyPaid) return NextResponse.json({ ok: true, order, payment: { kind: "paid" } });

@@ -77,7 +77,7 @@ describe("franco : barre de progression", () => {
   // BUG QA-6 (faible) : le tiroir panier affiche « Livraison offerte à Cotonou » dès que remaining === 0,
   // y compris quand le franco est DÉSACTIVÉ (freeFrom ≤ 0). Il faut distinguer « désactivé » de « atteint ».
   // Fix attendu : exposer `freeShippingEnabled(cfg)` (freeFrom > 0) et masquer le bandeau s'il est faux.
-  it.fails("QA-6 : un helper permet de distinguer « franco atteint » de « franco désactivé »", async () => {
+  it("QA-6 : un helper permet de distinguer « franco atteint » de « franco désactivé »", async () => {
     const mod = (await import("@/lib/checkout/shipping")) as Record<string, unknown>;
     expect(typeof mod.freeShippingEnabled).toBe("function");
   });
@@ -141,7 +141,7 @@ describe("parité des 3 copies de normPhone (checkout / compte / newsletter)", (
   });
   // BUG QA-3 (faible) : « 00229 01 97 00 00 00 » est accepté à l'inscription/suivi (auth) mais refusé à la commande et à la
   // newsletter. Un client inscrit avec ce format ne peut pas passer commande avec le même numéro. Fix : une seule implémentation.
-  it.fails("QA-3 : « 00229… » est traité pareil partout", () => {
+  it("QA-3 : « 00229… » est traité pareil partout", () => {
     const s = "00229 01 97 00 00 00";
     expect(validPhone(s)).toBe(authValidPhone(s));
     expect(nlValidPhone(s)).toBe(authValidPhone(s));

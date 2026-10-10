@@ -47,6 +47,13 @@ export async function GET(request: Request) {
     fx = "failed";
   }
 
+  // Hygiène : purge des compteurs du limiteur partagé (table UNLOGGED rate_limits, migration 0009 ; absente = sans effet).
+  try {
+    await admin.from("rate_limits").delete().lt("window_start", new Date(Date.now() - 24 * 3600_000).toISOString());
+  } catch {
+    /* best effort */
+  }
+
   try {
     const cutoff = new Date(Date.now() - EXPIRE_AFTER_MINUTES * 60_000).toISOString();
     const { data: stale } = await admin

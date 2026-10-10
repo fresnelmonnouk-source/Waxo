@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 const core = readFileSync(join(process.cwd(), "supabase", "migrations", "0001_core.sql"), "utf8");
 const strip = (sql: string) => sql.replace(/--.*$/gm, "");
 const sql = strip(core);
+const m10 = strip(readFileSync(join(process.cwd(), "supabase", "migrations", "0010_unique_review_phone.sql"), "utf8"));
 
 const tables = [...sql.matchAll(/create table if not exists public\.(\w+)/gi)].map((m) => m[1]);
 
@@ -55,12 +56,12 @@ describe("schéma : contraintes qui protègent les chemins métier", () => {
     expect(products).toMatch(/stock int[^,\n]*check \(stock >= 0\)/i);
   });
   // BUG QA-9 : pas d'unicité (product_id, user_id) sur reviews → doublons possibles par double envoi (course SELECT puis INSERT).
-  it.fails("QA-9 : un client ne peut avoir qu'un avis par produit (index unique sur reviews)", () => {
-    expect(sql).toMatch(/unique\s+index[^;]*on public\.reviews\s*\(\s*product_id\s*,\s*user_id\s*\)/i);
+  it("QA-9 : un client ne peut avoir qu'un avis par produit (index unique sur reviews, migration 0010)", () => {
+    expect(m10).toMatch(/unique\s+index[^;]*on public\.reviews\s*\(\s*product_id\s*,\s*user_id\s*\)/i);
   });
   // BUG QA-11 (= O3 de Raphaël) : profiles.phone n'est pas unique alors que le téléphone sert d'identifiant de connexion.
-  it.fails("QA-11 : le téléphone d'un profil est unique (quand il est renseigné)", () => {
-    expect(sql).toMatch(/unique\s+index[^;]*on public\.profiles\s*\(\s*phone\s*\)/i);
+  it("QA-11 : le téléphone d'un profil est unique quand il est renseigné (migration 0010)", () => {
+    expect(m10).toMatch(/unique\s+index[^;]*on public\.profiles\s*\(\s*phone\s*\)/i);
   });
   // QA-12 (corrigé par la migration 0007 + route /api/checkout) : non-régression, la clé d'idempotence doit rester UNIQUE en base.
   it("QA-12 : orders.idem_key existe avec un index unique partiel (migration 0007)", () => {

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { digits, normPhone, validPhone } from "@/lib/checkout/phone";
 
 /**
  * Validation de l'inscription à la newsletter (partagée : formulaire client + route API).
@@ -7,15 +8,8 @@ import { z } from "zod";
  */
 export const MIN_FILL_MS = 2500; // délai minimal entre l'affichage du formulaire et l'envoi (anti-robot)
 
-export const digits = (s: string) => s.replace(/\D/g, "");
-
-/** « +229 01 97 00 00 00 » → « 0197000000 ». */
-export function normPhone(s: string): string {
-  let d = digits(s);
-  if (d.length === 13 && d.startsWith("229")) d = d.slice(3);
-  return d;
-}
-export const validPhone = (s: string) => /^01\d{8}$/.test(normPhone(s));
+// Téléphone : implémentation unique partagée avec la commande et le compte (src/lib/checkout/phone.ts).
+export { digits, normPhone, validPhone };
 export const validEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s.trim()) && s.trim().length <= 200;
 
 export const newsletterSchema = z

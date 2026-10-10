@@ -1,13 +1,13 @@
 import { checkBot } from "@/lib/auth/bot-guard";
 import { clientIp, fail, json, readJson } from "@/lib/auth/http";
-import { createRateLimiter } from "@/lib/auth/rate-limit";
+import { createSharedLimiter } from "@/lib/ratelimit";
 import { withTimeout } from "@/lib/auth/timeout";
 import { matchTrack, TRACK_NOT_FOUND, type TrackRow } from "@/lib/auth/track";
 import { fieldErrors, trackSchema } from "@/lib/auth/validation";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-const ipLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 15 });
-const numberLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 8 });
+const ipLimiter = createSharedLimiter({ name: "orders-track-ipLimiter", windowMs: 10 * 60_000, max: 15 });
+const numberLimiter = createSharedLimiter({ name: "orders-track-numberLimiter", windowMs: 10 * 60_000, max: 8 });
 
 /**
  * Suivi invité : numéro WX-… + (e-mail OU téléphone) de la commande.
@@ -20,12 +20,12 @@ export async function POST(req: Request) {
   const verdict = checkBot(body);
   if (verdict === "honeypot") return json(TRACK_NOT_FOUND, 404);
   if (verdict === "tooFast") return fail("tooFast", 429);
-  if (!ipLimiter.hit(clientIp(req))) return fail("rateLimited", 429);
+  if (!(await ipLimiter.hit(clientIp(req)))) return fail("rateLimited", 429);
 
   const parsed = trackSchema.safeParse(body);
   if (!parsed.success) return fail("invalid", 422, { fields: fieldErrors(parsed.error) });
   const { number, contact } = parsed.data;
-  if (!numberLimiter.hit(number)) return fail("rateLimited", 429);
+  if (!(await numberLimiter.hit(number))) return fail("rateLimited", 429);
 
   let admin: ReturnType<typeof createAdminClient>;
   try {

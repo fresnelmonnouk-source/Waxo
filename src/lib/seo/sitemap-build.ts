@@ -18,7 +18,7 @@ function entry(paths: Partial<Record<SeoLocale, string>>, base: string, extra: P
   return LOCALES.filter((l) => paths[l]).map((l) => ({ url: languages[l], alternates: { languages }, ...extra }));
 }
 
-export function buildSitemap(products: SitemapProduct[], base: string): SitemapEntry[] {
+export function buildSitemap(products: SitemapProduct[], base: string, packs: SitemapProduct[] = []): SitemapEntry[] {
   const out: SitemapEntry[] = [];
   for (const p of STATIC_PUBLIC_PATHS) {
     const home = p === "/";
@@ -31,6 +31,15 @@ export function buildSitemap(products: SitemapProduct[], base: string): SitemapE
       if (slug) paths[l] = `/produit/${encodeURIComponent(slug)}`;
     }
     out.push(...entry(paths, base, { changeFrequency: "weekly", priority: 0.8, lastModified: prod.updatedAt }));
+  }
+  // Fiches pack : mêmes règles (FR/EN, repli FR), un cran sous les produits.
+  for (const pack of packs) {
+    const paths: Partial<Record<SeoLocale, string>> = {};
+    for (const l of LOCALES) {
+      const slug = pack.slugs[l] ?? pack.slugs.fr;
+      if (slug) paths[l] = `/packs/${encodeURIComponent(slug)}`;
+    }
+    out.push(...entry(paths, base, { changeFrequency: "weekly", priority: 0.7, lastModified: pack.updatedAt }));
   }
   return out;
 }

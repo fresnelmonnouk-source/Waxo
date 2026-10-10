@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normPhone, prettyPhone, validPhone as isValidPhone } from "@/lib/checkout/phone";
 
 /**
  * Validation partagée client + serveur (module pur : aucune dépendance serveur).
@@ -7,18 +8,11 @@ import { z } from "zod";
  */
 
 // ───────────────────────── Téléphone / e-mail / numéro de commande ─────────────────────────
-const digitsOf = (s: unknown) => String(s ?? "").replace(/\D/g, "");
+// Téléphone : implémentation unique partagée avec la commande et la newsletter (src/lib/checkout/phone.ts).
+export { normPhone, prettyPhone, isValidPhone };
 
-/** « +229 01 97 11 22 33 » → « 0197112233 » (indicatif Bénin retiré, séparateurs ignorés). */
-export function normPhone(s: unknown): string {
-  let d = digitsOf(s);
-  if (d.length === 15 && d.startsWith("00229")) d = d.slice(5);
-  else if (d.length === 13 && d.startsWith("229")) d = d.slice(3);
-  return d;
-}
-/** Numéro béninois à 10 chiffres commençant par 01 (après normalisation). */
-export const isValidPhone = (s: unknown) => /^01\d{8}$/.test(normPhone(s));
-export const prettyPhone = (s: unknown) => normPhone(s).replace(/(\d{2})(?=\d)/g, "$1 ");
+/** Clé de verrouillage d'un identifiant de connexion : même téléphone = même clé, quel que soit le format saisi (QA-10). */
+export const lockKey = (id: string): string => (isValidPhone(id) ? normPhone(id) : id.trim().toLowerCase());
 export const isValidEmail = (s: unknown) => {
   const v = String(s ?? "").trim();
   return v.length <= 200 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);

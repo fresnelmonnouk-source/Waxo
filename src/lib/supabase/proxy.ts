@@ -33,9 +33,11 @@ export async function withSession(
     },
   });
 
-  // getUser() valide le jeton côté Supabase ; un timeout évite qu'un refresh qui ne résout jamais fige la requête.
+  // getClaims() vérifie le JWT localement (clés asymétriques) et ne rafraîchit que s'il est expiré : pas d'aller-retour
+  // Supabase à CHAQUE requête. Les actions sensibles (mot de passe, compte, commande) gardent getUser() côté serveur.
+  // Un timeout évite qu'un refresh qui ne résout jamais fige la requête.
   await Promise.race([
-    supabase.auth.getUser().catch(() => null),
+    supabase.auth.getClaims().catch(() => null),
     new Promise((resolve) => setTimeout(resolve, REFRESH_TIMEOUT_MS)),
   ]);
 

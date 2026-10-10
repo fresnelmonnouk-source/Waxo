@@ -10,7 +10,8 @@ import { useSyncExternalStore } from "react";
 export type ToastMessage =
   | { kind: "added"; name: string }
   | { kind: "soldOut" }
-  | { kind: "maxStock"; n: number };
+  | { kind: "maxStock"; n: number }
+  | { kind: "staleRemoved" };
 
 let current: (ToastMessage & { id: number }) | null = null;
 let seq = 0;

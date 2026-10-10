@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { clientIp, rateLimit } from "@/lib/checkout/rate-limit";
+import { clientIp } from "@/lib/checkout/rate-limit";
+import { rateLimitShared } from "@/lib/ratelimit";
 import { fetchTransaction } from "@/lib/payment/fedapay";
 import { fedapayConfig } from "@/lib/payment/config";
 import { settleApprovedTransaction } from "@/lib/payment/settle";
@@ -28,7 +29,7 @@ const reply = (body: Record<string, unknown>, status = 200) =>
 type OrderRow = { id: string; number: string; total: number; pay: string; paid: boolean; status: string };
 
 export async function GET(request: Request) {
-  if (!rateLimit(`pay-status:${clientIp(request.headers)}`, 40, 60_000)) return reply({ ok: false, code: "rate_limited" }, 429);
+  if (!(await rateLimitShared(`pay-status:${clientIp(request.headers)}`, 40, 60_000))) return reply({ ok: false, code: "rate_limited" }, 429);
 
   const params = new URL(request.url).searchParams;
   const number = params.get("n") ?? "";

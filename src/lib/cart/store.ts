@@ -73,7 +73,7 @@ export const cart = {
     const i = lines.findIndex((l) => l.kind === line.kind && l.id === line.id);
     if (i >= 0) {
       const next = [...lines];
-      next[i] = { ...next[i], ...line, qty: Math.min(MAX_QTY, next[i].qty + qty) };
+      next[i] = { ...next[i], ...line, qty: Math.min(MAX_QTY, Math.max(1, next[i].qty + qty)) };
       write(next);
     } else {
       write([...lines, { ...line, qty: Math.min(MAX_QTY, Math.max(1, qty)) }]);
@@ -82,6 +82,13 @@ export const cart = {
   setQty(kind: CartLine["kind"], id: string, qty: number) {
     if (qty <= 0) return cart.remove(kind, id);
     write(snapshot().map((l) => (l.kind === kind && l.id === id ? { ...l, qty: Math.min(MAX_QTY, qty) } : l)));
+  },
+  /** Retire toutes les lignes dont l'id est listé (articles disparus du catalogue). */
+  removeMany(ids: string[]) {
+    const set = new Set(ids);
+    const lines = snapshot();
+    const next = lines.filter((l) => !set.has(l.id));
+    if (next.length !== lines.length) write(next);
   },
   remove(kind: CartLine["kind"], id: string) {
     write(snapshot().filter((l) => !(l.kind === kind && l.id === id)));

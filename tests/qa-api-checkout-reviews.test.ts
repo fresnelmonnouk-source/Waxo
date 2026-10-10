@@ -332,7 +332,7 @@ describe("POST /api/checkout — repli sans Supabase", () => {
   // regarder si Supabase existe → 422 « Votre panier contient un article invalide » au lieu du 503 « Service indisponible »
   // promis par le brief J1. Même effet si Supabase tombe pendant une régénération ISR (la page retombe sur la démo).
   // Fix : tester `createAdminClient()` AVANT la validation d'ids (ou répondre 503 si le catalogue est en mode démo).
-  it.fails("QA-2 : sans Supabase, un panier d'articles de démonstration reçoit 503 « unavailable » (pas 422 cart_invalid)", async () => {
+  it("QA-2 : sans Supabase, un panier d'articles de démonstration reçoit 503 « unavailable » (pas 422 cart_invalid)", async () => {
     createAdminClient.mockImplementation(() => {
       throw new Error("Supabase service_role non configuré");
     });

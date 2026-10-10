@@ -26,6 +26,9 @@ export function shippingFee(subtotal: number, zone: Zone, cfg: ShippingConfig): 
 }
 
 /** Montant restant avant la livraison offerte (0 si franco atteint ou désactivé). */
+/** Le franco existe-t-il ? (`freeFrom` ≤ 0 le désactive : ne pas afficher « livraison offerte dès 0 F » — QA-6). */
+export const freeShippingEnabled = (cfg: Pick<ShippingConfig, "freeFrom">): boolean => cfg.freeFrom > 0;
+
 export function freeShippingRemaining(subtotal: number, cfg: ShippingConfig): number {
   if (cfg.freeFrom <= 0) return 0;
   return Math.max(0, cfg.freeFrom - subtotal);
