@@ -14,7 +14,7 @@ export type MarkerContext = { locale: PageLocale; shop: MarkerShop; legal: Legal
 const NBSP = " ";
 /** Montant XOF « 12 500 F » (même rendu que `fmtXof`, dupliqué ici pour rester sans dépendance). */
 function xof(n: number): string {
-  return Math.round(n || 0).toLocaleString("fr-FR") + NBSP + "F";
+  return Math.round(n || 0).toLocaleString("fr-FR").replace(/ /g, " ") + NBSP + "F";
 }
 /** « 7 jours » / « 1 jour » (FR : 0 et 1 au singulier, comme ICU) ; « 7 days » / « 1 day ». */
 function days(locale: PageLocale, n: number): string {

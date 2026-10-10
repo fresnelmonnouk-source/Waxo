@@ -2,7 +2,7 @@
 const NBSP = " ";
 
 export function fmtXof(amount: number): string {
-  return Math.round(amount || 0).toLocaleString("fr-FR") + NBSP + "F";
+  return Math.round(amount || 0).toLocaleString("fr-FR").replace(/ /g, " ") + NBSP + "F";
 }
 
 /** Pourcentage de réduction entre un prix barré et un prix actuel (arrondi). */

@@ -16,8 +16,8 @@ const days = (n: number) => ({ ...shop, shipping: { ...shop.shipping, returnDays
 
 describe("pages : marqueurs de réglages", () => {
   it("formate les montants en F (espace insécable) et le délai de retour au pluriel de la langue", () => {
-    expect(text(ctx(), "shipping.freeFrom")).toBe((15000).toLocaleString("fr-FR") + " F");
-    expect(text(ctx(), "shipping.cotonou")).toBe((1000).toLocaleString("fr-FR") + " F");
+    expect(text(ctx(), "shipping.freeFrom")).toBe((15000).toLocaleString("fr-FR").replace(/ /g, " ") + " F");
+    expect(text(ctx(), "shipping.cotonou")).toBe((1000).toLocaleString("fr-FR").replace(/ /g, " ") + " F");
     expect(text(ctx(), "shipping.returnDays")).toBe("7 jours");
     expect(text(ctx({ shop: days(1) }), "shipping.returnDays")).toBe("1 jour");
     expect(text(ctx({ shop: days(0) }), "shipping.returnDays")).toBe("0 jour");

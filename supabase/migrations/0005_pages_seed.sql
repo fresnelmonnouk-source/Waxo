@@ -296,7 +296,7 @@ WhatsApp : {{brand.whatsapp}} · E-mail : {{brand.email}}
 
 ## Protection des données personnelles
 
-Conformément à la loi n° 2017-20 du 20 avril 2018 portant code du numérique en République du Bénin, modifiée par la loi n° 2020-35 du 6 janvier 2021, le site fait l''objet d''une déclaration auprès de l''Autorité de Protection des Données à caractère Personnel (APDP) : récépissé n° {{legal.apdpReceipt}}. Vos droits sont détaillés dans la [politique de confidentialité](/confidentialite).
+Le site traite des données personnelles dans le respect de la réglementation applicable au Bénin. {{todo:Indiquer ici la formalité APDP (déclaration et récépissé) une fois accomplie.}} Vos droits sont détaillés dans la [politique de confidentialité](/confidentialite).
 
 ## Propriété intellectuelle
 
@@ -318,7 +318,7 @@ WhatsApp: {{brand.whatsapp}} · Email: {{brand.email}}
 
 ## Personal data protection
 
-In accordance with Law No. 2017-20 of April 20, 2018 on the Digital Code in the Republic of Benin, as amended by Law No. 2020-35 of January 6, 2021, the site is declared to the Personal Data Protection Authority (APDP): receipt no. {{legal.apdpReceipt}}. Your rights are detailed in the [privacy policy](/confidentialite).
+The site processes personal data in line with the regulations applicable in Benin. {{todo:State here the APDP formality (declaration and receipt) once completed.}} Your rights are detailed in the [privacy policy](/confidentialite).
 
 ## Intellectual property
 
