@@ -41,6 +41,7 @@ export function storedValue(v: Pick<NewsletterInput, "channel" | "value">): stri
 /** Vrai si le formulaire a été rempli « trop vite » ou sans horodatage plausible (robot). */
 export function isTooFast(t: number | undefined, now: number): boolean {
   if (typeof t !== "number" || !Number.isFinite(t)) return true;
-  if (t > now + 5000) return true; // horloge dans le futur : forgé
-  return now - t < MIN_FILL_MS;
+  // Horloge client en avance : on ne peut pas conclure, on accepte (honeypot et limiteur par IP restent les freins).
+  const elapsed = now - t;
+  return elapsed >= 0 && elapsed < MIN_FILL_MS;
 }

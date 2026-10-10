@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getProducts, getSettings } from "@/lib/catalog";
+import { getPacks } from "@/lib/catalog/packs";
 import type { Locale } from "@/i18n/routing";
 
 /**
@@ -22,9 +23,15 @@ export async function GET(request: Request) {
   );
 
   try {
-    const [settings, products] = await Promise.all([getSettings(), getProducts(lang, { sort: "popular" })]);
+    const [settings, products, packs] = await Promise.all([
+      getSettings(),
+      getProducts(lang, { sort: "popular" }),
+      getPacks(lang).catch(() => []),
+    ]);
     const stock: Record<string, number> = {};
     for (const p of products) if (ids.has(p.id)) stock[p.id] = p.stock;
+    // Packs du panier : stock = min des stocks des produits / quantité (calculé par getPacks).
+    for (const k of packs) if (ids.has(k.id)) stock[k.id] = k.stock;
 
     const upsell = products
       .filter((p) => !ids.has(p.id) && p.price <= 3000 && p.stock > 0)

@@ -36,7 +36,7 @@ export function AuthForm({ initialMode, message, variant, onSuccess }: Props) {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [cgu, setCgu] = useState(false);
-  const [news, setNews] = useState(true);
+  const [news, setNews] = useState(false); // consentement : jamais pré-coché (Helena B3)
   const [show, setShow] = useState(false);
   const [hp, setHp] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});

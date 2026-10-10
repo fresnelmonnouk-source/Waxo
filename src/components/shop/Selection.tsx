@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { RefineButton } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
 import { useCartLines } from "@/lib/cart/store";
 import type { Product } from "@/lib/catalog/types";
@@ -13,7 +14,7 @@ import { useViewedIds } from "./viewed";
 /**
  * « Notre sélection pour vous » (maquette lignes 250-276). Sans historique : sélection de départ (rendue côté serveur) ;
  * dès que des produits ont été consultés ou ajoutés au panier, la sélection suit ces rayons.
- * Le bouton « Affiner avec l'assistant » arrive avec le jalon J3.
+ * Le bouton « Affiner avec l'assistant » ouvre le widget (J3).
  */
 export function Selection({ products, newIds, bestIds }: { products: Product[]; newIds: string[]; bestIds: string[] }) {
   const t = useTranslations("Home");
@@ -42,6 +43,7 @@ export function Selection({ products, newIds, bestIds }: { products: Product[]; 
           <span className="text-text text-[13px] font-semibold tracking-[0.08em] uppercase">{personal ? t("selEyebrowPersonal") : t("selEyebrow")}</span>
           <h2 className="font-display m-0 text-[clamp(26px,3vw,38px)] leading-[1.05] font-semibold tracking-[-0.035em]">{t("selTitle")}</h2>
           <p className="text-text m-0 max-w-[340px] text-[15px] leading-normal">{personal ? t("selSubPersonal") : t("selSub")}</p>
+          <RefineButton />
           <Link href="/catalogue?col=selection" className="text-[14px] whitespace-nowrap underline">
             {t("selAll")}
           </Link>

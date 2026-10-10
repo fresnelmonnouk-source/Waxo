@@ -6,6 +6,10 @@ import frShop from "@/messages/fr/shop.json";
 import enShop from "@/messages/en/shop.json";
 import frCommon from "@/messages/fr/common.json";
 import enCommon from "@/messages/en/common.json";
+import frPacks from "@/messages/fr/packs.json";
+import enPacks from "@/messages/en/packs.json";
+import frAssistant from "@/messages/fr/assistant.json";
+import enAssistant from "@/messages/en/assistant.json";
 
 // Rendu serveur de la coque et des sections avec les VRAIS messages : une clé manquante ou un message ICU cassé fait échouer le test.
 vi.mock("@/i18n/navigation", () => ({
@@ -30,7 +34,7 @@ const Provider = NextIntlClientProvider as unknown as ComponentType<{
 }>;
 
 async function render(locale: "fr" | "en", build: () => Promise<ReactElement> | ReactElement) {
-  const messages = locale === "fr" ? { ...frCommon, ...frShop } : { ...enCommon, ...enShop };
+  const messages = locale === "fr" ? { ...frCommon, ...frShop, ...frAssistant, ...frPacks } : { ...enCommon, ...enShop, ...enAssistant, ...enPacks };
   const errors: unknown[] = [];
   const el = await build();
   const html = renderToString(

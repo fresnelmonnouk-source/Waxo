@@ -1,0 +1,10 @@
+{
+  "InfoPages": {
+    "updated": "Dernière mise à jour : {date}",
+    "aboutEyebrow": "À propos",
+    "aboutPhoto": "Photo de l'équipe ou du stock à ajouter",
+    "aboutCtaTitle": "Une question avant de commander ?",
+    "aboutCtaCatalog": "Voir le catalogue",
+    "aboutCtaContact": "Nous contacter"
+  }
+}

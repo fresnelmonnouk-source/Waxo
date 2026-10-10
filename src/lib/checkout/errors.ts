@@ -10,6 +10,7 @@ export type ApiErrorCode =
   | "payment_method_disabled"
   | "payment_unavailable"
   | "rate_limited"
+  | "quantity_limit"
   | "unavailable"
   | "login_required"
   | "already_reviewed"
@@ -23,6 +24,7 @@ export const API_STATUS: Record<ApiErrorCode, number> = {
   payment_method_disabled: 422,
   payment_unavailable: 502,
   rate_limited: 429,
+  quantity_limit: 422,
   unavailable: 503,
   login_required: 401,
   already_reviewed: 409,
@@ -38,6 +40,7 @@ const MESSAGES: Record<ApiLang, Record<ApiErrorCode, string>> = {
     payment_method_disabled: "Ce moyen de paiement n'est pas disponible pour le moment. Choisissez-en un autre.",
     payment_unavailable: "Le paiement n'a pas pu être lancé. Votre commande est enregistrée : nous vous contactons sur WhatsApp.",
     rate_limited: "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
+    quantity_limit: "Quantité trop élevée : 10 exemplaires par article et 20 articles par commande au maximum. Pour une commande plus grande, contactez-nous.",
     unavailable: "Le service est momentanément indisponible. Réessayez dans quelques instants.",
     login_required: "Connectez-vous pour donner votre avis. Seuls les clients inscrits peuvent publier un avis.",
     already_reviewed: "Vous avez déjà donné votre avis sur ce produit.",
@@ -51,6 +54,7 @@ const MESSAGES: Record<ApiLang, Record<ApiErrorCode, string>> = {
     payment_method_disabled: "This payment method is not available right now. Please choose another one.",
     payment_unavailable: "The payment could not be started. Your order is saved: we will contact you on WhatsApp.",
     rate_limited: "Too many attempts. Please wait a few minutes before trying again.",
+    quantity_limit: "Quantity too high: 10 per item and 20 items per order at most. For a larger order, please contact us.",
     unavailable: "The service is temporarily unavailable. Please try again in a moment.",
     login_required: "Sign in to leave a review. Only registered customers can post a review.",
     already_reviewed: "You have already reviewed this product.",
@@ -63,6 +67,8 @@ export const apiMessage = (lang: ApiLang, code: ApiErrorCode): string => MESSAGE
 /** Traduit le message d'une exception SQL de place_order en code d'erreur public. */
 export function mapPlaceOrderError(message: string | null | undefined): ApiErrorCode {
   const m = message ?? "";
+  if (m.includes("quantity_limit")) return "quantity_limit";
+  if (m.includes("too_many_open_orders")) return "rate_limited";
   if (m.includes("out_of_stock")) return "out_of_stock";
   if (m.includes("product_unavailable") || m.includes("pack_unavailable")) return "product_unavailable";
   if (m.includes("payment_method_disabled")) return "payment_method_disabled";
@@ -70,6 +76,8 @@ export function mapPlaceOrderError(message: string | null | undefined): ApiError
     return "cart_invalid";
   }
   if (m.includes("shipping_not_configured")) return "unavailable";
+  // 40P01 = deadlock détecté : le client peut réessayer sans risque (la transaction a été annulée).
+  if (m.includes("deadlock")) return "rate_limited";
   // Identifiant non-UUID, contrainte, etc. : jamais de détail au client.
   return "server_error";
 }

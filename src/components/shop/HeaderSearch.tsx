@@ -2,13 +2,18 @@
 
 import { useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { assistant } from "@/components/assistant/store";
 import { Link, useRouter } from "@/i18n/navigation";
 import { fmtXof } from "@/lib/money";
 import { cssUrl, norm, searchSuggestions, type SearchEntry } from "./logic";
 
-/** Recherche de l'en-tête avec suggestions (maquette lignes 44-66). Entrée / « Rechercher » ouvre le catalogue filtré. */
+/**
+ * Recherche de l'en-tête avec suggestions (maquette lignes 44-66). Entrée ouvre le catalogue filtré ; le bouton jaune
+ * « Demander à l'IA » (« IA » en étroit) et celui du panneau de suggestions ouvrent l'assistant avec la recherche en cours.
+ */
 export function HeaderSearch({ entries }: { entries: SearchEntry[] }) {
   const t = useTranslations("Shell.search");
+  const ta = useTranslations("Assistant.entry");
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [q, setQ] = useState("");
@@ -22,6 +27,13 @@ export function HeaderSearch({ entries }: { entries: SearchEntry[] }) {
     setFocus(false);
     inputRef.current?.blur();
     router.push(v ? `/catalogue?q=${encodeURIComponent(v)}` : "/catalogue");
+  }
+
+  function askAssistant() {
+    const v = q.trim();
+    setFocus(false);
+    inputRef.current?.blur();
+    assistant.ask(v ? ta("searchAsk", { q: v }) : ta("searchAskEmpty"));
   }
 
   return (
@@ -60,10 +72,12 @@ export function HeaderSearch({ entries }: { entries: SearchEntry[] }) {
           style={{ outline: "none" }}
         />
         <button
-          type="submit"
-          className="bg-sun text-ink hover:bg-sun-hover relative cursor-pointer rounded-full border-0 px-[14px] py-[9px] text-[13px] font-semibold whitespace-nowrap after:absolute after:-inset-[3px] after:content-['']"
+          type="button"
+          onClick={askAssistant}
+          className="bg-sun text-ink hover:bg-sun-hover relative min-h-9 cursor-pointer rounded-full border-0 px-[14px] py-[9px] text-[13px] font-semibold whitespace-nowrap after:absolute after:-inset-[5px] after:content-['']"
         >
-          {t("submit")}
+          <span className="max-[979px]:hidden">{ta("askIa")}</span>
+          <span className="min-[980px]:hidden">{ta("askIaShort")}</span>
         </button>
       </form>
       {open ? (
@@ -88,9 +102,9 @@ export function HeaderSearch({ entries }: { entries: SearchEntry[] }) {
               <strong className="text-[14px] whitespace-nowrap">{fmtXof(g.price)}</strong>
             </Link>
           ))}
-          {!suggestions.length ? <span className="text-muted p-[10px] text-[14px]">{t("none")}</span> : null}
-          {suggestions.length ? (
-            <div className="border-border mt-1 flex flex-wrap gap-2 border-t px-1 pt-[10px] pb-1">
+          {!suggestions.length ? <span className="text-muted p-[10px] text-[14px]">{ta("searchNone")}</span> : null}
+          <div className="border-border mt-1 flex flex-wrap gap-2 border-t px-1 pt-[10px] pb-1">
+            {suggestions.length ? (
               <button
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
@@ -99,8 +113,16 @@ export function HeaderSearch({ entries }: { entries: SearchEntry[] }) {
               >
                 {t("all", { count: suggestions.length })}
               </button>
-            </div>
-          ) : null}
+            ) : null}
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={askAssistant}
+              className="border-border-strong min-h-11 cursor-pointer rounded-full border bg-transparent px-[14px] py-[10px] text-[13px]"
+            >
+              {ta("ask")}
+            </button>
+          </div>
         </div>
       ) : null}
     </div>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { assistant } from "@/components/assistant/store";
 import { useRouter } from "@/i18n/navigation";
 import { cart, useCartLines } from "@/lib/cart/store";
 import { cartDrawer, useCartDrawerOpen } from "@/lib/ui/cart-drawer";
@@ -28,6 +29,12 @@ export function ProductBuy({ id, slug, name, price, stock, bg, imageUrl }: Props
   const drawerOpen = useCartDrawerOpen();
   const [qty, setQty] = useState(1);
   const [maxHit, setMaxHit] = useState(false);
+
+  // Barre d'achat collante visible (mobile) : le bouton flottant de l'assistant se décale au-dessus.
+  useEffect(() => {
+    assistant.setStickyBuy(!drawerOpen);
+    return () => assistant.setStickyBuy(false);
+  }, [drawerOpen]);
 
   const inCart = lines.find((l) => l.kind === "product" && l.id === id)?.qty ?? 0;
   const maxQty = Math.max(1, stock);

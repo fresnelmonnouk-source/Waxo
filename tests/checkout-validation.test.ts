@@ -106,11 +106,12 @@ describe("looksLikeBot (honeypot + délai)", () => {
   it("laisse passer un humain", () => {
     expect(looksLikeBot({ website: "", t: now - MIN_FORM_DELAY_MS - 1 }, now)).toBe(false);
   });
-  it("bloque honeypot rempli, envoi trop rapide, horodatage absent ou futur", () => {
+  it("bloque honeypot rempli, envoi trop rapide, horodatage absent ; accepte une horloge client en avance", () => {
     expect(looksLikeBot({ website: "http://spam", t: now - 60_000 }, now)).toBe(true);
     expect(looksLikeBot({ website: "", t: now - 1000 }, now)).toBe(true);
     expect(looksLikeBot({ website: "" }, now)).toBe(true);
-    expect(looksLikeBot({ website: "", t: now + 60_000 }, now)).toBe(true);
+    // Horloge du téléphone en avance : pas un robot (corrige QA-1 / Zoé n°2).
+    expect(looksLikeBot({ website: "", t: now + 60_000 }, now)).toBe(false);
   });
 });
 

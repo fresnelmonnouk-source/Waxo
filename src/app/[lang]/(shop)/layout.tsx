@@ -1,6 +1,7 @@
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { AssistantWidget } from "@/components/assistant/AssistantWidget";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import { DEFAULT_SETTINGS, getShopData } from "@/components/shop/data";
 import { Footer } from "@/components/shop/Footer";
@@ -39,6 +40,7 @@ export default async function ShopLayout({ children, params }: LayoutProps<"/[la
       <Footer brand={settings.brand} cod={settings.pay.cod} lang={lang} defaultHours={DEFAULT_SETTINGS.brand.hours} />
       <CartDrawer />
       <ShopToast />
+      <AssistantWidget />
     </>
   );
 }

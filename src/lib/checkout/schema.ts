@@ -63,10 +63,11 @@ export type ReviewInput = z.infer<typeof reviewSchema>;
 /** Délai minimal (ms) entre l'affichage du formulaire et l'envoi : en dessous, c'est un robot. */
 export const MIN_FORM_DELAY_MS = 2500;
 
-/** Honeypot rempli, horodatage absent/futur, ou envoi trop rapide → vrai si la requête ressemble à un robot. */
+/** Honeypot rempli, horodatage absent, ou envoi réellement trop rapide → vrai si la requête ressemble à un robot. */
 export function looksLikeBot(input: { website?: string; t?: number }, now = Date.now()): boolean {
   if (input.website && input.website.trim() !== "") return true;
   if (typeof input.t !== "number") return true;
-  if (input.t > now + 1000) return true;
-  return now - input.t < MIN_FORM_DELAY_MS;
+  // Horloge client en avance (t futur) : on ne peut pas conclure, on accepte (le honeypot et les limiteurs restent).
+  const elapsed = now - input.t;
+  return elapsed >= 0 && elapsed < MIN_FORM_DELAY_MS;
 }

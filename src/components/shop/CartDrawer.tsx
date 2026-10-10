@@ -179,14 +179,16 @@ function DrawerContent() {
             </div>
 
             <div className="flex flex-1 flex-col overflow-y-auto px-[22px] py-1.5">
-              {lines.map((l) => (
+              {lines.map((l) => {
+                const href = l.kind === "pack" ? `/packs/${l.slug}` : `/produit/${l.slug}`;
+                return (
                 <div key={`${l.kind}:${l.id}`} className="flex items-center gap-3.5 border-b border-border py-3.5">
-                  <Link href={`/produit/${l.slug}`} onClick={() => cartDrawer.close()} aria-hidden="true" tabIndex={-1}>
+                  <Link href={href} onClick={() => cartDrawer.close()} aria-hidden="true" tabIndex={-1}>
                     <Thumb bg={l.bg} imageUrl={l.imageUrl} size={68} radius={14} />
                   </Link>
                   <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                     <Link
-                      href={`/produit/${l.slug}`}
+                      href={href}
                       onClick={() => cartDrawer.close()}
                       className="text-[15px] leading-[1.25] no-underline hover:text-ink"
                     >
@@ -231,7 +233,8 @@ function DrawerContent() {
                   </div>
                   <strong className="text-[15px] whitespace-nowrap">{fmtXof(l.price * l.qty)}</strong>
                 </div>
-              ))}
+                );
+              })}
 
               {upsell.length > 0 ? (
                 <div className="flex flex-col gap-2.5 pt-[18px] pb-2">

@@ -1,1 +1,69 @@
-{}
+{
+  "Packs": {
+    "navLabel": "Packs",
+    "crumb": "Fil d'Ariane",
+    "home": "Accueil",
+    "title": "Packs",
+    "metaTitle": "Packs",
+    "metaDescription": "Des packs de produits choisis pour aller ensemble, moins chers que séparément. Stock à Cotonou, livraison demain.",
+    "eyebrow": "Packs Wá xɔ",
+    "heading": "Les packs : plus utile, moins cher.",
+    "lead": "Des produits choisis pour aller ensemble, vendus à un prix plus doux que séparément. Un clic, un seul colis.",
+    "count": "{count, plural, one {# pack} other {# packs}} · stock à Cotonou",
+    "listLabel": "Liste des packs",
+    "benefits": {
+      "saveTitle": "Moins cher qu'à l'unité",
+      "saveText": "Le prix du pack est toujours affiché face à la somme des produits : vous voyez l'économie.",
+      "pickedTitle": "Déjà assortis",
+      "pickedText": "Nous avons choisi des produits qui se complètent. Rien à comparer, rien à oublier.",
+      "oneTitle": "Un seul colis",
+      "oneText": "Vous commandez le pack, on emballe tout ensemble et on livre."
+    },
+    "empty": {
+      "title": "Les packs arrivent bientôt.",
+      "text": "Aucun pack n'est disponible pour le moment. En attendant, tout le catalogue est à portée de clic.",
+      "cta": "Voir le catalogue"
+    },
+    "card": {
+      "save": "Économisez {amount}",
+      "soldOut": "Épuisé",
+      "products": "{count, plural, one {# produit} other {# produits}}",
+      "add": "Ajouter le pack au panier",
+      "stockOut": "Épuisé, bientôt de retour",
+      "stockLow": "{n, plural, one {Plus qu’# pack en stock} other {Plus que # packs en stock}}",
+      "stockOk": "En stock",
+      "visualAria": "Contenu du pack {name}"
+    },
+    "detail": {
+      "eyebrow": "Pack",
+      "includes": "Dans ce pack",
+      "includesCount": "{count, plural, one {# article} other {# articles}}",
+      "each": "{price} l'unité",
+      "viewProduct": "Voir {name}",
+      "separately": "Achetés séparément",
+      "packPrice": "Prix du pack",
+      "youSave": "Vous économisez {amount} ({percent} %)",
+      "noSaving": "Le pack vous évite de composer votre panier produit par produit.",
+      "badge": "-{percent} %",
+      "stockOut": "Épuisé pour le moment : un des produits du pack n'est plus en stock.",
+      "stockLow": "{count, plural, one {Plus qu’# pack en stock.} other {Plus que # packs en stock.}} Commandez avant {cutoff} h, livré demain à Cotonou.",
+      "stockOk": "En stock. Commandez avant {cutoff} h, livré demain à Cotonou.",
+      "comingSoonTitle": "Ce pack est épuisé pour le moment.",
+      "comingSoonText": "Les produits sont aussi disponibles à l'unité dans le catalogue.",
+      "seeCatalog": "Voir le catalogue",
+      "qtyDec": "Diminuer la quantité",
+      "qtyInc": "Augmenter la quantité",
+      "maxStock": "{count, plural, one {Stock maximum atteint : # pack disponible.} other {Stock maximum atteint : # packs disponibles.}}",
+      "addToCart": "Ajouter au panier · {total}",
+      "buyNow": "Commander maintenant",
+      "stickyAdd": "Ajouter au panier",
+      "deliveryNote": "Commandez avant {cutoff} h, recevez demain à Cotonou et Calavi.",
+      "payAll": "Vous payez par Mobile Money, par carte ou à la réception.",
+      "payNoCod": "Vous payez par Mobile Money ou par carte.",
+      "returns": "Échange ou remboursement sous {days} jours.",
+      "conditions": "Conditions",
+      "otherPacks": "Les autres packs",
+      "allPacks": "Tous les packs"
+    }
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { AssistantCta } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
 import { LangSwitch } from "./LangSwitch";
 import { COLLECTIONS, type ShellCategory } from "./logic";
@@ -80,6 +81,9 @@ export function MobileNav({ categories, onClose }: { categories: ShellCategory[]
               {t(`Catalog.col.${col}`)}
             </Link>
           ))}
+          <Link href="/packs" onClick={onClose} className={`${PLAIN} border-border border-b py-[11px] text-[15px]`}>
+            {t("Packs.navLabel")}
+          </Link>
           <span className={`${SECTION} pt-[18px] pb-1`}>{t("Shell.mobile.help")}</span>
           <Link href="/a-propos" onClick={onClose} className={`${PLAIN} py-[11px] text-[15px]`}>
             {t("Shell.nav.about")}
@@ -120,6 +124,7 @@ export function MobileNav({ categories, onClose }: { categories: ShellCategory[]
                 </Link>
               </>
             )}
+            <AssistantCta onBefore={onClose} className="h-12" />
           </div>
           <div className="mt-3 self-start">
             <LangSwitch tone="light" />

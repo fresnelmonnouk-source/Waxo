@@ -1,49 +1,31 @@
 import "server-only";
-import type { PayMethod } from "@/lib/checkout/shipping";
+import { fedapayConfig } from "./config";
+import { FedaPayProvider } from "./fedapay";
+import type { CheckoutResult, PayableOrder, PaymentProvider } from "./types";
+
+export type { CheckoutResult, PayableOrder, PaymentProvider } from "./types";
 
 /**
- * Abstraction du paiement en ligne (carte, MTN MoMo, Moov Money, Celtiis Cash).
- * Le paiement à la livraison (`cod`) ne passe PAS par ici : la commande est confirmée directement.
- * Le fournisseur réel (FedaPay) arrive au jalon J3 ; en attendant, MockPaymentProvider.
+ * Provider de développement : ne débite rien, ne contacte personne ; la commande reste « en attente de paiement ».
+ * Explicite : avertit dans les logs, et REFUSE de tourner en production (le client croirait payer).
  */
-
-export type PayableOrder = {
-  orderId: string;
-  /** Numéro public « WX-… ». */
-  number: string;
-  /** Total OFFICIEL (renvoyé par place_order), en XOF entier. */
-  total: number;
-  method: Exclude<PayMethod, "cod">;
-  customer: { name: string; phone: string; email: string | null };
-  /** Numéro Mobile Money à débiter (momo/moov/celtiis), au format national normalisé. */
-  payerPhone: string | null;
-  lang: "fr" | "en";
-};
-
-export type CheckoutResult =
-  /** Le client doit être redirigé vers la page de paiement sécurisée du prestataire. */
-  | { redirectUrl: string }
-  /** Paiement lancé sans redirection (ex. validation sur le téléphone) : la confirmation arrivera par webhook. */
-  | { pending: true };
-
-export interface PaymentProvider {
-  readonly name: string;
-  createCheckout(order: PayableOrder): Promise<CheckoutResult>;
-}
-
-/** Provider de développement : ne débite rien, ne contacte personne ; la commande reste « en attente de paiement ». */
 export class MockPaymentProvider implements PaymentProvider {
   readonly name = "mock";
   async createCheckout(order: PayableOrder): Promise<CheckoutResult> {
-    void order;
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("payment_provider_not_configured");
+    }
+    console.warn(`[payment] MOCK : aucun paiement lancé pour ${order.number} (FEDAPAY_SECRET_KEY absente).`);
     return { pending: true };
   }
 }
 
-let provider: PaymentProvider | null = null;
+let mock: PaymentProvider | null = null;
 
-/** Fournisseur actif. J3 : renvoyer FedaPayProvider quand ses clés sont présentes. */
+/** FedaPay si FEDAPAY_SECRET_KEY est présente ; sinon le mock (dev/test uniquement — voir MockPaymentProvider). */
 export function getPaymentProvider(): PaymentProvider {
-  if (!provider) provider = new MockPaymentProvider();
-  return provider;
+  const cfg = fedapayConfig();
+  if (cfg) return new FedaPayProvider(cfg);
+  if (!mock) mock = new MockPaymentProvider();
+  return mock;
 }

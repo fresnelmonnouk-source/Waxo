@@ -1,0 +1,119 @@
+[
+ {
+  "id": "kb1",
+  "tag": "Livraison",
+  "title": "Délais et frais de livraison",
+  "text": "Cotonou et Calavi : livraison le lendemain pour toute commande passée avant 18 h, du lundi au samedi, 1 000 F, offerte dès 15 000 F d'achat. Autres villes du Bénin (Porto-Novo, Parakou, Bohicon, Abomey, Ouidah, Natitingou…) : 48 à 72 h, 2 500 F, par transporteur interurbain. Pas de livraison hors du Bénin pour le moment.",
+  "keywords": "livrer livreur délai quand combien jours ville parakou porto-novo bohicon abomey ouidah natitingou lokossa expédition envoi frais",
+  "en": {
+   "tag": "Delivery",
+   "title": "Delivery times and fees",
+   "text": "Cotonou and Calavi: next-day delivery for any order placed before 6 pm, Monday to Saturday, 1,000 F, free from 15,000 F. Other cities in Benin (Porto-Novo, Parakou, Bohicon, Abomey, Ouidah, Natitingou…): 48 to 72 hours, 2,500 F, by intercity carrier. No delivery outside Benin for now.",
+   "keywords": "deliver delivery courier delay when how long days city parakou porto-novo bohicon abomey ouidah natitingou lokossa shipping fees"
+  }
+ },
+ {
+  "id": "kb2",
+  "tag": "Livraison",
+  "title": "Le jour de la livraison",
+  "text": "Le client reçoit une confirmation WhatsApp avec le créneau. Le livreur appelle avant d'arriver. Si le client est absent, la livraison est reprogrammée le jour ouvré suivant sans frais. Après deux tentatives, la commande est annulée et remboursée.",
+  "keywords": "absent créneau appel heure reporter reprogrammer tentative",
+  "en": {
+   "tag": "Delivery",
+   "title": "On delivery day",
+   "text": "The customer receives a WhatsApp confirmation with the time slot. The courier calls before arriving. If the customer is absent, the delivery is rescheduled to the next working day at no cost. After two attempts, the order is cancelled and refunded.",
+   "keywords": "absent slot call time postpone reschedule attempt"
+  }
+ },
+ {
+  "id": "kb3",
+  "tag": "Paiement",
+  "title": "Moyens de paiement",
+  "text": "Paiements acceptés : MTN MoMo, Moov Money, Celtiis Cash, carte Visa ou Mastercard, et paiement à la livraison en espèces ou Mobile Money. Aucun membre de l'équipe ne demande jamais de code secret.",
+  "keywords": "payer paiement momo moov celtiis carte visa mastercard espèces cash livraison code",
+  "en": {
+   "tag": "Payment",
+   "title": "Payment methods",
+   "text": "Accepted payments: MTN MoMo, Moov Money, Celtiis Cash, Visa or Mastercard card, and cash on delivery in cash or Mobile Money. No member of the team ever asks for a secret code.",
+   "keywords": "pay payment momo moov celtiis card visa mastercard cash delivery code"
+  }
+ },
+ {
+  "id": "kb4",
+  "tag": "Retours",
+  "title": "Échange et remboursement",
+  "text": "7 jours après réception pour demander un échange ou un remboursement, pour un produit non utilisé, complet et dans son emballage d'origine. Produits d'hygiène descellés exclus sauf défaut. À Cotonou et Calavi le livreur reprend le produit. Remboursement sous 7 jours sur le moyen de paiement utilisé.",
+  "keywords": "retour retourner rembourser remboursement échanger échange défaut cassé abîmé",
+  "en": {
+   "tag": "Returns",
+   "title": "Exchange and refund",
+   "text": "7 days after receipt to ask for an exchange or a refund, for an unused, complete product in its original packaging. Unsealed hygiene products are excluded unless defective. In Cotonou and Calavi the courier takes the product back. Refund within 7 days to the payment method used.",
+   "keywords": "return refund exchange defect broken damaged"
+  }
+ },
+ {
+  "id": "kb5",
+  "tag": "Retours",
+  "title": "Produit défectueux ou erreur",
+  "text": "Un défaut ou une erreur de produit est à signaler dans les 48 h avec une photo. Wá xɔ échange ou rembourse et prend en charge les frais de retour.",
+  "keywords": "défectueux marche pas panne cassé erreur mauvais produit photo garantie",
+  "en": {
+   "tag": "Returns",
+   "title": "Faulty product or mistake",
+   "text": "A defect or a wrong product must be reported within 48 hours with a photo. Wá xɔ exchanges or refunds and covers the return costs.",
+   "keywords": "faulty defective not working breakdown broken mistake wrong product photo warranty"
+  }
+ },
+ {
+  "id": "kb6",
+  "tag": "Compte",
+  "title": "Commander sans compte",
+  "text": "On peut commander sans compte, tout est confirmé par WhatsApp. Un compte permet de suivre ses commandes et de publier un avis. En créant un compte avec le même numéro, les commandes passées s'y rattachent automatiquement.",
+  "keywords": "compte inscription inscrire suivre commande avis connexion mot de passe",
+  "en": {
+   "tag": "Account",
+   "title": "Ordering without an account",
+   "text": "You can order without an account, everything is confirmed on WhatsApp. An account lets you follow your orders and post a review. If you create an account with the same phone number, past orders are attached to it automatically.",
+   "keywords": "account sign up register follow order review login password"
+  }
+ },
+ {
+  "id": "kb7",
+  "tag": "Boutique",
+  "title": "Qui sommes-nous",
+  "text": "Wá xɔ (« venez acheter » en fon) est une boutique en ligne basée à Cotonou, sans magasin physique. Tout le stock est chez nous, à Cotonou : le stock affiché est réel. Service client par WhatsApp du lundi au samedi de 8 h à 19 h.",
+  "keywords": "boutique magasin adresse passer récupérer retrait horaires contact whatsapp stock",
+  "en": {
+   "tag": "Shop",
+   "title": "Who we are",
+   "text": "Wá xɔ (“come and buy” in Fon) is an online shop based in Cotonou, with no physical store. All the stock is with us, in Cotonou: the stock shown is real. Customer service on WhatsApp from Monday to Saturday, 8 am to 7 pm.",
+   "keywords": "shop store address pick up collect pickup hours contact whatsapp stock"
+  }
+ },
+ {
+  "id": "kb8",
+  "tag": "Produit",
+  "title": "Diffuseur : quelles huiles ?",
+  "text": "Le diffuseur fonctionne avec toutes les huiles essentielles pures ou parfums hydrosolubles : 3 à 5 gouttes pour 300 ml d'eau. Les huiles ne sont pas fournies. Ne pas utiliser d'huiles végétales épaisses.",
+  "keywords": "diffuseur huile essentielle parfum gouttes eau",
+  "en": {
+   "tag": "Product",
+   "title": "Diffuser: which oils?",
+   "text": "The diffuser works with any pure essential oil or water-soluble fragrance: 3 to 5 drops for 300 ml of water. Oils are not included. Do not use thick vegetable oils.",
+   "keywords": "diffuser oil essential fragrance drops water"
+  }
+ },
+ {
+  "id": "kb9",
+  "tag": "Produit",
+  "title": "Compatibilité des chargeurs et batteries",
+  "text": "Le chargeur 20 W et la batterie externe sont compatibles avec iPhone, Samsung, Tecno, Infinix, Itel et la plupart des smartphones USB-C. Pour un iPhone ancien, il faut un câble Lightning (non fourni).",
+  "keywords": "compatible iphone samsung tecno infinix itel câble lightning usb charge",
+  "en": {
+   "tag": "Product",
+   "title": "Charger and power bank compatibility",
+   "text": "The 20 W charger and the power bank are compatible with iPhone, Samsung, Tecno, Infinix, Itel and most USB-C smartphones. For an older iPhone you need a Lightning cable (not included).",
+   "keywords": "compatible iphone samsung tecno infinix itel lightning cable usb charge charger"
+  }
+ }
+]

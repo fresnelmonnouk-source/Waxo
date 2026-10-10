@@ -47,11 +47,11 @@ describe("schéma de la newsletter", () => {
 });
 
 describe("délai minimal anti-robot", () => {
-  it("rejette sans horodatage, trop rapide, ou horodatage forgé dans le futur", () => {
+  it("rejette sans horodatage ou trop rapide ; accepte une horloge client en avance", () => {
     const now = 1_000_000;
     expect(isTooFast(undefined, now)).toBe(true);
     expect(isTooFast(now - (MIN_FILL_MS - 1), now)).toBe(true);
-    expect(isTooFast(now + 60_000, now)).toBe(true);
+    expect(isTooFast(now + 60_000, now)).toBe(false); // horloge du téléphone en avance : pas un robot
     expect(isTooFast(Number.NaN, now)).toBe(true);
   });
   it("accepte à partir de 2,5 s", () => {

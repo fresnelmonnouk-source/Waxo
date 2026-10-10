@@ -4,8 +4,6 @@
  * Module pur (testable avec une horloge injectée).
  */
 export const MIN_FILL_MS = 2500;
-/** Tolérance d'horloge client très en avance : on ne bloque pas un vrai visiteur dont l'heure est fausse. */
-const MAX_CLOCK_SKEW_MS = 10 * 60 * 1000;
 
 export type BotVerdict = "ok" | "honeypot" | "tooFast";
 
@@ -15,6 +13,8 @@ export function checkBot(body: unknown, now: number = Date.now()): BotVerdict {
   const t = Number(b.t);
   if (!Number.isFinite(t)) return "tooFast";
   const elapsed = now - t;
-  if (elapsed < MIN_FILL_MS && elapsed > -MAX_CLOCK_SKEW_MS) return "tooFast";
+  // Seul un envoi réellement trop rapide (selon l'horloge du serveur) est refusé. Une horloge client en avance
+  // (elapsed < 0) ne prouve rien : on accepte ; honeypot et limiteurs restent les freins.
+  if (elapsed >= 0 && elapsed < MIN_FILL_MS) return "tooFast";
   return "ok";
 }

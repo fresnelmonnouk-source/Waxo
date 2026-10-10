@@ -1,20 +1,23 @@
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { LegalDoc } from "@/components/account/legal/LegalDoc";
-import { pageTitle } from "@/components/account/page-meta";
+import { InfoPage, infoPageMetadata } from "@/components/account/legal/InfoPage";
 import { routing } from "@/i18n/routing";
-import { getSettings } from "@/lib/catalog";
 
 type Props = { params: Promise<{ lang: string }> };
 
-export const generateMetadata = ({ params }: Props) => pageTitle(params, "Legal", "cgu.title");
+// Régénération périodique de secours : l'enregistrement dans l'admin revalide aussi la page à la demande.
+export const revalidate = 600;
 
-// Contenu dans les messages (namespace Legal) pour l'instant ; passera en base (table `pages`) plus tard.
+// Contenu lu dans la table `pages` (repli : texte par défaut). Éditeur : /admin/pages.
+export async function generateMetadata({ params }: Props) {
+  const { lang } = await params;
+  return infoPageMetadata("cgu", lang);
+}
+
 export default async function Page({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(routing.locales, lang)) notFound();
   setRequestLocale(lang);
-  const settings = await getSettings();
-  return <LegalDoc doc="cgu" settings={settings} />;
+  return <InfoPage slug="cgu" lang={lang} />;
 }

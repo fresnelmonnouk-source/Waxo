@@ -1,1 +1,90 @@
-{}
+{
+  "Assistant": {
+    "widget": {
+      "label": "Assistant Wá xɔ",
+      "title": "Assistant Wá xɔ",
+      "subtitle": "Conseils, produits, suivi de commande · IA",
+      "launcher": "Ouvrir l'assistant",
+      "close": "Fermer l'assistant",
+      "nudge": "Vous cherchez quelque chose de précis ? Je peux vous aider à choisir.",
+      "nudgeDismiss": "Masquer le message",
+      "greeting": "Bonjour, je suis l'assistant de Wá xɔ. Dites-moi ce que vous cherchez, pour qui ou pour quel budget, et je vous propose les bons articles.",
+      "thinking": "L'assistant réfléchit…",
+      "source": "Source : {list}",
+      "add": "Ajouter",
+      "addAria": "Ajouter {name} au panier",
+      "openProduct": "Voir la fiche {name}",
+      "lowStock": "Plus que {count} en stock",
+      "outOfStock": "Épuisé",
+      "conversation": "Conversation avec l'assistant",
+      "inputLabel": "Votre message",
+      "placeholder": "Écrivez votre question…",
+      "send": "Envoyer",
+      "disclaimer": "Assistant automatisé : vérifiez les informations importantes sur la fiche produit.",
+      "suggestions": "Suggestions"
+    },
+    "chips": {
+      "c1": "Un cadeau à moins de 10 000 F",
+      "c2": "Contre les coupures de courant",
+      "c3": "Pour mon bureau",
+      "c4": "Délais de livraison ?"
+    },
+    "errors": {
+      "network": "Je n'arrive pas à répondre pour le moment. Réessayez dans un instant ou écrivez à l'équipe.",
+      "rate": "Vous posez beaucoup de questions d'un coup. Patientez une minute puis réessayez.",
+      "contact": "Contacter l'équipe"
+    },
+    "hero": {
+      "title": "Dites à l'assistant ce dont vous avez besoin",
+      "inputLabel": "Votre demande à l'assistant",
+      "placeholder": "Ex. un cadeau à moins de 10 000 F pour ma sœur",
+      "send": "Envoyer",
+      "defaultAsk": "Aidez-moi à choisir un produit"
+    },
+    "entry": {
+      "askIa": "Demander à l'IA",
+      "askIaShort": "IA",
+      "ask": "Demander à l'assistant",
+      "header": "Assistant",
+      "searchNone": "Aucun produit ne correspond. L'assistant peut vous proposer une alternative.",
+      "searchAsk": "Je cherche : {q}",
+      "searchAskEmpty": "Aidez-moi à choisir un produit",
+      "megaTitle": "Vous ne savez pas quoi choisir ?",
+      "megaText": "Décrivez votre besoin ou votre budget. L'assistant vous propose des produits en stock.",
+      "refine": "Affiner avec l'assistant",
+      "refinePrompt": "Aidez-moi à affiner ma sélection : quels produits me conseillez-vous ?"
+    },
+    "reply": {
+      "escRefund": "Pour une demande de remboursement ou un litige, l'équipe doit regarder votre commande : je ne peux pas la traiter ici. Écrivez-nous sur WhatsApp ou par le formulaire de contact, avec votre numéro de commande (WX-…).",
+      "escHealth": "Je ne peux pas donner d'avis médical. En cas de gêne, d'allergie ou de blessure, arrêtez d'utiliser le produit et consultez un professionnel de santé. Pour toute réclamation, écrivez à l'équipe sur WhatsApp ou par le formulaire de contact.",
+      "escLegal": "Je ne peux pas donner de conseil juridique. L'équipe peut vous répondre sur WhatsApp ou par le formulaire de contact, et nos conditions sont publiées sur le site.",
+      "actWhatsapp": "Écrire sur WhatsApp",
+      "actContact": "Contacter l'équipe",
+      "actFaq": "Questions fréquentes",
+      "actDelivery": "Livraison et retours",
+      "actTrack": "Suivre une commande",
+      "actCgv": "Conditions de vente",
+      "actCatalogue": "Voir le catalogue",
+      "actCategory": "Voir le rayon {name}",
+      "order": "Pour suivre une commande, utilisez la page de suivi avec votre numéro WX-… et le téléphone ou l'e-mail de la commande. Je ne consulte pas les commandes ici.",
+      "thanks": "Avec plaisir ! N'hésitez pas si vous avez d'autres questions.",
+      "hello": "Bonjour ! Dites-moi ce que vous cherchez, pour qui ou pour quel budget.",
+      "products": "Voici ce que je vous conseille dans notre stock :",
+      "productsBudget": "Voici nos articles les plus demandés dans ce budget :",
+      "productsGift": "Voici nos articles les mieux notés pour offrir :",
+      "noneBudget": "Je n'ai rien en stock à ce prix. Voulez-vous que je regarde un peu plus haut, ou une autre idée ?",
+      "productInfo": "{desc} Dites-moi à quoi il doit servir et je vous dis s'il vous convient.",
+      "productOut": "« {name} » est épuisé pour le moment. Voici des alternatives en stock :",
+      "delivery": "Livraison le lendemain à Cotonou et Calavi pour toute commande passée avant {cutoff} h, du lundi au samedi, pour {cotonou}, offerte dès {free}. Ailleurs au Bénin, comptez 48 à 72 h pour {autre}.",
+      "payment": "Vous pouvez payer par {methods}.",
+      "payMomo": "MTN MoMo",
+      "payMoov": "Moov Money",
+      "payCeltiis": "Celtiis Cash",
+      "payCarte": "carte bancaire",
+      "payCod": "paiement à la livraison",
+      "or": "ou",
+      "returns": "Vous avez {days} jours après réception pour échanger ou vous faire rembourser un produit non utilisé, dans son emballage d'origine.",
+      "ask": "Dites-m'en un peu plus : c'est pour vous ou pour offrir, et quel budget avez-vous en tête ?"
+    }
+  }
+}

@@ -1,1 +1,90 @@
-{}
+{
+  "Assistant": {
+    "widget": {
+      "label": "Wá xɔ assistant",
+      "title": "Wá xɔ assistant",
+      "subtitle": "Advice, products, order tracking · AI",
+      "launcher": "Open the assistant",
+      "close": "Close the assistant",
+      "nudge": "Looking for something specific? I can help you choose.",
+      "nudgeDismiss": "Dismiss the message",
+      "greeting": "Hello, I'm the Wá xɔ assistant. Tell me what you're looking for, who it's for or your budget, and I'll suggest the right items.",
+      "thinking": "The assistant is thinking…",
+      "source": "Source: {list}",
+      "add": "Add",
+      "addAria": "Add {name} to the cart",
+      "openProduct": "See {name}",
+      "lowStock": "Only {count} left",
+      "outOfStock": "Sold out",
+      "conversation": "Conversation with the assistant",
+      "inputLabel": "Your message",
+      "placeholder": "Type your question…",
+      "send": "Send",
+      "disclaimer": "Automated assistant: check important information on the product page.",
+      "suggestions": "Suggestions"
+    },
+    "chips": {
+      "c1": "A gift under 10,000 F",
+      "c2": "Against power cuts",
+      "c3": "For my desk",
+      "c4": "Delivery times?"
+    },
+    "errors": {
+      "network": "I can't answer right now. Please try again in a moment or write to the team.",
+      "rate": "You're asking a lot of questions at once. Wait a minute and try again.",
+      "contact": "Contact the team"
+    },
+    "hero": {
+      "title": "Tell the assistant what you need",
+      "inputLabel": "Your request to the assistant",
+      "placeholder": "E.g. a gift under 10,000 F for my sister",
+      "send": "Send",
+      "defaultAsk": "Help me choose a product"
+    },
+    "entry": {
+      "askIa": "Ask the AI",
+      "askIaShort": "AI",
+      "ask": "Ask the assistant",
+      "header": "Assistant",
+      "searchNone": "No product matches. The assistant can suggest an alternative.",
+      "searchAsk": "I'm looking for: {q}",
+      "searchAskEmpty": "Help me choose a product",
+      "megaTitle": "Not sure what to pick?",
+      "megaText": "Describe what you need or your budget. The assistant suggests products that are in stock.",
+      "refine": "Refine with the assistant",
+      "refinePrompt": "Help me refine my selection: which products do you recommend?"
+    },
+    "reply": {
+      "escRefund": "For a refund request or a dispute, the team has to look at your order: I can't handle it here. Write to us on WhatsApp or through the contact form, with your order number (WX-…).",
+      "escHealth": "I can't give medical advice. If you feel discomfort, an allergy or an injury, stop using the product and see a health professional. For any complaint, write to the team on WhatsApp or through the contact form.",
+      "escLegal": "I can't give legal advice. The team can answer you on WhatsApp or through the contact form, and our terms are published on the site.",
+      "actWhatsapp": "Write on WhatsApp",
+      "actContact": "Contact the team",
+      "actFaq": "Frequently asked questions",
+      "actDelivery": "Delivery and returns",
+      "actTrack": "Track an order",
+      "actCgv": "Terms of sale",
+      "actCatalogue": "See the catalogue",
+      "actCategory": "See the {name} aisle",
+      "order": "To track an order, use the tracking page with your WX-… number and the phone number or e-mail of the order. I don't look up orders here.",
+      "thanks": "My pleasure! Feel free to ask if you have other questions.",
+      "hello": "Hello! Tell me what you're looking for, who it's for or your budget.",
+      "products": "Here is what I recommend from our stock:",
+      "productsBudget": "Here are our most popular items within this budget:",
+      "productsGift": "Here are our best-rated items to give as a gift:",
+      "noneBudget": "I have nothing in stock at that price. Shall I look a bit higher, or try another idea?",
+      "productInfo": "{desc} Tell me what you need it for and I'll tell you if it suits you.",
+      "productOut": "“{name}” is sold out for now. Here are alternatives in stock:",
+      "delivery": "Next-day delivery in Cotonou and Calavi for any order placed before {cutoff}:00, Monday to Saturday, for {cotonou}, free from {free}. Elsewhere in Benin, allow 48 to 72 hours for {autre}.",
+      "payment": "You can pay by {methods}.",
+      "payMomo": "MTN MoMo",
+      "payMoov": "Moov Money",
+      "payCeltiis": "Celtiis Cash",
+      "payCarte": "bank card",
+      "payCod": "cash on delivery",
+      "or": "or",
+      "returns": "You have {days} days after receipt to exchange or get a refund for an unused product in its original packaging.",
+      "ask": "Tell me a bit more: is it for you or a gift, and what budget do you have in mind?"
+    }
+  }
+}

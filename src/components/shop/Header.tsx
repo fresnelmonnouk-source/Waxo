@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AccountMenu } from "@/components/account/AccountMenu";
+import { HeaderAssistantButton } from "@/components/assistant/entries";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useCartCount } from "@/lib/cart/store";
 import { useFavoritesCount } from "@/lib/favorites/store";
@@ -17,10 +18,11 @@ const NAV_LINK = "text-ink! hover:text-terracotta-deep! flex items-center px-3 n
 /**
  * En-tête collant (maquette lignes 35-145) : logo, recherche, compte, favoris, panier, navigation principale,
  * panneau « Catalogue » et tiroir mobile. Seuil large/étroit de la maquette : 980 px.
- * Le bouton « Assistant » et « Demander à l'IA » arrivent avec le jalon J3.
+ * Bouton « Assistant » (large seulement) : ouvre le widget de l'assistant (J3).
  */
 export function Header({ categories, searchIndex, total }: { categories: ShellCategory[]; searchIndex: SearchEntry[]; total: number }) {
   const t = useTranslations("Shell");
+  const tp = useTranslations("Packs");
   const pathname = usePathname();
   const cartCount = useCartCount();
   const favCount = useFavoritesCount();
@@ -97,6 +99,7 @@ export function Header({ categories, searchIndex, total }: { categories: ShellCa
                 </span>
               ) : null}
             </Link>
+            <HeaderAssistantButton onBefore={closeAll} />
             <button
               type="button"
               onClick={() => {
@@ -137,6 +140,9 @@ export function Header({ categories, searchIndex, total }: { categories: ShellCa
               <path d="M6 9l6 6 6-6" />
             </svg>
           </button>
+          <Link href="/packs" className={`${NAV_LINK} ${underline(pathname.startsWith("/packs"))}`}>
+            {tp("navLabel")}
+          </Link>
           <Link href="/catalogue?col=nouveautes" className={NAV_LINK}>
             {t("nav.new")}
           </Link>

@@ -1,4 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
+import { HeroAssistantCard } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
 import type { Product, ShopSettings } from "@/lib/catalog/types";
 import { fmtXof } from "@/lib/money";
@@ -10,7 +11,7 @@ function HeroImage({ url }: { url: string | null }) {
   return url ? <div aria-hidden="true" className="absolute inset-0" style={{ background: `${cssUrl(url)} center/cover no-repeat` }} /> : null;
 }
 
-/** Héro de l'accueil (maquette lignes 147-206). La carte « Dites à l'assistant… » arrive avec le jalon J3. */
+/** Héro de l'accueil (maquette lignes 147-206), avec la carte « Dites à l'assistant ce dont vous avez besoin » (J3). */
 export function HomeHero({
   products,
   settings,
@@ -45,6 +46,7 @@ export function HomeHero({
             <p className="m-0 max-w-[500px] text-[18px] leading-normal text-[#D6CFC0] text-pretty">
               {t("lead")} {cod ? t("payCod") : t("payNoCod")}
             </p>
+            <HeroAssistantCard />
             <div className="flex flex-wrap items-center gap-4">
               <Link
                 href="/catalogue"

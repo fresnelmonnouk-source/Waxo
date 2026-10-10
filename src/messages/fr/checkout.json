@@ -85,7 +85,12 @@
     "emptyText": "Ajoutez quelques articles avant de passer commande.",
     "emptyCta": "Voir les produits",
     "errNetwork": "Connexion impossible. Vérifiez votre réseau et réessayez.",
-    "errGeneric": "Une erreur est survenue. Réessayez dans quelques instants."
+    "errGeneric": "Une erreur est survenue. Réessayez dans quelques instants.",
+    "email": "E-mail (facultatif)",
+    "emailPlaceholder": "vous@exemple.com",
+    "emailHelp": "Pour recevoir la confirmation et le reçu par e-mail.",
+    "errEmail": "Cette adresse e-mail ne semble pas valide.",
+    "errTimeout": "Le serveur met du temps à répondre. Réessayez : votre commande ne sera pas enregistrée deux fois."
   },
   "Thanks": {
     "pageTitle": "Commande confirmée",
@@ -103,6 +108,17 @@
     "trackOrder": "Suivre ma commande",
     "continueShopping": "Continuer mes achats",
     "unknownTitle": "Aucune commande récente",
-    "unknownText": "Si vous venez de commander, retrouvez votre commande avec son numéro WX-… dans le suivi."
+    "unknownText": "Si vous venez de commander, retrouvez votre commande avec son numéro WX-… dans le suivi.",
+    "paidTitle": "Merci {first}, paiement reçu.",
+    "paidTitleAnonymous": "Merci, paiement reçu.",
+    "paidNote": "Paiement confirmé. Nous préparons votre commande.",
+    "pendingLateNote": "Nous n'avons pas encore reçu la confirmation du paiement. Si vous avez validé, elle peut arriver dans quelques minutes : vous serez prévenu(e). Sinon, écrivez-nous sur WhatsApp avec votre numéro de commande.",
+    "checking": "Vérification du paiement…",
+    "lineShort": "Commande <b>{number}</b> · {total} · {pay}.",
+    "failedTitle": "Le paiement n'a pas abouti",
+    "failedText": "La commande <b>{number}</b> n'a pas été payée. Vous pouvez recommencer depuis la boutique, ou nous écrire si vous avez été débité(e).",
+    "unavailableTitle": "Commande enregistrée, paiement à relancer",
+    "unavailableText": "Votre commande <b>{number}</b> est enregistrée, mais le paiement n'a pas pu être lancé. Nous vous contactons sur WhatsApp pour le finaliser.",
+    "contactUs": "Nous contacter"
   }
 }

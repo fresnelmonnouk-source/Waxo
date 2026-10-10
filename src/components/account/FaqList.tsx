@@ -1,10 +1,11 @@
 "use client";
 
 import { useId, useState, type ReactNode } from "react";
+import { AssistantCta } from "@/components/assistant/entries";
 
 export type FaqItem = { id: string; question: string; answer: ReactNode };
 
-/** Accordéon FAQ (maquette 609-618) : une réponse ouverte à la fois, la première par défaut. */
+/** Accordéon FAQ (maquette 609-618) : une réponse ouverte à la fois, la première par défaut. Le bouton « Demander à l'assistant » (J3) suit la liste. */
 export function FaqList({ items }: { items: FaqItem[] }) {
   const [open, setOpen] = useState(0);
   const base = useId();
@@ -36,6 +37,9 @@ export function FaqList({ items }: { items: FaqItem[] }) {
           </div>
         );
       })}
+      <div className="pt-6">
+        <AssistantCta />
+      </div>
     </div>
   );
 }

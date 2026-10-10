@@ -1,1 +1,33 @@
-{}
+{
+  "Consent": {
+    "region": "Gestion des cookies",
+    "title": "Vos données, votre choix",
+    "text": "Nous utilisons des traceurs uniquement avec votre accord : mesurer l’audience du site et mesurer l’efficacité de nos publicités. Rien n’est déposé avant votre choix, et vous pouvez le modifier à tout moment.",
+    "privacyLink": "En savoir plus (confidentialité)",
+    "acceptAll": "Tout accepter",
+    "refuseAll": "Tout refuser",
+    "customize": "Personnaliser",
+    "save": "Enregistrer mes choix",
+    "close": "Fermer",
+    "back": "Retour",
+    "detailsTitle": "Choisir par catégorie",
+    "essentialTitle": "Fonctionnement du site",
+    "essentialText": "Panier, langue, connexion, sécurité. Indispensables, toujours actifs, sans mesure d’audience.",
+    "essentialState": "Toujours actif",
+    "analyticsTitle": "Mesure d’audience (Google Analytics)",
+    "analyticsText": "Pages vues et parcours, pour améliorer la boutique. Données agrégées, sans publicité Google.",
+    "marketingTitle": "Publicité (Meta)",
+    "marketingText": "Mesure des publicités Facebook et Instagram (pages vues, ajouts au panier, commandes).",
+    "on": "Activé",
+    "off": "Désactivé",
+    "reopenLabel": "Gérer mes cookies",
+    "saved": "Vos choix sont enregistrés."
+  },
+  "Seo": {
+    "siteName": "Wá xɔ",
+    "description": "Les petites choses utiles, livrées demain à Cotonou.",
+    "ogTitle": "Les petites choses utiles",
+    "ogSubtitle": "Livrées demain à Cotonou",
+    "ogFooter": "Paiement Mobile Money, carte ou à la livraison"
+  }
+}

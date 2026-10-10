@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cart, useCartLines, useCartSubtotal } from "@/lib/cart/store";
 import { fetchMe, type MeUser } from "@/lib/checkout/me";
-import { normPhone, prettyPhone, validPhone } from "@/lib/checkout/phone";
+import { normPhone, prettyPhone, validEmail, validPhone } from "@/lib/checkout/phone";
 import { saveLastOrder } from "@/lib/checkout/last-order";
 import {
   enabledPayMethods,
@@ -19,9 +19,10 @@ import {
 import { fmtXof } from "@/lib/money";
 import { cssImage, FALLBACK_BG } from "@/components/product/media";
 import { CheckoutShell } from "./CheckoutShell";
+import { clearIdempotencyKey, idempotencyKeyFor, orderSignature } from "./idempotency";
 
 type Props = { shipping: ShippingConfig; pay: PayConfig };
-type Errors = Partial<Record<"name" | "phone" | "address" | "momo", string>>;
+type Errors = Partial<Record<"name" | "phone" | "email" | "address" | "momo", string>>;
 
 const CHIP: Record<PayMethod, string> = {
   momo: "#FFCC00",
@@ -81,7 +82,7 @@ export function CheckoutFlow({ shipping, pay }: Props) {
   const subtotal = useCartSubtotal();
 
   const [step, setStep] = useState<1 | 2>(1);
-  const [form, setForm] = useState({ name: "", phone: "", address: "", momo: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", momo: "" });
   const [zone, setZone] = useState<Zone>("cotonou");
   const [method, setMethod] = useState<PayMethod>(enabledPayMethods(pay)[0] ?? "cod");
   const [errors, setErrors] = useState<Errors>({});
@@ -134,6 +135,7 @@ export function CheckoutFlow({ shipping, pay }: Props) {
     const e: Errors = {};
     if (form.name.trim().length < 3) e.name = t("errName");
     if (!validPhone(form.phone)) e.phone = t("errPhone");
+    if (form.email.trim() && !validEmail(form.email)) e.email = t("errEmail");
     if (form.address.trim().length < 5) e.address = t("errAddress");
     if (Object.keys(e).length) return setErrors(e);
     setErrors({});
@@ -142,25 +144,41 @@ export function CheckoutFlow({ shipping, pay }: Props) {
     goStep(2);
   }
 
-  async function placeOrder() {
-    if (paying || lines.length === 0) return;
+  async function placeOrder(attempt = 0) {
+    if ((paying && attempt === 0) || lines.length === 0) return;
     if (mm && !validPhone(form.momo)) return setErrors({ momo: t("errMomo") });
     setPaying(true);
     setSubmitError("");
     setErrors({});
+    const items = lines.map((l) => ({ kind: l.kind, id: l.id, qty: l.qty }));
+    // Même clé tant que la commande est identique : un nouvel essai après coupure ne crée pas de doublon côté serveur.
+    const idem = idempotencyKeyFor(
+      orderSignature({ items, zone, pay: method, phone: normPhone(form.phone), name: form.name.trim(), address: form.address.trim() }),
+    );
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), 30_000);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: ctrl.signal,
         body: JSON.stringify({
-          items: lines.map((l) => ({ kind: l.kind, id: l.id, qty: l.qty })),
-          customer: { name: form.name.trim(), phone: normPhone(form.phone), address: form.address.trim() },
+          items,
+          idem,
+          customer: {
+            name: form.name.trim(),
+            phone: normPhone(form.phone),
+            address: form.address.trim(),
+            ...(form.email.trim() ? { email: form.email.trim() } : {}),
+          },
           zone,
           pay: method,
           payerPhone: mm ? normPhone(form.momo) : undefined,
           lang: locale === "en" ? "en" : "fr",
           website: honeypot.current?.value ?? "",
           t: shownAt.current,
+          // Durée écoulée mesurée sur la seule horloge du téléphone : insensible à un décalage d'heure.
+          elapsed: Date.now() - shownAt.current,
         }),
       });
       const json = (await res.json().catch(() => null)) as {
@@ -175,6 +193,7 @@ export function CheckoutFlow({ shipping, pay }: Props) {
       // Commande créée (y compris paiement en ligne non lancé : la commande existe, on l'indique à l'écran de confirmation).
       const created = json?.order && (json.ok || json.code === "payment_unavailable") ? json.order : null;
       if (created) {
+        clearIdempotencyKey();
         saveLastOrder({
           number: created.number,
           total: created.total,
@@ -189,17 +208,28 @@ export function CheckoutFlow({ shipping, pay }: Props) {
         setFinished(true);
         if (json?.payment?.kind === "redirect" && json.payment.url) {
           window.location.assign(json.payment.url);
+        } else if (json?.code === "payment_unavailable") {
+          // Commande enregistrée mais paiement non lancé : la page de confirmation l'indique clairement.
+          router.replace("/commande/merci?p=unavailable");
         } else {
           router.replace("/commande/merci");
         }
         return;
       }
 
+      if (json?.code === "too_fast" && attempt < 2) {
+        // Envoi jugé trop rapide : on patiente puis on réessaie automatiquement (le bouton reste en « chargement »).
+        clearTimeout(timeout);
+        await new Promise((r) => setTimeout(r, 3000));
+        return placeOrder(attempt + 1);
+      }
+
       const fields = json?.fields ?? [];
-      if (fields.some((f) => f === "name" || f === "phone" || f === "address")) {
+      if (fields.some((f) => f === "name" || f === "phone" || f === "email" || f === "address")) {
         const e: Errors = {};
         if (fields.includes("name")) e.name = t("errName");
         if (fields.includes("phone")) e.phone = t("errPhone");
+        if (fields.includes("email")) e.email = t("errEmail");
         if (fields.includes("address")) e.address = t("errAddress");
         setErrors(e);
         goStep(1);
@@ -209,9 +239,11 @@ export function CheckoutFlow({ shipping, pay }: Props) {
         setSubmitError(json?.message || t("errGeneric"));
       }
       setPaying(false);
-    } catch {
-      setSubmitError(t("errNetwork"));
+    } catch (e) {
+      setSubmitError(e instanceof DOMException && e.name === "AbortError" ? t("errTimeout") : t("errNetwork"));
       setPaying(false);
+    } finally {
+      clearTimeout(timeout);
     }
   }
 
@@ -303,6 +335,22 @@ export function CheckoutFlow({ shipping, pay }: Props) {
                 />
               </div>
               <span className="text-[13px] font-normal text-terracotta-deep">{errors.phone}</span>
+            </label>
+            <label className="flex flex-col gap-1.5 text-[14px] font-medium">
+              {t("email")}
+              <input
+                value={form.email}
+                onChange={set("email")}
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                placeholder={t("emailPlaceholder")}
+                aria-invalid={!!errors.email}
+                className={inputClass}
+                style={{ borderColor: errBorder(errors.email) }}
+              />
+              <span className="text-[13px] font-normal text-text">{t("emailHelp")}</span>
+              <span className="text-[13px] font-normal text-terracotta-deep">{errors.email}</span>
             </label>
             <div role="radiogroup" aria-label={t("zoneGroup")} className="flex flex-col gap-2.5">
               <span className="text-[14px] font-medium">{t("zoneLabel")}</span>
@@ -398,7 +446,7 @@ export function CheckoutFlow({ shipping, pay }: Props) {
             ) : null}
             <button
               type="button"
-              onClick={placeOrder}
+              onClick={() => void placeOrder()}
               disabled={paying}
               aria-busy={paying}
               className="min-h-14 cursor-pointer rounded-full border-0 px-5 text-[16px] font-semibold text-cream hover:bg-[#2C2823] disabled:cursor-wait disabled:hover:bg-[#4A443C]"

@@ -85,7 +85,12 @@
     "emptyText": "Add a few items before checking out.",
     "emptyCta": "Browse products",
     "errNetwork": "Could not connect. Check your network and try again.",
-    "errGeneric": "Something went wrong. Please try again in a moment."
+    "errGeneric": "Something went wrong. Please try again in a moment.",
+    "email": "Email (optional)",
+    "emailPlaceholder": "you@example.com",
+    "emailHelp": "To receive the confirmation and receipt by email.",
+    "errEmail": "This email address does not look valid.",
+    "errTimeout": "The server is taking a while to respond. Please try again: your order will not be recorded twice."
   },
   "Thanks": {
     "pageTitle": "Order confirmed",
@@ -103,6 +108,17 @@
     "trackOrder": "Track my order",
     "continueShopping": "Continue shopping",
     "unknownTitle": "No recent order",
-    "unknownText": "If you just placed an order, find it with its WX-… number in order tracking."
+    "unknownText": "If you just placed an order, find it with its WX-… number in order tracking.",
+    "paidTitle": "Thank you {first}, payment received.",
+    "paidTitleAnonymous": "Thank you, payment received.",
+    "paidNote": "Payment confirmed. We are preparing your order.",
+    "pendingLateNote": "We have not received the payment confirmation yet. If you approved it, it may arrive within a few minutes and we will let you know. Otherwise, message us on WhatsApp with your order number.",
+    "checking": "Checking your payment…",
+    "lineShort": "Order <b>{number}</b> · {total} · {pay}.",
+    "failedTitle": "The payment did not go through",
+    "failedText": "Order <b>{number}</b> has not been paid. You can start again from the shop, or write to us if you were charged.",
+    "unavailableTitle": "Order saved, payment to be restarted",
+    "unavailableText": "Your order <b>{number}</b> is saved, but the payment could not be started. We will contact you on WhatsApp to complete it.",
+    "contactUs": "Contact us"
   }
 }

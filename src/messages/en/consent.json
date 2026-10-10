@@ -1,1 +1,33 @@
-{}
+{
+  "Consent": {
+    "region": "Cookie settings",
+    "title": "Your data, your choice",
+    "text": "We only use trackers with your consent: to measure the site’s audience and to measure the effectiveness of our ads. Nothing is stored before you choose, and you can change your mind at any time.",
+    "privacyLink": "Learn more (privacy)",
+    "acceptAll": "Accept all",
+    "refuseAll": "Refuse all",
+    "customize": "Customize",
+    "save": "Save my choices",
+    "close": "Close",
+    "back": "Back",
+    "detailsTitle": "Choose by category",
+    "essentialTitle": "Site operation",
+    "essentialText": "Cart, language, sign-in, security. Essential, always on, no audience tracking.",
+    "essentialState": "Always on",
+    "analyticsTitle": "Audience measurement (Google Analytics)",
+    "analyticsText": "Page views and journeys, to improve the shop. Aggregated data, no Google advertising.",
+    "marketingTitle": "Advertising (Meta)",
+    "marketingText": "Measures Facebook and Instagram ads (page views, add-to-carts, orders).",
+    "on": "On",
+    "off": "Off",
+    "reopenLabel": "Manage my cookies",
+    "saved": "Your choices are saved."
+  },
+  "Seo": {
+    "siteName": "Wá xɔ",
+    "description": "Small useful things, delivered tomorrow in Cotonou.",
+    "ogTitle": "Small useful things",
+    "ogSubtitle": "Delivered tomorrow in Cotonou",
+    "ogFooter": "Pay with Mobile Money, card or on delivery"
+  }
+}
