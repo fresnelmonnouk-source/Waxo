@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { clientIp } from "@/lib/checkout/rate-limit";
 import { rateLimitShared } from "@/lib/ratelimit";
 import { fetchTransaction } from "@/lib/payment/fedapay";
-import { fedapayConfig } from "@/lib/payment/config";
+import { loadFedapayConfig, loadStatusTokenSource } from "@/lib/payment/credentials";
 import { settleApprovedTransaction } from "@/lib/payment/settle";
 import { paymentStateFor, transactionMatchesOrder, type PaymentState } from "@/lib/payment/state";
 import { verifyOrderStatusToken } from "@/lib/payment/token";
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
   if (!NUMBER.test(number) || !TOKEN.test(token) || (txId && !TX_ID.test(txId))) {
     return reply({ ok: true, state: "unknown" satisfies PaymentState });
   }
-  if (!verifyOrderStatusToken(number, token)) return reply({ ok: true, state: "unknown" satisfies PaymentState });
+  if (!verifyOrderStatusToken(number, token, await loadStatusTokenSource())) return reply({ ok: true, state: "unknown" satisfies PaymentState });
 
   try {
     const admin = createAdminClient();
@@ -52,9 +52,10 @@ export async function GET(request: Request) {
     if (!order) return reply({ ok: true, state: "unknown" satisfies PaymentState });
 
     let tx = null;
-    if (!order.paid && txId && fedapayConfig()) {
+    const cfg = !order.paid && txId ? await loadFedapayConfig() : null;
+    if (cfg) {
       try {
-        const fetched = await fetchTransaction(txId);
+        const fetched = await fetchTransaction(txId, cfg);
         if (fetched && transactionMatchesOrder(fetched, order)) {
           tx = fetched;
           if (isApproved(fetched)) {

@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { assertAdmin } from "@/lib/admin/guard";
+import { loadFedapayConfig, fedapayStatus, saveFedapaySecrets, type FedapayStatus } from "@/lib/payment/credentials";
+import { pingFedapay } from "@/lib/payment/fedapay";
 import { createSharedLimiter } from "@/lib/ratelimit";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { createSessionClient } from "@/lib/supabase/server";
@@ -131,4 +133,83 @@ export async function changePasswordAction(input: unknown): Promise<ActionResult
     return fail("error");
   }
   return { ok: true };
+}
+
+// ───────────────────────── Paiement FedaPay (clés saisies depuis l'espace admin) ─────────────────────────
+// Les secrets ne quittent jamais le serveur : ils sont validés, chiffrés (AES-256-GCM) puis stockés ; seules des valeurs
+// masquées reviennent à l'écran. Chaque action : assertAdmin() d'abord.
+const payLimiter = createSharedLimiter({ name: "admin-panel-reglages-fedapay", windowMs: 10 * 60 * 1000, max: 15 });
+const KEY_RE = /^sk_(sandbox|live)_[A-Za-z0-9_-]{8,190}$/;
+const HOOK_RE = /^wh_(sandbox|live)_[A-Za-z0-9_-]{8,190}$/;
+
+const fedapaySchema = z
+  .object({
+    secretKey: z.string().trim().max(200).optional(), // vide = inchangé
+    webhookSecret: z.string().trim().max(200).optional(),
+    confirmLive: z.boolean().optional(),
+  })
+  .strict();
+
+export type FedapayActionData = { status: FedapayStatus };
+
+export async function saveFedapayAction(input: unknown): Promise<ActionResult<FedapayActionData>> {
+  const admin = await assertAdmin();
+  if (!admin) return fail("unauthorized");
+  const parsed = fedapaySchema.safeParse(input);
+  if (!parsed.success) return fail("invalid");
+  if (!(await payLimiter.hit(admin.id))) return fail("rate_limited");
+  const secretKey = parsed.data.secretKey || undefined;
+  const webhookSecret = parsed.data.webhookSecret || undefined;
+  if (!secretKey && !webhookSecret) return fail("invalid", "Renseignez au moins un des deux champs.");
+
+  const fe: Record<string, string> = {};
+  if (secretKey && !KEY_RE.test(secretKey)) fe.secretKey = "Clé invalide : elle commence par sk_sandbox_ ou sk_live_.";
+  if (webhookSecret && !HOOK_RE.test(webhookSecret)) fe.webhookSecret = "Secret invalide : il commence par wh_sandbox_ ou wh_live_.";
+  if (Object.keys(fe).length) return fail("invalid", "Corrigez les champs signalés.", fe);
+
+  // Le mode (essai / réel) de la clé et du secret de webhook doivent être le même, sinon aucun paiement ne serait confirmé.
+  const current = await fedapayStatus();
+  const modeOfKey = secretKey ? (secretKey.startsWith("sk_live_") ? "live" : "sandbox") : current.mode;
+  const modeOfHook = webhookSecret ? (webhookSecret.startsWith("wh_live_") ? "live" : "sandbox") : current.webhookMasked?.startsWith("wh_live_") ? "live" : current.webhookMasked?.startsWith("wh_sandbox_") ? "sandbox" : null;
+  if (modeOfKey && modeOfHook && modeOfKey !== modeOfHook) {
+    return fail("invalid", "La clé et le secret de webhook ne sont pas du même mode (essai / réel).", { [secretKey ? "secretKey" : "webhookSecret"]: "Mode différent de l'autre champ." });
+  }
+  if ((secretKey?.startsWith("sk_live_") || webhookSecret?.startsWith("wh_live_")) && parsed.data.confirmLive !== true) {
+    return fail("invalid", "Cochez la confirmation : une clé réelle encaisse de vrais paiements.", { confirmLive: "Confirmation requise." });
+  }
+
+  const res = await saveFedapaySecrets({ secretKey, webhookSecret });
+  if (!res.ok) {
+    if (res.code === "unavailable") return fail("unavailable");
+    if (res.code === "no_encryption") return fail("error", "Chiffrement indisponible : ajoutez SETTINGS_ENCRYPTION_KEY (16 caractères minimum) dans les variables du serveur.");
+    return fail("error");
+  }
+  revalidatePath("/admin/reglages");
+  return { ok: true, status: await fedapayStatus() };
+}
+
+export async function clearFedapayAction(which: unknown): Promise<ActionResult<FedapayActionData>> {
+  const admin = await assertAdmin();
+  if (!admin) return fail("unauthorized");
+  if (which !== "secret" && which !== "webhook" && which !== "all") return fail("invalid");
+  if (!(await payLimiter.hit(admin.id))) return fail("rate_limited");
+  const res = await saveFedapaySecrets({
+    ...(which !== "webhook" ? { secretKey: null } : {}),
+    ...(which !== "secret" ? { webhookSecret: null } : {}),
+  });
+  if (!res.ok) return fail(res.code === "unavailable" ? "unavailable" : "error");
+  revalidatePath("/admin/reglages");
+  return { ok: true, status: await fedapayStatus() };
+}
+
+export async function testFedapayAction(): Promise<ActionResult<{ mode: "sandbox" | "live" }>> {
+  const admin = await assertAdmin();
+  if (!admin) return fail("unauthorized");
+  if (!(await payLimiter.hit(admin.id))) return fail("rate_limited");
+  const cfg = await loadFedapayConfig();
+  if (!cfg) return fail("invalid", "Aucune clé FedaPay enregistrée.");
+  const result = await pingFedapay(cfg);
+  if (result === "ok") return { ok: true, mode: cfg.env };
+  if (result === "unauthorized") return fail("invalid", "FedaPay refuse cette clé : vérifiez qu'elle est complète et du bon mode (essai / réel).");
+  return fail("error", "FedaPay est injoignable pour le moment. Réessayez dans un instant.");
 }

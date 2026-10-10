@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import { fetchTransaction } from "@/lib/payment/fedapay";
-import { fedapayConfig } from "@/lib/payment/config";
+import { loadFedapayConfig, loadWebhookSecret } from "@/lib/payment/credentials";
 import { settleApprovedTransaction } from "@/lib/payment/settle";
 import { verifyFedapaySignature } from "@/lib/payment/signature";
 import { isApproved, parseTransaction } from "@/lib/payment/transaction";
 
 /**
  * POST /api/webhooks/fedapay — notification de paiement.
- *  - corps BRUT lu une seule fois, signature HMAC vérifiée (FEDAPAY_WEBHOOK_SECRET) AVANT tout traitement ;
+ *  - corps BRUT lu une seule fois, signature HMAC vérifiée (secret de webhook : espace admin ou FEDAPAY_WEBHOOK_SECRET) AVANT tout traitement ;
  *  - signature invalide → 401 ; secret absent → 503 (le prestataire réessaiera) ;
  *  - donnée illisible/événement inconnu → 200 (rien à réessayer), jamais 500 ;
- *  - le corps n'est pas cru : si FEDAPAY_SECRET_KEY existe, la transaction est relue chez FedaPay avant mark_paid ;
+ *  - le corps n'est pas cru : si une clé API FedaPay existe, la transaction est relue chez FedaPay avant mark_paid ;
  *  - idempotence : id d'événement `<nom>:<id transaction>` passé à mark_paid (table webhook_events) ;
  *  - panne transitoire (API/base) → 503 pour déclencher un nouvel essai.
  */
@@ -22,7 +22,7 @@ const json = (body: Record<string, unknown>, status = 200) =>
   NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
 export async function POST(request: Request) {
-  const secret = process.env.FEDAPAY_WEBHOOK_SECRET?.trim();
+  const secret = await loadWebhookSecret();
   if (!secret) return json({ ok: false, code: "not_configured" }, 503);
 
   let raw: string;
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
   try {
     let tx = claimed;
-    const cfg = fedapayConfig();
+    const cfg = await loadFedapayConfig();
     if (cfg) {
       const verified = await fetchTransaction(claimed.id, cfg);
       if (!verified) return json({ ok: true, ignored: "unverifiable" });

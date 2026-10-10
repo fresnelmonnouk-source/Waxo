@@ -103,7 +103,7 @@ describe("FedaPayProvider", () => {
 describe("choix du provider", () => {
   it("sans clé : mock explicite, jamais en production", async () => {
     vi.stubEnv("FEDAPAY_SECRET_KEY", "");
-    const provider = getPaymentProvider();
+    const provider = await getPaymentProvider();
     expect(provider).toBeInstanceOf(MockPaymentProvider);
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     await expect(provider.createCheckout(order)).resolves.toEqual({ pending: true });
@@ -114,8 +114,8 @@ describe("choix du provider", () => {
     await expect(provider.createCheckout(order)).rejects.toThrow("payment_provider_not_configured");
   });
 
-  it("avec clé : FedaPay", () => {
+  it("avec clé : FedaPay", async () => {
     vi.stubEnv("FEDAPAY_SECRET_KEY", "sk_sandbox_abc");
-    expect(getPaymentProvider().name).toBe("fedapay");
+    expect((await getPaymentProvider()).name).toBe("fedapay");
   });
 });

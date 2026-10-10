@@ -1,6 +1,7 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { fedapayConfig, siteUrl, type FedapayConfig } from "./config";
+import { siteUrl, type FedapayConfig } from "./config";
+import { loadFedapayConfig } from "./credentials";
 import { orderStatusToken } from "./token";
 import { parseTransaction, type FedapayTransaction } from "./transaction";
 import type { CheckoutResult, PayableOrder, PaymentProvider } from "./types";
@@ -48,11 +49,19 @@ async function call(cfg: FedapayConfig, path: string, init: { method: "GET" | "P
   }
 }
 
+/** Test de connexion (espace admin) : une lecture inoffensive prouve que la clé est acceptée par l'API du bon mode. */
+export async function pingFedapay(cfg: FedapayConfig): Promise<"ok" | "unauthorized" | "unreachable"> {
+  try {
+    await call(cfg, "/transactions?per_page=1", { method: "GET" });
+    return "ok";
+  } catch (e) {
+    return e instanceof FedapayError && (e.status === 401 || e.status === 403) ? "unauthorized" : "unreachable";
+  }
+}
+
 /** Relit une transaction directement chez FedaPay (source de vérité, jamais le corps d'un webhook). */
-export async function fetchTransaction(
-  id: string,
-  cfg: FedapayConfig | null = fedapayConfig(),
-): Promise<FedapayTransaction | null> {
+export async function fetchTransaction(id: string, given?: FedapayConfig | null): Promise<FedapayTransaction | null> {
+  const cfg = given === undefined ? await loadFedapayConfig() : given;
   if (!cfg || !/^[A-Za-z0-9_-]{1,64}$/.test(id)) return null;
   try {
     return parseTransaction(await call(cfg, `/transactions/${encodeURIComponent(id)}`, { method: "GET" }));
@@ -112,7 +121,7 @@ export class FedaPayProvider implements PaymentProvider {
   async createCheckout(order: PayableOrder): Promise<CheckoutResult> {
     const origin = siteUrl();
     if (!origin) throw new FedapayError("site_url_missing", 0);
-    const token = orderStatusToken(order.number);
+    const token = orderStatusToken(order.number, { FEDAPAY_WEBHOOK_SECRET: this.cfg.webhookSecret ?? undefined, FEDAPAY_SECRET_KEY: this.cfg.secretKey });
     const callbackUrl =
       `${origin}/${order.lang}/commande/merci?n=${encodeURIComponent(order.number)}` + (token ? `&k=${token}` : "");
 

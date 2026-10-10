@@ -6,7 +6,8 @@ import { createHmac, timingSafeEqual } from "node:crypto";
  * Comparaison à temps constant ; horodatage borné pour limiter le rejeu (l'idempotence en base couvre le reste).
  */
 
-export const SIGNATURE_TOLERANCE_SECONDS = 60 * 60;
+// 5 min = tolérance par défaut des SDK officiels FedaPay ; chaque nouvel essai de FedaPay porte une signature et un horodatage neufs.
+export const SIGNATURE_TOLERANCE_SECONDS = 5 * 60;
 
 export type SignatureCheck = { ok: true } | { ok: false; reason: "missing" | "malformed" | "stale" | "mismatch" };
 

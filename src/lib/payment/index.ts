@@ -1,5 +1,5 @@
 import "server-only";
-import { fedapayConfig } from "./config";
+import { loadFedapayConfig } from "./credentials";
 import { FedaPayProvider } from "./fedapay";
 import type { CheckoutResult, PayableOrder, PaymentProvider } from "./types";
 
@@ -15,16 +15,16 @@ export class MockPaymentProvider implements PaymentProvider {
     if (process.env.NODE_ENV === "production") {
       throw new Error("payment_provider_not_configured");
     }
-    console.warn(`[payment] MOCK : aucun paiement lancé pour ${order.number} (FEDAPAY_SECRET_KEY absente).`);
+    console.warn(`[payment] MOCK : aucun paiement lancé pour ${order.number} (aucune clé FedaPay configurée).`);
     return { pending: true };
   }
 }
 
 let mock: PaymentProvider | null = null;
 
-/** FedaPay si FEDAPAY_SECRET_KEY est présente ; sinon le mock (dev/test uniquement — voir MockPaymentProvider). */
-export function getPaymentProvider(): PaymentProvider {
-  const cfg = fedapayConfig();
+/** FedaPay si une clé est configurée (espace admin ou FEDAPAY_SECRET_KEY) ; sinon le mock (dev/test uniquement — voir MockPaymentProvider). */
+export async function getPaymentProvider(): Promise<PaymentProvider> {
+  const cfg = await loadFedapayConfig();
   if (cfg) return new FedaPayProvider(cfg);
   if (!mock) mock = new MockPaymentProvider();
   return mock;

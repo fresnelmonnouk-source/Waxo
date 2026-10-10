@@ -206,7 +206,7 @@ export async function POST(request: Request) {
     if (alreadyPaid) return NextResponse.json({ ok: true, order, payment: { kind: "paid" } });
 
     try {
-      const result = await getPaymentProvider().createCheckout({
+      const result = await (await getPaymentProvider()).createCheckout({
         orderId: placed.orderId,
         number: placed.number,
         total: placed.total,

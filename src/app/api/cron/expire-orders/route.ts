@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendOrderEmail } from "@/lib/email";
 import { refreshFxRates } from "@/lib/currency/refresh";
-import { fedapayConfig } from "@/lib/payment/config";
+import { loadFedapayConfig } from "@/lib/payment/credentials";
 import { cronAuthorized } from "@/lib/payment/cron-auth";
 import { fetchTransaction } from "@/lib/payment/fedapay";
 import { settleApprovedTransaction } from "@/lib/payment/settle";
@@ -68,7 +68,7 @@ export async function GET(request: Request) {
 
     // 1) Paiement déjà approuvé chez FedaPay mais webhook manqué : on règle au lieu d'annuler.
     let rescued = 0;
-    const cfg = fedapayConfig();
+    const cfg = await loadFedapayConfig();
     if (cfg && candidates.length > 0) {
       const { data: pendings } = await admin
         .from("payments")

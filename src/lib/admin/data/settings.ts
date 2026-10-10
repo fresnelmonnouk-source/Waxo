@@ -5,6 +5,9 @@ import { fmtXof } from "@/lib/money";
 import { formFromSettings, type SettingsForm } from "@/lib/settings/schema";
 import type { KbDoc, KbEntry } from "@/lib/settings/kb-search";
 import { tryAdminClient, withTimeout } from "@/lib/settings/db";
+import { siteUrl } from "@/lib/payment/config";
+import { fedapayStatus, type FedapayStatus } from "@/lib/payment/credentials";
+import { canEncrypt } from "@/lib/payment/secret-box";
 
 /** Réglages (lecture back-office) : base si configurée, sinon repli sur src/lib/demo/admin.json. */
 
@@ -83,4 +86,22 @@ export async function getProductKbDocs(): Promise<KbDoc[]> {
 export async function getAllKbDocs(): Promise<{ docs: KbDoc[]; entries: KbEntry[]; productCount: number; connected: boolean }> {
   const [{ entries, connected }, products] = await Promise.all([getKbEntries(), getProductKbDocs()]);
   return { docs: [...entries.map((e) => ({ ...e, kind: "kb" as const })), ...products], entries, productCount: products.length, connected };
+}
+
+/** État du paiement FedaPay pour l'espace admin : jamais de secret, seulement des valeurs masquées. */
+export type PaymentAdminView = {
+  status: FedapayStatus;
+  connected: boolean;
+  canEncrypt: boolean;
+  webhookUrl: string | null;
+};
+
+export async function getPaymentAdminView(): Promise<PaymentAdminView> {
+  const origin = siteUrl();
+  return {
+    status: await fedapayStatus(),
+    connected: tryAdminClient() !== null,
+    canEncrypt: canEncrypt(),
+    webhookUrl: origin ? `${origin}/api/webhooks/fedapay` : null,
+  };
 }
