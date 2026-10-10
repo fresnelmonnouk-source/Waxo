@@ -12,6 +12,7 @@ import { routing } from "@/i18n/routing";
 import { getSettings } from "@/lib/catalog";
 import { getPackBySlug, getPacks, getPacksEnabled } from "@/lib/catalog/packs";
 import { Price } from "@/lib/currency/client";
+import { withSeo } from "@/lib/seo/metadata";
 
 // Page statique (ISR) : aucun cookies()/headers(). Prix, économie et stock se rafraîchissent toutes les 2 minutes.
 export const revalidate = 120;
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   setRequestLocale(lang);
   const pack = await getPackBySlug(lang, slug);
   if (!pack) return {};
-  return { title: pack.name, description: pack.description };
+  return withSeo({ title: pack.name, description: pack.description }, lang, `/packs/${encodeURIComponent(slug)}`, { canonicalOnly: true });
 }
 
 export default async function PackPage({ params }: { params: Promise<Params> }) {

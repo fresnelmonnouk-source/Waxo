@@ -53,3 +53,24 @@ export function pageMetadata(input: PageMetaInput): Metadata {
     twitter: { card: "summary_large_image", title, description, images: images?.map((i) => i.url) },
   };
 }
+
+export type SeoOpts = {
+  /** Page privée (compte, connexion, suivi…) : `noindex, nofollow`, aucune balise canonique. */
+  noindex?: boolean;
+  /** Pages dont le slug change selon la langue (fiches produit, packs) : canonique seule, hreflang laissé au sitemap. */
+  canonicalOnly?: boolean;
+};
+
+/**
+ * Ajoute à des métadonnées de page la balise canonique (URL propre, sans filtres ni paramètres : `?cat=…`, `?col=…`) et les
+ * hreflang FR/EN. Sans cela, chaque variante d'URL d'une page serait indexée comme une page distincte.
+ */
+export function withSeo(meta: Metadata, lang: string, path: string, opts: SeoOpts = {}): Metadata {
+  if (opts.noindex) return { ...meta, robots: { index: false, follow: false } };
+  const base = siteUrl();
+  const canonical = absoluteUrl(lang, path, base);
+  return {
+    ...meta,
+    alternates: opts.canonicalOnly ? { canonical } : { canonical, languages: languageAlternates(path, base) },
+  };
+}

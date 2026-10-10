@@ -1,5 +1,7 @@
 // URL publique du site et chemins indexables. Fonctions PURES (testées dans tests/seo-*.test.ts).
 
+import { cleanOrigin } from "@/lib/origin";
+
 export const LOCALES = ["fr", "en"] as const;
 export type SeoLocale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: SeoLocale = "fr";
@@ -24,8 +26,8 @@ export const PRIVATE_PATH_PREFIXES = ["/compte", "/connexion", "/inscription", "
 
 /** Origine du site, sans slash final. NEXT_PUBLIC_SITE_URL (https://…) en production ; repli Vercel puis localhost (dev). */
 export function siteUrl(env: Record<string, string | undefined> = process.env): string {
-  const explicit = env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (explicit && /^https?:\/\/[^\s/]+/.test(explicit)) return explicit.replace(/\/+$/, "");
+  const explicit = cleanOrigin(env.NEXT_PUBLIC_SITE_URL);
+  if (explicit) return explicit;
   const vercel = env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
   if (vercel && /^[a-z0-9.-]+$/i.test(vercel)) return `https://${vercel}`;
   return "http://localhost:3007";

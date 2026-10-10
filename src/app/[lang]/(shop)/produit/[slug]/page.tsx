@@ -22,6 +22,7 @@ import { RatingLink } from "@/components/product/RatingLink";
 import { RelatedItem } from "@/components/product/RelatedItem";
 import { ReviewsSection, type ReviewView } from "@/components/product/ReviewsSection";
 import { Stars } from "@/components/product/Stars";
+import { withSeo } from "@/lib/seo/metadata";
 
 // Page statique (ISR) : aucun cookies()/headers(). Les avis et le stock se rafraîchissent toutes les 2 minutes.
 export const revalidate = 120;
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   setRequestLocale(lang);
   const product = await getProductBySlug(lang, slug);
   if (!product) return {};
-  return { title: product.name, description: product.description };
+  return withSeo({ title: product.name, description: product.description }, lang, `/produit/${encodeURIComponent(slug)}`, { canonicalOnly: true });
 }
 
 const DAY = 864e5;

@@ -1,4 +1,5 @@
 import "server-only";
+import { cleanOrigin } from "@/lib/origin";
 import { clientIp as ipFromHeaders } from "@/lib/checkout/rate-limit";
 
 /** Réponse JSON jamais mise en cache (données de session / formulaires). */
@@ -28,7 +29,7 @@ export async function readJson(req: Request, maxBytes = 20_000): Promise<Record<
 
 /** Origine publique du site (liens des e-mails d'authentification). Jamais lue depuis l'en-tête Origin (falsifiable). */
 export function siteOrigin(req: Request): string {
-  const env = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
+  const env = cleanOrigin(process.env.NEXT_PUBLIC_SITE_URL);
   if (env) return env;
   return new URL(req.url).origin;
 }

@@ -6,6 +6,7 @@ import { CatalogStatic } from "@/components/shop/CatalogStatic";
 import { CatalogView } from "@/components/shop/CatalogView";
 import { getShopData } from "@/components/shop/data";
 import { routing } from "@/i18n/routing";
+import { withSeo } from "@/lib/seo/metadata";
 
 // Type local : PageProps<"/[lang]/catalogue"> n'existe qu'après la génération des types de routes par Next.
 type Props = { params: Promise<{ lang: string }> };
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(routing.locales, lang)) return {};
   const t = await getTranslations({ locale: lang, namespace: "Catalog" });
-  return { title: t("title") };
+  return withSeo({ title: t("title") }, lang, "/catalogue");
 }
 
 // Catalogue : page statique ; filtres et tri pilotés par l'URL et appliqués côté navigateur (24 produits).

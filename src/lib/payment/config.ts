@@ -1,5 +1,7 @@
 // Configuration FedaPay lue dans l'environnement (jamais de clé dans le code). Pur : testable sans réseau.
 
+import { cleanOrigin } from "@/lib/origin";
+
 export type FedapayEnv = "sandbox" | "live";
 
 export type FedapayConfig = { secretKey: string; webhookSecret: string | null; env: FedapayEnv; apiBase: string };
@@ -22,8 +24,8 @@ export function fedapayConfig(source: Record<string, string | undefined> = proce
 
 /** Origine publique du site (retour de paiement). Variable explicite d'abord, puis domaine de production Vercel. */
 export function siteUrl(source: Record<string, string | undefined> = process.env): string | null {
-  const explicit = source.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
-  if (explicit && /^https?:\/\//i.test(explicit)) return explicit;
+  const explicit = cleanOrigin(source.NEXT_PUBLIC_SITE_URL);
+  if (explicit) return explicit;
   const vercel = source.VERCEL_PROJECT_PRODUCTION_URL?.trim();
   if (vercel) return `https://${vercel.replace(/^https?:\/\//i, "").replace(/\/+$/, "")}`;
   return null;

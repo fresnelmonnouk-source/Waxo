@@ -6,6 +6,7 @@ import { PackCard } from "@/components/packs/PackCard";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getPacks, getPacksEnabled } from "@/lib/catalog/packs";
+import { withSeo } from "@/lib/seo/metadata";
 
 // Page statique (ISR) : aucun cookies()/headers(). Le stock des packs se rafraîchit toutes les 2 minutes.
 export const revalidate = 120;
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   if (!hasLocale(routing.locales, lang)) return {};
   const t = await getTranslations({ locale: lang, namespace: "Packs" });
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return withSeo({ title: t("metaTitle"), description: t("metaDescription") }, lang, "/packs");
 }
 
 export default async function PacksPage({ params }: Props) {

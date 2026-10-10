@@ -9,6 +9,7 @@ import type { PageLocale, PageSlug } from "@/lib/pages/types";
 import { ARTICLE, DOC_BUTTON, DOC_H1 } from "./docStyles";
 import { LegalShell, type LegalId } from "./LegalShell";
 import { InlineView, MarkdownBlocks, type AnchorProps } from "./MarkdownView";
+import { withSeo } from "@/lib/seo/metadata";
 
 /** Lien rendu sur le site : `Link` i18n pour les chemins internes (préfixe de langue), `<a>` sûr pour http(s)/mailto. */
 function PublicAnchor({ href, internal, button, children }: AnchorProps) {
@@ -41,7 +42,7 @@ const DATED: PageSlug[] = ["cgv", "cgu", "confidentialite"];
 /** Titre de page pour `generateMetadata` (base si éditée, sinon texte par défaut). */
 export async function infoPageMetadata(slug: PageSlug, lang: string): Promise<Metadata> {
   const page = await getPage(slug, lang === "en" ? "en" : "fr");
-  return { title: page.title };
+  return withSeo({ title: page.title }, lang, `/${slug}`);
 }
 
 async function load(slug: PageSlug, lang: PageLocale) {
