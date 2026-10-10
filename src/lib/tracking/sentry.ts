@@ -1,62 +1,52 @@
-// Chargement PROTÉGÉ de @sentry/nextjs (serveur). Le paquet n'est pas une dépendance du projet tant qu'il n'est pas installé :
-// le nom est passé par une variable + commentaires d'ignorance, donc ni webpack ni Turbopack ne tentent de le résoudre au build.
-// Sans DSN ou sans paquet, tout est inerte (aucune erreur, aucun appel réseau).
-//
-// Pour activer : `npm i @sentry/nextjs`, définir SENTRY_DSN (serveur) — puis, pour la remontée côté navigateur et le
-// tracing de build, lancer l'assistant officiel (`npx @sentry/wizard@latest -i nextjs`) qui remplace ce chargement dynamique
-// par `withSentryConfig` + imports statiques (indispensable pour que le paquet soit inclus dans le déploiement Vercel).
-
-export type SentryLike = {
-  init: (options: Record<string, unknown>) => void;
-  captureRequestError?: (...args: unknown[]) => void;
-};
-
-let loaded: SentryLike | null | undefined;
+// Suivi d'erreurs Sentry : parties PURES (DSN, nettoyage des données). L'initialisation vit dans
+// sentry.server.config.ts (serveur) et src/instrumentation-client.ts (navigateur). Sans DSN valide : tout est inerte.
 
 export function sentryDsn(env: Record<string, string | undefined> = process.env): string | null {
   const dsn = (env.SENTRY_DSN ?? env.NEXT_PUBLIC_SENTRY_DSN ?? "").trim();
   return /^https:\/\/[^@\s]+@[^/\s]+\/\d+$/.test(dsn) ? dsn : null;
 }
 
-/** Retire cookies, en-têtes et corps de requête avant envoi : aucune donnée client ne part chez Sentry. */
-export function scrubEvent<T extends { request?: Record<string, unknown>; user?: unknown }>(event: T): T {
-  if (event.request) {
-    const { url, method } = event.request as { url?: unknown; method?: unknown };
-    event.request = { url, method };
+/** Même DSN lu côté navigateur (seule NEXT_PUBLIC_SENTRY_DSN y est disponible). */
+export function sentryBrowserDsn(value: string | undefined = process.env.NEXT_PUBLIC_SENTRY_DSN): string | null {
+  return sentryDsn({ SENTRY_DSN: value });
+}
+
+/** Adresse sans paramètres ni fragment : un jeton de suivi de commande (`?k=…`) ne part jamais chez Sentry. */
+export function stripQuery(url: unknown): unknown {
+  if (typeof url !== "string") return url;
+  return url.split(/[?#]/)[0];
+}
+
+/** Retire cookies, en-têtes, corps de requête, paramètres d'adresse et identité : aucune donnée client ne part chez Sentry. */
+export function scrubEvent<T extends { request?: object; user?: unknown }>(event: T): T {
+  const e = event as { request?: unknown; user?: unknown };
+  if (e.request && typeof e.request === "object") {
+    const { url, method } = e.request as { url?: unknown; method?: unknown };
+    e.request = { url: stripQuery(url), method };
   }
-  delete event.user;
+  delete e.user;
   return event;
 }
 
-export async function loadSentry(): Promise<SentryLike | null> {
-  if (loaded !== undefined) return loaded;
-  loaded = null;
-  const dsn = sentryDsn();
-  if (!dsn) return null;
-  try {
-    const name = "@sentry/nextjs";
-    const mod = (await import(/* webpackIgnore: true */ /* turbopackIgnore: true */ name)) as SentryLike;
-    if (typeof mod.init !== "function") return null;
-    mod.init({
-      dsn,
-      environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
-      sendDefaultPii: false,
-      tracesSampleRate: 0.1,
-      beforeSend: scrubEvent,
-    });
-    loaded = mod;
-  } catch {
-    /* paquet non installé : on continue sans Sentry */
+/** Fil d'Ariane : les adresses (fetch, navigation) perdent leurs paramètres ; les saisies et le texte des clics sont retirés. */
+export function scrubBreadcrumb<T extends { category?: string; message?: string; data?: { [key: string]: unknown } }>(crumb: T): T | null {
+  if (crumb.category === "ui.input") return null;
+  if (crumb.category === "ui.click") delete crumb.message;
+  const data = crumb.data;
+  if (data) {
+    for (const k of ["url", "from", "to"]) if (k in data) data[k] = stripQuery(data[k]);
   }
-  return loaded;
+  return crumb;
 }
 
-/** Remonte une erreur serveur à Sentry si disponible ; ne lève jamais. */
-export async function reportRequestError(...args: unknown[]): Promise<void> {
-  try {
-    const s = await loadSentry();
-    s?.captureRequestError?.(...args);
-  } catch {
-    /* le suivi d'erreurs ne doit jamais provoquer d'erreur */
-  }
+/** Options communes serveur + navigateur : erreurs seulement (pas de tracing ni de replay : site léger), aucune donnée personnelle. */
+export function baseOptions(dsn: string) {
+  return {
+    dsn,
+    environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
+    sendDefaultPii: false,
+    tracesSampleRate: 0,
+    beforeSend: scrubEvent,
+    beforeBreadcrumb: scrubBreadcrumb,
+  };
 }

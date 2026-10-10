@@ -13,6 +13,7 @@
     "gen:demo": "node scripts/gen-demo-json.mjs"
   },
   "dependencies": {
+    "@sentry/nextjs": "^11.6.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.3",
     "next": "16.4.0",

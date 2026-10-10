@@ -1,4 +1,6 @@
-// Initialisation Sentry côté serveur Node (appelée par src/instrumentation.ts). Inerte sans SENTRY_DSN ou sans @sentry/nextjs.
-import { loadSentry } from "./src/lib/tracking/sentry";
+// Initialisation Sentry côté serveur Node (appelée par src/instrumentation.ts). Inerte sans SENTRY_DSN valide.
+import * as Sentry from "@sentry/nextjs";
+import { baseOptions, sentryDsn } from "./src/lib/tracking/sentry";
 
-await loadSentry();
+const dsn = sentryDsn();
+if (dsn) Sentry.init(baseOptions(dsn));
