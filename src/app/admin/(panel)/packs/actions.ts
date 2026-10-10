@@ -222,6 +222,34 @@ export async function setPackActive(id: string, active: boolean): Promise<Action
   }
 }
 
+/**
+ * Active / désactive le menu Packs de la boutique (réglage public `settings.features.packs`).
+ * Désactivé : lien retiré de l'en-tête et du menu mobile, pages /packs en 404, hors sitemap, packs retirés des paniers et
+ * refusés à la commande. Les packs eux-mêmes sont conservés (rien n'est supprimé).
+ */
+export async function setPacksMenuEnabled(enabled: boolean): Promise<ActionResult> {
+  const p = await prepare();
+  if ("error" in p) return p.error;
+  if (typeof enabled !== "boolean") return fail("invalid", "Demande invalide.");
+  try {
+    const { data, error: readError } = await p.sb.from("settings").select("value").eq("key", "features").maybeSingle();
+    if (readError) {
+      logDb("features read", readError);
+      return fail("error", GENERIC);
+    }
+    const old = data?.value && typeof data.value === "object" && !Array.isArray(data.value) ? (data.value as Record<string, unknown>) : {};
+    const { error } = await p.sb.from("settings").upsert({ key: "features", value: { ...old, packs: enabled }, is_public: true }, { onConflict: "key" });
+    if (error) {
+      logDb("features write", error);
+      return fail("error", GENERIC);
+    }
+    refresh();
+    return { ok: true };
+  } catch {
+    return fail("error", GENERIC);
+  }
+}
+
 /** Suppression définitive, refusée si le pack figure dans une commande (historique) : le masquer à la place. */
 export async function deletePack(id: string): Promise<ActionResult> {
   const p = await prepare();

@@ -17,20 +17,20 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export function CartSanitizer() {
   const lines = useCartLines();
   const locale = useLocale();
-  const suspects = lines
-    .filter((l) => !UUID.test(l.id))
-    .map((l) => l.id)
-    .sort()
-    .join(",");
+  // Restes de démo (id non-UUID) ET packs du panier (à retirer si les packs sont désactivés depuis l'admin).
+  const packIds = lines.filter((l) => l.kind === "pack").map((l) => l.id);
+  const suspects = [...new Set([...lines.filter((l) => !UUID.test(l.id)).map((l) => l.id), ...packIds])].sort().join(",");
+  const packKey = packIds.join(",");
 
   useEffect(() => {
     if (!suspects) return;
     const ctrl = new AbortController();
     fetch(`/api/checkout/config?lang=${locale === "en" ? "en" : "fr"}&ids=${encodeURIComponent(suspects)}`, { signal: ctrl.signal })
       .then((r) => r.json())
-      .then((j: { ok?: boolean; stale?: unknown }) => {
+            .then((j: { ok?: boolean; stale?: unknown; packsEnabled?: unknown }) => {
         if (!j.ok || !Array.isArray(j.stale)) return;
         const stale = j.stale.filter((x): x is string => typeof x === "string");
+        if (j.packsEnabled === false && packKey) stale.push(...packKey.split(","));
         if (stale.length === 0) return;
         cart.removeMany(stale);
         shopToast.show({ kind: "staleRemoved" }, 5000);
@@ -39,7 +39,7 @@ export function CartSanitizer() {
         /* hors ligne : on réessaiera au prochain changement du panier */
       });
     return () => ctrl.abort();
-  }, [suspects, locale]);
+  }, [suspects, packKey, locale]);
 
   return null;
 }

@@ -75,7 +75,14 @@ export type PackProductRef = {
   active: boolean;
 };
 
-export type PacksData = { source: DataSource; packs: AdminPack[]; products: PackProductRef[]; truncated: boolean };
+export type PacksData = {
+  source: DataSource;
+  packs: AdminPack[];
+  products: PackProductRef[];
+  truncated: boolean;
+  /** Menu « Packs » affiché sur la boutique (réglage public `features.packs`). */
+  menuEnabled: boolean;
+};
 
 export type PackFormValues = {
   name: string;

@@ -9,7 +9,17 @@ import { COLLECTIONS, type ShellCategory } from "./logic";
  * Panneau « Catalogue » de l'en-tête (maquette lignes 117-141) : rayons, collections, lien « tout le catalogue ».
  * Le bloc sombre « Vous ne savez pas quoi choisir ? » ouvre l'assistant (J3).
  */
-export function MegaMenu({ categories, total, onNavigate }: { categories: ShellCategory[]; total: number; onNavigate: () => void }) {
+export function MegaMenu({
+  categories,
+  total,
+  onNavigate,
+  packsEnabled = true,
+}: {
+  categories: ShellCategory[];
+  total: number;
+  onNavigate: () => void;
+  packsEnabled?: boolean;
+}) {
   const t = useTranslations();
   return (
     <div
@@ -46,9 +56,11 @@ export function MegaMenu({ categories, total, onNavigate }: { categories: ShellC
               {t(`Catalog.col.${col}`)}
             </Link>
           ))}
-          <Link href="/packs" onClick={onNavigate} className="text-ink! border-border hover:text-terracotta-deep! border-b py-[10px] text-[15px] no-underline">
-            {t("Packs.navLabel")}
-          </Link>
+          {packsEnabled ? (
+            <Link href="/packs" onClick={onNavigate} className="text-ink! border-border hover:text-terracotta-deep! border-b py-[10px] text-[15px] no-underline">
+              {t("Packs.navLabel")}
+            </Link>
+          ) : null}
           <Link href="/catalogue" onClick={onNavigate} className="pt-3 text-[15px] font-semibold">
             {t("Shell.mega.all", { count: total })}
           </Link>

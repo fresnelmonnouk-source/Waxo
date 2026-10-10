@@ -45,9 +45,9 @@ function demoPacks(): AdminPack[] {
 
 export async function getAdminPacks(): Promise<PacksData> {
   const sb = adminDb();
-  if (!sb) return { source: "demo", packs: demoPacks(), products: demoProductRefs(), truncated: false };
+  if (!sb) return { source: "demo", packs: demoPacks(), products: demoProductRefs(), truncated: false, menuEnabled: true };
   try {
-    const [packs, prods] = await Promise.all([
+    const [packs, prods, features] = await Promise.all([
       withTimeout(
         sb
           .from("packs")
@@ -62,6 +62,7 @@ export async function getAdminPacks(): Promise<PacksData> {
           .order("created_at", { ascending: false })
           .range(0, ADMIN_LIST_LIMIT - 1),
       ),
+      withTimeout(sb.from("settings").select("value").eq("key", "features").maybeSingle()),
     ]);
     if (packs.error) throw packs.error;
     if (prods.error) throw prods.error;
@@ -97,8 +98,10 @@ export async function getAdminPacks(): Promise<PacksData> {
       }),
       products,
       truncated: rows.length >= ADMIN_LIST_LIMIT || products.length >= ADMIN_LIST_LIMIT,
+      // Seul `false` explicite désactive (comme côté boutique).
+      menuEnabled: (features.data?.value as { packs?: unknown } | null | undefined)?.packs !== false,
     };
   } catch {
-    return { source: "error", packs: [], products: [], truncated: false };
+    return { source: "error", packs: [], products: [], truncated: false, menuEnabled: true };
   }
 }

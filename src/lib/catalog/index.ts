@@ -30,6 +30,7 @@ export const DEFAULT_SETTINGS: ShopSettings = {
   },
   shipping: { cotonou: 1000, autre: 2500, freeFrom: 15000, cutoff: 18, returnDays: 7 },
   pay: { momo: true, moov: true, celtiis: true, carte: true, cod: true },
+  features: { packs: true },
 };
 
 const TIMEOUT_MS = 4000;
@@ -247,6 +248,8 @@ export async function getSettings(): Promise<ShopSettings> {
           brand: { ...DEFAULT_SETTINGS.brand, ...(byKey.brand ?? {}) },
           shipping: { ...DEFAULT_SETTINGS.shipping, ...(byKey.shipping ?? {}) },
           pay: { ...DEFAULT_SETTINGS.pay, ...(byKey.pay ?? {}) },
+          // Seul `false` explicite désactive : une valeur absente ou illisible garde la fonctionnalité en ligne.
+          features: { packs: (byKey.features as { packs?: unknown } | undefined)?.packs !== false },
         };
       }
     } catch {

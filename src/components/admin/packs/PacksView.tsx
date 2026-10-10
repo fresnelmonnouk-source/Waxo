@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { setPackActive } from "@/app/admin/(panel)/packs/actions";
+import { setPackActive, setPacksMenuEnabled } from "@/app/admin/(panel)/packs/actions";
 import { fmtXof } from "@/lib/money";
 import { SourceNotice, useToast } from "../products/ui";
 import { packSavings, packStock } from "../products/logic";
@@ -16,6 +16,21 @@ export function PacksView({ data }: { data: PacksData }) {
   const [activeOver, setActiveOver] = useState<Record<string, boolean>>({});
   const [, start] = useTransition();
   const [toast, show] = useToast();
+
+  const [menuOn, setMenuOn] = useState(data.menuEnabled);
+
+  const toggleMenu = () => {
+    const next = !menuOn;
+    setMenuOn(next);
+    start(async () => {
+      const res = await setPacksMenuEnabled(next);
+      if (res.ok) show(next ? "Menu Packs affiché sur la boutique." : "Menu Packs masqué : la page Packs n'est plus accessible.");
+      else {
+        setMenuOn(!next);
+        show(res.message);
+      }
+    });
+  };
 
   const byId = useMemo(() => new Map(data.products.map((p) => [p.id, p])), [data.products]);
 
@@ -39,6 +54,28 @@ export function PacksView({ data }: { data: PacksData }) {
   return (
     <div className="flex flex-col gap-5">
       <SourceNotice source={data.source} truncated={data.truncated} noun="packs" />
+
+      <div className="flex flex-col gap-1 rounded-2xl border border-[#E2DCCF] bg-white px-4 py-1.5">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={menuOn}
+          onClick={toggleMenu}
+          className="flex min-h-[52px] w-full cursor-pointer items-center justify-between gap-3 border-0 bg-transparent p-0 text-left text-sm"
+        >
+          <span className="flex flex-col gap-0.5">
+            <strong>Afficher le menu « Packs » sur la boutique</strong>
+            <span className="text-xs text-[#4A443C]">
+              {menuOn
+                ? "Actif : lien dans le menu, page Packs et fiches visibles, packs achetables."
+                : "Désactivé : lien retiré, page Packs introuvable, packs retirés des paniers. Vos packs sont conservés."}
+            </span>
+          </span>
+          <span aria-hidden="true" className="relative h-[26px] w-11 flex-none rounded-full transition-colors duration-200" style={{ background: menuOn ? "#1F6B4A" : "#C9C1B2" }}>
+            <span className="absolute top-[3px] h-5 w-5 rounded-full bg-white transition-[left] duration-200" style={{ left: menuOn ? 21 : 3 }} />
+          </span>
+        </button>
+      </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="max-w-[560px] text-sm text-[#4A443C]">

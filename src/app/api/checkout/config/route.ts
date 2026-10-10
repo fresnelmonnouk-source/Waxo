@@ -29,14 +29,15 @@ export async function GET(request: Request) {
       getProducts(lang, { sort: "popular" }),
       getPacks(lang).catch(() => []),
     ]);
+    const packsEnabled = settings.features?.packs !== false;
     const stock: Record<string, number> = {};
     for (const p of products) if (ids.has(p.id)) stock[p.id] = p.stock;
     // Packs du panier : stock = min des stocks des produits / quantité (calculé par getPacks).
-    for (const k of packs) if (ids.has(k.id)) stock[k.id] = k.stock;
+    if (packsEnabled) for (const k of packs) if (ids.has(k.id)) stock[k.id] = k.stock;
 
     // Ids du panier absents du catalogue ET qui ne sont pas des UUID (restes de la démo) : à retirer côté navigateur.
     // Jamais un UUID : si la base est lente et que le catalogue retombe sur la démo, un vrai panier ne doit pas être vidé.
-    const known = new Set([...products.map((p) => p.id), ...packs.map((k) => k.id)]);
+    const known = new Set([...products.map((p) => p.id), ...(packsEnabled ? packs.map((k) => k.id) : [])]);
     const stale = [...ids].filter((id) => !known.has(id) && !UUID.test(id));
 
     const upsell = products
@@ -45,7 +46,7 @@ export async function GET(request: Request) {
       .map((p) => ({ id: p.id, slug: p.slug, name: p.name, price: p.price, bg: p.bg, imageUrl: p.imageUrl }));
 
     return NextResponse.json(
-      { ok: true, shipping: settings.shipping, pay: settings.pay, stock, upsell, stale },
+      { ok: true, shipping: settings.shipping, pay: settings.pay, stock, upsell, stale, packsEnabled },
       { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } },
     );
   } catch {

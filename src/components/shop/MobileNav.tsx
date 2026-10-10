@@ -11,7 +11,7 @@ const SECTION = "text-muted text-[12px] font-semibold tracking-[0.08em] uppercas
 const PLAIN = "text-ink! hover:text-ink! no-underline";
 
 /** Tiroir de navigation mobile (maquette lignes 958-987), ouvert par le bouton ☰ sous 980 px. */
-export function MobileNav({ categories, onClose }: { categories: ShellCategory[]; onClose: () => void }) {
+export function MobileNav({ categories, onClose, packsEnabled = true }: { categories: ShellCategory[]; onClose: () => void; packsEnabled?: boolean }) {
   const t = useTranslations();
   const closeRef = useRef<HTMLButtonElement>(null);
   const [logged, setLogged] = useState(false);
@@ -81,9 +81,11 @@ export function MobileNav({ categories, onClose }: { categories: ShellCategory[]
               {t(`Catalog.col.${col}`)}
             </Link>
           ))}
-          <Link href="/packs" onClick={onClose} className={`${PLAIN} border-border border-b py-[11px] text-[15px]`}>
-            {t("Packs.navLabel")}
-          </Link>
+          {packsEnabled ? (
+            <Link href="/packs" onClick={onClose} className={`${PLAIN} border-border border-b py-[11px] text-[15px]`}>
+              {t("Packs.navLabel")}
+            </Link>
+          ) : null}
           <span className={`${SECTION} pt-[18px] pb-1`}>{t("Shell.mobile.help")}</span>
           <Link href="/a-propos" onClick={onClose} className={`${PLAIN} py-[11px] text-[15px]`}>
             {t("Shell.nav.about")}

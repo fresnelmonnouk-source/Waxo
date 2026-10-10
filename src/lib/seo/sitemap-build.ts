@@ -18,9 +18,16 @@ function entry(paths: Partial<Record<SeoLocale, string>>, base: string, extra: P
   return LOCALES.filter((l) => paths[l]).map((l) => ({ url: languages[l], alternates: { languages }, ...extra }));
 }
 
-export function buildSitemap(products: SitemapProduct[], base: string, packs: SitemapProduct[] = []): SitemapEntry[] {
+export function buildSitemap(
+  products: SitemapProduct[],
+  base: string,
+  packs: SitemapProduct[] = [],
+  opts: { packsEnabled?: boolean } = {},
+): SitemapEntry[] {
   const out: SitemapEntry[] = [];
+  const packsOn = opts.packsEnabled !== false;
   for (const p of STATIC_PUBLIC_PATHS) {
+    if (p === "/packs" && !packsOn) continue; // packs désactivés depuis l'admin : la page est en 404, hors sitemap
     const home = p === "/";
     out.push(...entry({ fr: p, en: p }, base, { changeFrequency: home || p === "/catalogue" ? "daily" : "monthly", priority: home ? 1 : p === "/catalogue" ? 0.9 : 0.5 }));
   }
@@ -33,7 +40,7 @@ export function buildSitemap(products: SitemapProduct[], base: string, packs: Si
     out.push(...entry(paths, base, { changeFrequency: "weekly", priority: 0.8, lastModified: prod.updatedAt }));
   }
   // Fiches pack : mêmes règles (FR/EN, repli FR), un cran sous les produits.
-  for (const pack of packs) {
+  for (const pack of packsOn ? packs : []) {
     const paths: Partial<Record<SeoLocale, string>> = {};
     for (const l of LOCALES) {
       const slug = pack.slugs[l] ?? pack.slugs.fr;

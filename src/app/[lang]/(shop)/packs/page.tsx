@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { PackCard } from "@/components/packs/PackCard";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { getPacks } from "@/lib/catalog/packs";
+import { getPacks, getPacksEnabled } from "@/lib/catalog/packs";
 
 // Page statique (ISR) : aucun cookies()/headers(). Le stock des packs se rafraîchit toutes les 2 minutes.
 export const revalidate = 120;
@@ -24,6 +24,8 @@ export default async function PacksPage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(routing.locales, lang)) notFound();
   setRequestLocale(lang);
+  // Packs désactivés depuis l'admin : la page n'existe plus (404), comme le lien du menu.
+  if (!(await getPacksEnabled())) notFound();
   const [t, packs] = await Promise.all([getTranslations({ locale: lang, namespace: "Packs" }), getPacks(lang)]);
 
   const benefits = [

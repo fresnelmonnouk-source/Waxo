@@ -5,6 +5,7 @@ import { supabasePublicEnv } from "@/lib/supabase/env";
 import { getPaymentProvider } from "@/lib/payment";
 import { sendOrderEmail } from "@/lib/email";
 import { withTimeout } from "@/lib/auth/timeout";
+import { getPacksEnabled } from "@/lib/catalog/packs";
 import {
   API_STATUS,
   apiMessage,
@@ -120,6 +121,8 @@ export async function POST(request: Request) {
     const input = parsed.data;
     lang = input.lang;
     if (!withinQuantityCaps(input.items)) return failGuard(lang, "quantity_limit");
+    // Packs désactivés depuis l'admin : un panier qui en contient encore est refusé (jamais une commande sur une offre retirée).
+    if (input.items.some((i) => i.kind === "pack") && !(await getPacksEnabled().catch(() => true))) return fail(lang, "cart_invalid");
 
     // Compte connecté éventuel : rattache la commande. Invité par défaut ; jamais bloquant.
     let userId: string | null = null;

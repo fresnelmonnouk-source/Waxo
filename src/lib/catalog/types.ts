@@ -44,7 +44,9 @@ export type BrandSettings = {
   hours: string;
 };
 export type PaySettings = { momo: boolean; moov: boolean; celtiis: boolean; carte: boolean; cod: boolean };
-export type ShopSettings = { brand: BrandSettings; shipping: ShippingSettings; pay: PaySettings };
+/** Fonctionnalités activables depuis l'admin (réglage public `features`). Absent en base = tout activé. */
+export type FeatureSettings = { packs: boolean };
+export type ShopSettings = { brand: BrandSettings; shipping: ShippingSettings; pay: PaySettings; features: FeatureSettings };
 
 export type ProductSort = "popular" | "new" | "price-asc" | "price-desc" | "rating";
 export type ProductQuery = { category?: string; q?: string; sort?: ProductSort; limit?: number };

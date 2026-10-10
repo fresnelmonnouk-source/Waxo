@@ -20,7 +20,17 @@ const NAV_LINK = "text-ink! hover:text-terracotta-deep! flex items-center px-3 n
  * panneau « Catalogue » et tiroir mobile. Seuil large/étroit de la maquette : 980 px.
  * Bouton « Assistant » (large seulement) : ouvre le widget de l'assistant (J3).
  */
-export function Header({ categories, searchIndex, total }: { categories: ShellCategory[]; searchIndex: SearchEntry[]; total: number }) {
+export function Header({
+  categories,
+  searchIndex,
+  total,
+  packsEnabled = true,
+}: {
+  categories: ShellCategory[];
+  searchIndex: SearchEntry[];
+  total: number;
+  packsEnabled?: boolean;
+}) {
   const t = useTranslations("Shell");
   const tp = useTranslations("Packs");
   const pathname = usePathname();
@@ -140,9 +150,11 @@ export function Header({ categories, searchIndex, total }: { categories: ShellCa
               <path d="M6 9l6 6 6-6" />
             </svg>
           </button>
-          <Link href="/packs" className={`${NAV_LINK} ${underline(pathname.startsWith("/packs"))}`}>
-            {tp("navLabel")}
-          </Link>
+          {packsEnabled ? (
+            <Link href="/packs" className={`${NAV_LINK} ${underline(pathname.startsWith("/packs"))}`}>
+              {tp("navLabel")}
+            </Link>
+          ) : null}
           <Link href="/catalogue?col=nouveautes" className={NAV_LINK}>
             {t("nav.new")}
           </Link>
@@ -168,10 +180,10 @@ export function Header({ categories, searchIndex, total }: { categories: ShellCa
             {t("nav.track")}
           </Link>
         </nav>
-        {megaOpen ? <MegaMenu categories={categories} total={total} onNavigate={closeAll} /> : null}
+        {megaOpen ? <MegaMenu categories={categories} total={total} onNavigate={closeAll} packsEnabled={packsEnabled} /> : null}
       </header>
       {megaOpen ? <div onClick={closeAll} aria-hidden="true" className="fixed inset-0 z-25 bg-[rgba(20,18,16,0.25)] max-[979px]:hidden" /> : null}
-      {mobileOpen ? <MobileNav categories={categories} onClose={closeAll} /> : null}
+      {mobileOpen ? <MobileNav categories={categories} onClose={closeAll} packsEnabled={packsEnabled} /> : null}
     </>
   );
 }

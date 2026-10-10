@@ -100,6 +100,17 @@ describe.each(["fr", "en"] as const)("rendu serveur (%s)", (locale) => {
     }
   });
 
+  it("menu Packs : lien présent par défaut, absent quand les packs sont désactivés (en-tête)", async () => {
+    const d = await data(locale);
+    const { Header } = await import("@/components/shop/Header");
+    const base = { categories: d.categories, searchIndex: d.searchIndex, total: d.products.length };
+    const on = await render(locale, () => createElement(Header, base));
+    const off = await render(locale, () => createElement(Header, { ...base, packsEnabled: false }));
+    expect(on.html).toContain('href="/packs"');
+    expect(off.html).not.toContain('href="/packs"');
+    expect(off.errors).toEqual([]);
+  });
+
   it("catalogue : version statique et version interactive (?cat=cuisine&sort=asc)", async () => {
     const d = await data(locale);
     const { CatalogStatic } = await import("@/components/shop/CatalogStatic");

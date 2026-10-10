@@ -10,7 +10,7 @@ import { STOCK_COLOR, stockKind } from "@/components/shop/logic";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getSettings } from "@/lib/catalog";
-import { getPackBySlug, getPacks } from "@/lib/catalog/packs";
+import { getPackBySlug, getPacks, getPacksEnabled } from "@/lib/catalog/packs";
 import { Price } from "@/lib/currency/client";
 
 // Page statique (ISR) : aucun cookies()/headers(). Prix, économie et stock se rafraîchissent toutes les 2 minutes.
@@ -39,6 +39,8 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
 
   const pack = await getPackBySlug(lang, slug);
   if (!pack) notFound();
+  // Packs désactivés depuis l'admin : la fiche n'existe plus (404).
+  if (!(await getPacksEnabled())) notFound();
 
   const [t, tp, all, settings] = await Promise.all([
     getTranslations({ locale: lang, namespace: "Packs.detail" }),

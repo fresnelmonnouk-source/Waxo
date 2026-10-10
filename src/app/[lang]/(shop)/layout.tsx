@@ -37,7 +37,12 @@ export default async function ShopLayout({ children, params }: LayoutProps<"/[la
         {t("skip")}
       </a>
       <TopBar freeFrom={settings.shipping.freeFrom} cod={settings.pay.cod} />
-      <Header categories={data.categories} searchIndex={data.searchIndex} total={data.products.length} />
+      <Header
+        categories={data.categories}
+        searchIndex={data.searchIndex}
+        total={data.products.length}
+        packsEnabled={settings.features.packs}
+      />
       <div id="contenu" tabIndex={-1} className="outline-none">
         {children}
       </div>

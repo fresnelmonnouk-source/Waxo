@@ -5,7 +5,7 @@ import type { Locale } from "@/i18n/routing";
 import { buildPack, type Pack, type PackItem } from "@/components/packs/logic";
 import { createPublicClient } from "@/lib/supabase/public";
 import { supabasePublicEnv } from "@/lib/supabase/env";
-import { getProducts, type Product } from "./index";
+import { getProducts, getSettings, type Product } from "./index";
 
 export type { Pack, PackItem };
 
@@ -196,6 +196,11 @@ export const getPacks = cache(async (locale: Locale): Promise<Pack[]> => {
     return [];
   }
 });
+
+/** Les packs sont-ils activés (bouton Admin → Packs) ? Vrai par défaut, y compris si la lecture échoue. */
+export async function getPacksEnabled(): Promise<boolean> {
+  return (await getSettings()).features?.packs !== false;
+}
 
 export async function getPackBySlug(locale: Locale, slug: string): Promise<Pack | null> {
   return (await getPacks(locale)).find((p) => p.slug === slug) ?? null;
