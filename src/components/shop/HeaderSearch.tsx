@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { assistant } from "@/components/assistant/store";
 import { Link, useRouter } from "@/i18n/navigation";
-import { fmtXof } from "@/lib/money";
+import { usePrice } from "@/lib/currency/client";
 import { cssUrl, norm, searchSuggestions, type SearchEntry } from "./logic";
 
 /**
@@ -12,6 +12,7 @@ import { cssUrl, norm, searchSuggestions, type SearchEntry } from "./logic";
  * « Demander à l'IA » (« IA » en étroit) et celui du panneau de suggestions ouvrent l'assistant avec la recherche en cours.
  */
 export function HeaderSearch({ entries }: { entries: SearchEntry[] }) {
+  const fmt = usePrice();
   const t = useTranslations("Shell.search");
   const ta = useTranslations("Assistant.entry");
   const router = useRouter();
@@ -99,7 +100,7 @@ export function HeaderSearch({ entries }: { entries: SearchEntry[] }) {
                 ) : null}
               </span>
               <span className="flex-1 text-[14px] leading-[1.3]">{g.name}</span>
-              <strong className="text-[14px] whitespace-nowrap">{fmtXof(g.price)}</strong>
+              <strong className="text-[14px] whitespace-nowrap">{fmt(g.price)}</strong>
             </Link>
           ))}
           {!suggestions.length ? <span className="text-muted p-[10px] text-[14px]">{ta("searchNone")}</span> : null}

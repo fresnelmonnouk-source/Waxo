@@ -66,6 +66,15 @@
       "viewCart": "Voir le panier",
       "soldOut": "Ce produit est épuisé pour le moment.",
       "maxStock": "{n, plural, one {Stock maximum atteint : # disponible.} other {Stock maximum atteint : # disponibles.}}"
+    },
+    "currency": {
+      "label": "Devise d'affichage",
+      "xof": "FCFA",
+      "eur": "Euro (€)",
+      "usd": "Dollar ($)",
+      "short": "Devise",
+      "note": "Prix en € ou $ à titre indicatif : le paiement se fait en FCFA.",
+      "payNote": "Vous payez en FCFA, soit {approx} à titre indicatif."
     }
   },
   "Home": {

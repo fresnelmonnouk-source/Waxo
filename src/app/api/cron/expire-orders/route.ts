@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendOrderEmail } from "@/lib/email";
+import { refreshFxRates } from "@/lib/currency/refresh";
 import { fedapayConfig } from "@/lib/payment/config";
 import { cronAuthorized } from "@/lib/payment/cron-auth";
 import { fetchTransaction } from "@/lib/payment/fedapay";
@@ -12,7 +13,8 @@ import { isApproved } from "@/lib/payment/transaction";
  * Protégé par `Authorization: Bearer $CRON_SECRET` (Vercel Cron l'ajoute tout seul) ; sans CRON_SECRET → 503.
  * Avant d'expirer, les commandes candidates dont la transaction FedaPay est déjà approuvée sont RÉGLÉES
  * (webhook perdu) au lieu d'être annulées ; les commandes vraiment expirées reçoivent l'e-mail « annulee ».
- * Hobby Vercel : 1 exécution par jour maximum (voir vercel.json).
+ * Greffe : rafraîchit aussi les taux €/$ d'affichage (fx_rates) dans son propre try — une panne de l'API de change
+ * n'invalide pas l'expiration, et inversement. Hobby Vercel : 1 exécution par jour maximum (voir vercel.json).
  */
 
 export const dynamic = "force-dynamic";
@@ -34,6 +36,15 @@ export async function GET(request: Request) {
     admin = createAdminClient();
   } catch {
     return reply({ ok: false, code: "unavailable" }, 503);
+  }
+
+  // Taux d'affichage : tâche indépendante, ne bloque jamais l'expiration des commandes.
+  let fx: "updated" | "no_source" | "failed" = "failed";
+  try {
+    const r = await refreshFxRates();
+    fx = r.ok ? "updated" : r.code === "no_source" ? "no_source" : "failed";
+  } catch {
+    fx = "failed";
   }
 
   try {
@@ -74,7 +85,7 @@ export async function GET(request: Request) {
 
     // 2) Expiration (SQL) puis e-mail d'annulation aux commandes réellement annulées.
     const { data: expired, error } = await admin.rpc("expire_stale_orders", { p_minutes: EXPIRE_AFTER_MINUTES });
-    if (error) return reply({ ok: false, code: "failed" }, 500);
+    if (error) return reply({ ok: false, code: "failed", fx }, 500);
 
     let notified = 0;
     if (candidates.length > 0) {
@@ -85,8 +96,8 @@ export async function GET(request: Request) {
       }
     }
 
-    return reply({ ok: true, expired: typeof expired === "number" ? expired : 0, rescued, notified });
+    return reply({ ok: true, expired: typeof expired === "number" ? expired : 0, rescued, notified, fx });
   } catch {
-    return reply({ ok: false, code: "failed" }, 500);
+    return reply({ ok: false, code: "failed", fx }, 500);
   }
 }

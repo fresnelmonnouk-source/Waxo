@@ -11,7 +11,7 @@ import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getSettings } from "@/lib/catalog";
 import { getPackBySlug, getPacks } from "@/lib/catalog/packs";
-import { fmtXof } from "@/lib/money";
+import { Price } from "@/lib/currency/client";
 
 // Page statique (ISR) : aucun cookies()/headers(). Prix, économie et stock se rafraîchissent toutes les 2 minutes.
 export const revalidate = 120;
@@ -88,10 +88,10 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
               {pack.name}
             </h1>
             <div className="flex flex-wrap items-baseline gap-2.5">
-              <strong className="text-[28px]">{fmtXof(pack.price)}</strong>
+              <strong className="text-[28px]"><Price amount={pack.price} /></strong>
               {pack.saving > 0 ? (
                 <>
-                  <span className="text-muted text-[17px] line-through">{fmtXof(pack.itemsTotal)}</span>
+                  <span className="text-muted text-[17px] line-through"><Price amount={pack.itemsTotal} /></span>
                   <span className="bg-terracotta-deep rounded-full px-2.5 py-1 text-[13px] font-semibold text-white">
                     {t("badge", { percent: pack.savingPercent })}
                   </span>
@@ -105,14 +105,14 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
             <dl className="bg-leaf-bg m-0 flex flex-col gap-1.5 rounded-2xl p-4 text-[14px]">
               <div className="flex justify-between gap-3">
                 <dt className="text-text">{t("separately")}</dt>
-                <dd className="m-0 font-medium">{fmtXof(pack.itemsTotal)}</dd>
+                <dd className="m-0 font-medium"><Price amount={pack.itemsTotal} /></dd>
               </div>
               <div className="flex justify-between gap-3">
                 <dt className="text-text">{t("packPrice")}</dt>
-                <dd className="m-0 font-medium">{fmtXof(pack.price)}</dd>
+                <dd className="m-0 font-medium"><Price amount={pack.price} /></dd>
               </div>
               <div className="text-leaf border-leaf/20 mt-1 border-t pt-2 font-semibold">
-                {t("youSave", { amount: fmtXof(pack.saving), percent: pack.savingPercent })}
+                {t.rich("youSave", { amount: () => <Price amount={pack.saving} />, percent: pack.savingPercent })}
               </div>
             </dl>
           ) : (

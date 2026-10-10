@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useCartLines } from "@/lib/cart/store";
-import { fmtXof } from "@/lib/money";
+import { usePrice } from "@/lib/currency/client";
 import { cartDrawer, useCartDrawerOpen } from "@/lib/ui/cart-drawer";
 import { addPackToCart } from "./add-pack";
 import type { Pack } from "./logic";
@@ -15,6 +15,7 @@ import type { Pack } from "./logic";
  * par le produit le plus limitant ; le serveur revérifie tout à la commande (`place_order`).
  */
 export function PackBuy({ pack }: { pack: Pack }) {
+  const fmt = usePrice();
   const t = useTranslations("Packs.detail");
   const router = useRouter();
   const lines = useCartLines();
@@ -66,7 +67,7 @@ export function PackBuy({ pack }: { pack: Pack }) {
             }}
             className="bg-ink text-cream h-[52px] flex-[1_1_200px] cursor-pointer rounded-full border-0 px-[22px] text-[16px] font-semibold hover:bg-[#2C2823]"
           >
-            {t("addToCart", { total: fmtXof(pack.price * qty) })}
+            {t("addToCart", { total: fmt(pack.price * qty) })}
           </button>
         </div>
         <button
@@ -90,7 +91,7 @@ export function PackBuy({ pack }: { pack: Pack }) {
         <div className="border-border bg-card fixed inset-x-0 bottom-0 z-[28] flex items-center gap-3 border-t px-4 py-3 shadow-[0_-10px_30px_-20px_rgba(20,18,16,.4)] min-[980px]:hidden">
           <div className="flex min-w-0 flex-1 flex-col">
             <span className="text-text truncate text-[13px]">{pack.name}</span>
-            <strong className="text-[17px]">{fmtXof(pack.price)}</strong>
+            <strong className="text-[17px]">{fmt(pack.price)}</strong>
           </div>
           <button
             type="button"

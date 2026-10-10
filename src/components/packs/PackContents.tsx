@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { cssUrl } from "@/components/shop/logic";
-import { fmtXof } from "@/lib/money";
+import { Price } from "@/lib/currency/client";
 import { itemCount, type PackItem } from "./logic";
 
 /** Liste « Dans ce pack » de la page détail : vignette, nom (lien vers la fiche), quantité, prix. */
@@ -35,10 +35,10 @@ export function PackContents({ items }: { items: PackItem[] }) {
               <Link href={`/produit/${it.slug}`} className="text-ink! hover:text-ink! text-[15px] leading-[1.3] font-medium no-underline">
                 {it.name}
               </Link>
-              <span className="text-muted text-[13px]">{t("each", { price: fmtXof(it.price) })}</span>
+              <span className="text-muted text-[13px]">{t.rich("each", { price: () => <Price amount={it.price} /> })}</span>
             </div>
             <div className="flex flex-none flex-col items-end gap-0.5">
-              <strong className="text-[15px]">{fmtXof(it.price * it.qty)}</strong>
+              <strong className="text-[15px]"><Price amount={it.price * it.qty} /></strong>
               {it.qty > 1 ? <span className="text-muted text-[13px]">× {it.qty}</span> : null}
             </div>
           </li>

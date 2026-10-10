@@ -2,6 +2,7 @@ import "server-only";
 import demo from "@/lib/demo/catalog.json";
 import type { Locale } from "@/i18n/routing";
 import { createPublicClient } from "@/lib/supabase/public";
+import { DEFAULT_FX, sanitizeFx, type FxRates } from "@/lib/currency/core";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import type {
   Category,
@@ -253,4 +254,23 @@ export async function getSettings(): Promise<ShopSettings> {
     }
   }
   return DEFAULT_SETTINGS;
+}
+
+/**
+ * Taux d'affichage €/$ (table fx_rates, rafraîchie par le cron — jamais d'appel API au rendu). 1 XOF = per_xof devise.
+ * Repli sur DEFAULT_FX (volontairement prudent) si la base est absente, vide ou incohérente.
+ */
+export async function getFxRates(): Promise<FxRates> {
+  if (supabasePublicEnv()) {
+    try {
+      const { data, error } = await withTimeout(createPublicClient().from("fx_rates").select("currency,per_xof"));
+      if (!error && data?.length) {
+        const by = Object.fromEntries(data.map((r) => [r.currency, Number(r.per_xof)]));
+        return sanitizeFx({ eur: by.EUR, usd: by.USD });
+      }
+    } catch {
+      /* repli par défaut */
+    }
+  }
+  return DEFAULT_FX;
 }

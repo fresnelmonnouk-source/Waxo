@@ -13,7 +13,8 @@ import {
   getSettings,
   type Product,
 } from "@/lib/catalog";
-import { discountPercent, fmtXof } from "@/lib/money";
+import { Price } from "@/lib/currency/client";
+import { discountPercent } from "@/lib/money";
 import { AskAssistantButton, SuggestAlternativeButton } from "@/components/product/AssistantButtons";
 import { cssImage, FALLBACK_BG } from "@/components/product/media";
 import { ProductBuy } from "@/components/product/ProductBuy";
@@ -164,10 +165,10 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
               {product.name}
             </h1>
             <div className="flex flex-wrap items-baseline gap-2.5">
-              <strong className="text-[28px]">{fmtXof(product.price)}</strong>
+              <strong className="text-[28px]"><Price amount={product.price} /></strong>
               {pct > 0 && product.comparePrice ? (
                 <>
-                  <span className="text-[17px] text-muted line-through">{fmtXof(product.comparePrice)}</span>
+                  <span className="text-[17px] text-muted line-through"><Price amount={product.comparePrice} /></span>
                   <span className="rounded-full bg-terracotta-deep px-2.5 py-1 text-[13px] font-semibold text-white">
                     -{pct} %
                   </span>

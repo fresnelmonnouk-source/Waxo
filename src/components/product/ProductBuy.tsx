@@ -6,7 +6,7 @@ import { assistant } from "@/components/assistant/store";
 import { useRouter } from "@/i18n/navigation";
 import { cart, useCartLines } from "@/lib/cart/store";
 import { cartDrawer, useCartDrawerOpen } from "@/lib/ui/cart-drawer";
-import { fmtXof } from "@/lib/money";
+import { usePrice } from "@/lib/currency/client";
 
 type Props = {
   id: string;
@@ -23,6 +23,7 @@ type Props = {
  * (maquette : `stickyBuy` = écran < 980 px, produit disponible, tiroir panier fermé).
  */
 export function ProductBuy({ id, slug, name, price, stock, bg, imageUrl }: Props) {
+  const fmt = usePrice();
   const t = useTranslations("Product");
   const router = useRouter();
   const lines = useCartLines();
@@ -83,7 +84,7 @@ export function ProductBuy({ id, slug, name, price, stock, bg, imageUrl }: Props
             }}
             className="h-[52px] flex-[1_1_200px] cursor-pointer rounded-full border-0 bg-ink px-[22px] text-[16px] font-semibold text-cream hover:bg-[#2C2823]"
           >
-            {t("addToCart", { total: fmtXof(price * qty) })}
+            {t("addToCart", { total: fmt(price * qty) })}
           </button>
         </div>
         <button
@@ -107,7 +108,7 @@ export function ProductBuy({ id, slug, name, price, stock, bg, imageUrl }: Props
         <div className="fixed inset-x-0 bottom-0 z-[28] flex items-center gap-3 border-t border-border bg-card px-4 py-3 shadow-[0_-10px_30px_-20px_rgba(20,18,16,.4)] min-[980px]:hidden">
           <div className="flex min-w-0 flex-1 flex-col">
             <span className="truncate text-[13px] text-text">{name}</span>
-            <strong className="text-[17px]">{fmtXof(price)}</strong>
+            <strong className="text-[17px]">{fmt(price)}</strong>
           </div>
           <button
             type="button"

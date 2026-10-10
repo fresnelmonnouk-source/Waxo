@@ -14,7 +14,7 @@ import {
   type PayMethod,
   type ShippingConfig,
 } from "@/lib/checkout/shipping";
-import { fmtXof } from "@/lib/money";
+import { useCurrency, usePrice } from "@/lib/currency/client";
 import { cartDrawer, useCartDrawerOpen } from "@/lib/ui/cart-drawer";
 import { askAssistant } from "@/components/product/assistant";
 import { cssImage, FALLBACK_BG } from "@/components/product/media";
@@ -53,7 +53,10 @@ export function CartDrawer() {
 }
 
 function DrawerContent() {
+  const fmt = usePrice();
   const t = useTranslations("Cart");
+  const tc = useTranslations("Shell.currency");
+  const currency = useCurrency();
   const locale = useLocale();
   const router = useRouter();
   const lines = useCartLines();
@@ -168,7 +171,7 @@ function DrawerContent() {
           <>
             <div className="flex flex-col gap-2 border-b border-border px-[22px] py-3.5">
               <span className="text-[14px]">
-                {remaining > 0 ? t("shipRemaining", { amount: fmtXof(remaining) }) : t("shipFree")}
+                {remaining > 0 ? t("shipRemaining", { amount: fmt(remaining) }) : t("shipFree")}
               </span>
               <div className="h-1.5 overflow-hidden rounded-full bg-border">
                 <div
@@ -231,7 +234,7 @@ function DrawerContent() {
                       </span>
                     ) : null}
                   </div>
-                  <strong className="text-[15px] whitespace-nowrap">{fmtXof(l.price * l.qty)}</strong>
+                  <strong className="text-[15px] whitespace-nowrap">{fmt(l.price * l.qty)}</strong>
                 </div>
                 );
               })}
@@ -258,7 +261,7 @@ function DrawerContent() {
                         }
                         className="min-h-10 cursor-pointer rounded-full border border-border-strong bg-transparent px-3 text-[13px] whitespace-nowrap hover:border-sun hover:bg-sun"
                       >
-                        + {fmtXof(u.price)}
+                        + {fmt(u.price)}
                       </button>
                     </div>
                   ))}
@@ -269,7 +272,7 @@ function DrawerContent() {
             <div className="flex flex-col gap-3 border-t border-border bg-card px-[22px] pt-[18px] pb-[22px]">
               <div className="flex justify-between text-[16px]">
                 <span>{t("subtotal")}</span>
-                <strong>{fmtXof(subtotal)}</strong>
+                <strong>{fmt(subtotal)}</strong>
               </div>
               <button
                 type="button"
@@ -282,6 +285,7 @@ function DrawerContent() {
                 {t("checkout")}
               </button>
               <span className="text-center text-[12px] text-text">{payLine}</span>
+              {currency !== "XOF" ? <span className="text-center text-[12px] text-muted">{tc("note")}</span> : null}
             </div>
           </>
         ) : (

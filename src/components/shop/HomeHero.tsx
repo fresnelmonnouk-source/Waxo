@@ -2,7 +2,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { HeroAssistantCard } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
 import type { Product, ShopSettings } from "@/lib/catalog/types";
-import { fmtXof } from "@/lib/money";
+import { Price } from "@/lib/currency/client";
 import { TAG_STYLE, cssUrl, fmtRating, heroProducts, productTag, promoLabel, storeRating, type TagKind } from "./logic";
 
 const STAR = "M12 2.6l2.8 6 6.6.6-5 4.5 1.5 6.5L12 16.9l-5.9 3.3 1.5-6.5-5-4.5 6.6-.6z";
@@ -91,9 +91,9 @@ export function HomeHero({
                   <div className="relative flex flex-col gap-[6px] rounded-[16px] bg-white/90 px-[14px] py-3">
                     <span className="text-[15px] leading-[1.25] font-semibold">{feat.name}</span>
                     <div className="flex items-baseline gap-2">
-                      <strong className="text-[18px]">{fmtXof(feat.price)}</strong>
+                      <strong className="text-[18px]"><Price amount={feat.price} /></strong>
                       {feat.comparePrice && feat.comparePrice > feat.price ? (
-                        <span className="text-muted text-[14px] line-through">{fmtXof(feat.comparePrice)}</span>
+                        <span className="text-muted text-[14px] line-through"><Price amount={feat.comparePrice} /></span>
                       ) : null}
                     </div>
                   </div>
@@ -116,7 +116,7 @@ export function HomeHero({
                       </span>
                       <div className="relative flex items-end justify-between gap-2 rounded-[12px] bg-white/90 py-2 pr-2 pl-[10px]">
                         <span className="text-[13px] leading-[1.25] font-medium">{p.name}</span>
-                        <span className="bg-ink text-cream rounded-full px-[9px] py-[5px] text-[12px] font-semibold whitespace-nowrap">{fmtXof(p.price)}</span>
+                        <span className="bg-ink text-cream rounded-full px-[9px] py-[5px] text-[12px] font-semibold whitespace-nowrap"><Price amount={p.price} /></span>
                       </div>
                     </Link>
                   );

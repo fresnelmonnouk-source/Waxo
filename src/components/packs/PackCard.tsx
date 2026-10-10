@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useCartLines } from "@/lib/cart/store";
-import { fmtXof } from "@/lib/money";
+import { usePrice } from "@/lib/currency/client";
 import { STOCK_COLOR, TAG_STYLE, stockKind } from "@/components/shop/logic";
 import { addPackToCart } from "./add-pack";
 import type { Pack } from "./logic";
@@ -14,6 +14,7 @@ import { PackVisual } from "./PackVisual";
  * visuel arrondi 20 px, pastille d'économie en terracotta-deep, bouton rond « + » de 44 px, prix en Onest gras.
  */
 export function PackCard({ pack, animate = false }: { pack: Pack; animate?: boolean }) {
+  const fmt = usePrice();
   const t = useTranslations("Packs.card");
   const lines = useCartLines();
   const inCart = lines.find((l) => l.kind === "pack" && l.id === pack.id)?.qty ?? 0;
@@ -36,7 +37,7 @@ export function PackCard({ pack, animate = false }: { pack: Pack; animate?: bool
           </span>
         ) : pack.saving > 0 ? (
           <span className="bg-terracotta-deep absolute top-3 left-3 rounded-full px-[10px] py-[5px] text-[12px] font-semibold text-white">
-            {t("save", { amount: fmtXof(pack.saving) })}
+            {t("save", { amount: fmt(pack.saving) })}
           </span>
         ) : null}
         {!soldOut ? (
@@ -56,8 +57,8 @@ export function PackCard({ pack, animate = false }: { pack: Pack; animate?: bool
         </Link>
         <span className="text-text text-[13px]">{t("products", { count: pack.items.length })}</span>
         <div className="flex flex-wrap items-baseline gap-2">
-          <strong className="text-[17px]">{fmtXof(pack.price)}</strong>
-          {pack.saving > 0 ? <s className="text-muted text-[14px]">{fmtXof(pack.itemsTotal)}</s> : null}
+          <strong className="text-[17px]">{fmt(pack.price)}</strong>
+          {pack.saving > 0 ? <s className="text-muted text-[14px]">{fmt(pack.itemsTotal)}</s> : null}
         </div>
         <span className="text-[13px]" style={{ color: STOCK_COLOR[stock] }}>
           {stockText}

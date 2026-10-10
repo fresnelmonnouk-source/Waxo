@@ -13,6 +13,8 @@ function query(table: string) {
 }
 
 vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => ({ rpc, from: (t: string) => query(t) }) }));
+const refreshFxRates = vi.fn();
+vi.mock("@/lib/currency/refresh", () => ({ refreshFxRates: (...a: unknown[]) => refreshFxRates(...a) }));
 vi.mock("@/lib/email", () => ({ sendOrderEmail: (...a: unknown[]) => sendOrderEmail(...a) }));
 
 import { GET } from "@/app/api/cron/expire-orders/route";
@@ -23,6 +25,8 @@ const call = (auth?: string) =>
 beforeEach(() => {
   rpc.mockReset();
   sendOrderEmail.mockReset();
+  refreshFxRates.mockReset();
+  refreshFxRates.mockResolvedValue({ ok: true, eurUsd: 1.12, rates: { eur: 0.0015, usd: 0.0017 } });
   for (const k of Object.keys(tables)) delete tables[k];
   vi.stubEnv("CRON_SECRET", "cron-secret");
   vi.stubEnv("FEDAPAY_SECRET_KEY", "");
@@ -44,9 +48,22 @@ describe("GET /api/cron/expire-orders", () => {
     sendOrderEmail.mockResolvedValue({ sent: true });
     const res = await call("Bearer cron-secret");
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ ok: true, expired: 1, rescued: 0, notified: 1 });
+    expect(await res.json()).toEqual({ ok: true, expired: 1, rescued: 0, notified: 1, fx: "updated" });
     expect(rpc).toHaveBeenCalledWith("expire_stale_orders", { p_minutes: 60 });
     expect(sendOrderEmail).toHaveBeenCalledWith("o1", "annulee");
+  });
+
+  it("une panne de l'API de change n'empêche pas l'expiration des commandes", async () => {
+    refreshFxRates.mockResolvedValue({ ok: false, code: "no_source" });
+    rpc.mockResolvedValue({ data: 0, error: null });
+    const res = await call("Bearer cron-secret");
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({ ok: true, fx: "no_source" });
+    refreshFxRates.mockRejectedValue(new Error("boom"));
+    const res2 = await call("Bearer cron-secret");
+    expect(res2.status).toBe(200);
+    expect(await res2.json()).toMatchObject({ ok: true, fx: "failed" });
+    expect(rpc).toHaveBeenCalledTimes(2);
   });
 
   it("erreur SQL : 500 générique sans détail", async () => {

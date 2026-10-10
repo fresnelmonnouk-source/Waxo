@@ -6,7 +6,7 @@ import { RefineButton } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
 import { useCartLines } from "@/lib/cart/store";
 import type { Product } from "@/lib/catalog/types";
-import { fmtXof } from "@/lib/money";
+import { usePrice } from "@/lib/currency/client";
 import { addProductToCart } from "./add-to-cart";
 import { TAG_STYLE, computeSelection, cssUrl, productTag, promoLabel, type TagKind } from "./logic";
 import { useViewedIds } from "./viewed";
@@ -17,6 +17,7 @@ import { useViewedIds } from "./viewed";
  * Le bouton « Affiner avec l'assistant » ouvre le widget (J3).
  */
 export function Selection({ products, newIds, bestIds }: { products: Product[]; newIds: string[]; bestIds: string[] }) {
+  const fmt = usePrice();
   const t = useTranslations("Home");
   const tc = useTranslations("Card");
   const viewed = useViewedIds();
@@ -80,7 +81,7 @@ export function Selection({ products, newIds, bestIds }: { products: Product[]; 
                   {p.name}
                 </Link>
                 <div className="flex items-center justify-between gap-2 pl-1">
-                  <strong className="text-[15px]">{fmtXof(p.price)}</strong>
+                  <strong className="text-[15px]">{fmt(p.price)}</strong>
                   <button
                     type="button"
                     aria-label={tc("add")}

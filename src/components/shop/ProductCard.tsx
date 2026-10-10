@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useCartLines } from "@/lib/cart/store";
 import type { Product } from "@/lib/catalog/types";
 import { favorites, useIsFavorite } from "@/lib/favorites/store";
-import { fmtXof } from "@/lib/money";
+import { usePrice } from "@/lib/currency/client";
 import { addProductToCart } from "./add-to-cart";
 import { STOCK_COLOR, TAG_STYLE, cssUrl, fmtRating, productTag, promoLabel, stockKind, type TagKind } from "./logic";
 
@@ -31,6 +31,7 @@ export function ProductCard({
   rank?: number;
   animate?: boolean;
 }) {
+  const fmt = usePrice();
   const t = useTranslations("Card");
   const locale = useLocale();
   const isFav = useIsFavorite(product.id);
@@ -129,9 +130,9 @@ export function ProductCard({
           </span>
         ) : null}
         <div className="flex flex-wrap items-baseline gap-2">
-          <strong className="text-[17px]">{fmtXof(product.price)}</strong>
+          <strong className="text-[17px]">{fmt(product.price)}</strong>
           {hasOld && product.comparePrice ? (
-            <s className="text-muted text-[14px]">{fmtXof(product.comparePrice)}</s>
+            <s className="text-muted text-[14px]">{fmt(product.comparePrice)}</s>
           ) : null}
         </div>
         <span className="text-[13px]" style={{ color: STOCK_COLOR[stock] }}>

@@ -9,6 +9,7 @@ import { Header } from "@/components/shop/Header";
 import { Newsletter } from "@/components/shop/Newsletter";
 import { ShopToast } from "@/components/shop/ShopToast";
 import { TopBar } from "@/components/shop/TopBar";
+import { CurrencyProvider } from "@/lib/currency/client";
 import { routing } from "@/i18n/routing";
 
 /**
@@ -24,7 +25,7 @@ export default async function ShopLayout({ children, params }: LayoutProps<"/[la
   const { settings } = data;
 
   return (
-    <>
+    <CurrencyProvider fx={data.fx}>
       <a
         href="#contenu"
         className="bg-sun text-ink! focus:outline-ink absolute -top-20 left-4 z-[80] rounded-full px-4 py-3 font-semibold no-underline focus:top-3"
@@ -41,6 +42,6 @@ export default async function ShopLayout({ children, params }: LayoutProps<"/[la
       <CartDrawer />
       <ShopToast />
       <AssistantWidget />
-    </>
+    </CurrencyProvider>
   );
 }

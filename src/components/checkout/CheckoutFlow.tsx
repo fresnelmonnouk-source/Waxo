@@ -16,6 +16,7 @@ import {
   type ShippingConfig,
   type Zone,
 } from "@/lib/checkout/shipping";
+import { useApproxPrice } from "@/lib/currency/client";
 import { fmtXof } from "@/lib/money";
 import { cssImage, FALLBACK_BG } from "@/components/product/media";
 import { CheckoutShell } from "./CheckoutShell";
@@ -75,6 +76,8 @@ const inputClass = "rounded-[14px] border bg-card p-3.5 text-[16px] font-normal"
 
 export function CheckoutFlow({ shipping, pay }: Props) {
   const t = useTranslations("Checkout");
+  const tc = useTranslations("Shell.currency");
+  const approx = useApproxPrice();
   const locale = useLocale();
   const router = useRouter();
   const hydrated = useHydrated();
@@ -514,6 +517,9 @@ export function CheckoutFlow({ shipping, pay }: Props) {
             <span>{t("total")}</span>
             <span>{fmtXof(total)}</span>
           </div>
+          {approx(total) ? (
+            <span className="text-muted text-right text-[13px]">{tc("payNote", { approx: approx(total) as string })}</span>
+          ) : null}
         </div>
         <span className="rounded-xl bg-leaf-bg px-3 py-2.5 text-[13px] text-leaf">
           {t("returns", { days: shipping.returnDays })}

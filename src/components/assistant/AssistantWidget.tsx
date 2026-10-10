@@ -7,7 +7,7 @@ import { shopToast } from "@/components/shop/toast";
 import { Link, usePathname } from "@/i18n/navigation";
 import type { AssistantAction, CardProduct } from "@/lib/assistant/types";
 import { cart, useCartLines } from "@/lib/cart/store";
-import { fmtXof } from "@/lib/money";
+import { usePrice } from "@/lib/currency/client";
 import { useCartDrawerOpen } from "@/lib/ui/cart-drawer";
 import { assistant, useAssistant, type ChatMsg } from "./store";
 
@@ -29,6 +29,7 @@ function Mark({ size, className = "" }: { size: number; className?: string }) {
 }
 
 function ProductRow({ p }: { p: CardProduct }) {
+  const fmt = usePrice();
   const t = useTranslations("Assistant.widget");
   const lines = useCartLines();
   const [added, setAdded] = useState(false);
@@ -66,7 +67,7 @@ function ProductRow({ p }: { p: CardProduct }) {
       </Link>
       <Link href={`/produit/${p.slug}`} onClick={leave} className="text-ink! hover:text-ink! flex min-w-0 flex-1 flex-col gap-[2px] no-underline">
         <span className="text-[13.5px] leading-tight">{p.name}</span>
-        <strong className="text-[13.5px]">{fmtXof(p.price)}</strong>
+        <strong className="text-[13.5px]">{fmt(p.price)}</strong>
         {soldOut ? (
           <span className="text-muted text-[12px]">{t("outOfStock")}</span>
         ) : p.stock <= 5 ? (

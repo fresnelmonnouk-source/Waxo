@@ -66,6 +66,15 @@
       "viewCart": "View cart",
       "soldOut": "This product is sold out for now.",
       "maxStock": "{n, plural, one {Maximum stock reached: # available.} other {Maximum stock reached: # available.}}"
+    },
+    "currency": {
+      "label": "Display currency",
+      "xof": "CFA francs",
+      "eur": "Euro (€)",
+      "usd": "US dollar ($)",
+      "short": "Currency",
+      "note": "Prices in € or $ are approximate: you pay in CFA francs (FCFA).",
+      "payNote": "You pay in CFA francs (FCFA), about {approx} for reference."
     }
   },
   "Home": {
