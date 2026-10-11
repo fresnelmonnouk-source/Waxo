@@ -131,10 +131,10 @@ export function HomeHero({
           className="grid grid-cols-1 gap-px border-t border-[rgba(244,241,234,0.18)] bg-[rgba(244,241,234,0.18)] min-[420px]:grid-cols-2 min-[760px]:grid-cols-4"
         >
           {[
-            [t("g1Title"), t("g1Sub", { hour: settings.shipping.cutoff })],
+            [t("g1Title"), t("g1Sub")],
             [cod ? t("g2CodTitle") : t("g2Title"), cod ? t("g2CodSub") : t("g2Sub")],
-            [t("g3Title"), t("g3Sub")],
-            [t("g4Title", { days: settings.shipping.returnDays }), t("g4Sub")],
+            [t("g3Title"), t("g3Sub", { hour: settings.shipping.cutoff })],
+            [t("g4Title"), t("g4Sub")],
           ].map(([title, sub]) => (
             <div key={title} className="bg-ink flex flex-col gap-[3px] px-6 py-[18px]">
               <strong className="text-[15px]">{title}</strong>
