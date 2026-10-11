@@ -31,7 +31,6 @@ export function LegalShell({ current, children }: { current: LegalId; children: 
           );
         })}
       </nav>
-      <div className="mb-7 rounded-[16px] bg-[#FBEFC9] px-4 py-[14px] text-[14px] leading-[1.5]">{t("draft")}</div>
       {children}
     </main>
   );

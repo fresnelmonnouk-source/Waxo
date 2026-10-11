@@ -68,11 +68,11 @@ beforeEach(() => {
 });
 
 describe("pages : lecture en base avec repli", () => {
-  it("sans ligne en base : texte par défaut, bandeau « modèle à valider », « en vigueur », marqueurs « à compléter »", async () => {
+  it("sans ligne en base : texte par défaut, sans bandeau « modèle », « en vigueur », marqueurs « à compléter »", async () => {
     const html = await render("cgv", "fr");
     expect(html).toContain("Conditions générales de vente");
     expect(html).toContain("En vigueur au 8 octobre 2026");
-    expect(html).toContain("doit être validé par un juriste");
+    expect(html).not.toContain("validé par un juriste"); // bandeau « modèle » retiré (décision Fresnel 2026-10-11)
     expect(html).toContain("<mark");
     expect(html).toContain("[à compléter]");
     expect(html).toMatch(new RegExp(`avant ${DEFAULT_SETTINGS.shipping.cutoff}\\sh`));

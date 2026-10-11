@@ -304,13 +304,6 @@ export function PageEditor({
             </span>
           </div>
           <div className="rounded-[16px] bg-[#F4F1EA] p-4">
-            {isAbout ? null : (
-            <div className="mb-4 rounded-[12px] bg-[#FBEFC9] px-3 py-2 text-[12px] leading-[1.5]">
-              {locale === "fr"
-                ? "Modèle rédigé pour la maquette. Les éléments entre crochets sont à compléter et l'ensemble doit être validé par un juriste avant la mise en ligne."
-                : "Template drafted for the mockup. Items in square brackets are to be completed and the whole must be reviewed by a lawyer before going live."}
-            </div>
-            )}
             <article className={ARTICLE}>
               <div className={DOC_H1}>{draft.title || "Sans titre"}</div>
               <MarkdownBlocks blocks={blocks} Anchor={Anchor} />

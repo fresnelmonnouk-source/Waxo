@@ -1,7 +1,7 @@
 "use client";
 
 // Chargement des scripts GA4 et Meta Pixel — UNIQUEMENT après consentement, jamais sans identifiant valide.
-// Inerte (aucun appel réseau, aucune injection) si NEXT_PUBLIC_GA_ID est absent ou mal formé.
+// GA4 : ID public posé par défaut (G-1MM204MVSY), NEXT_PUBLIC_GA_ID le remplace ; chargé seulement après accord (opt-in).
 // Meta Pixel : ID public posé par défaut (NEXT_PUBLIC_ est figé au build : une variable oubliée couperait le pixel en silence) ;
 // NEXT_PUBLIC_META_PIXEL_ID le remplace si elle est définie. Jamais chargé en local (dev) pour ne pas polluer les données Meta.
 import { validGaId, validPixelId } from "./consent";
@@ -22,7 +22,8 @@ type TrackWindow = {
   _fbq?: Fbq;
 } & Record<string, unknown>;
 
-export const gaId = (): string | null => validGaId(process.env.NEXT_PUBLIC_GA_ID);
+const DEFAULT_GA_ID = "G-1MM204MVSY";
+export const gaId = (): string | null => validGaId(process.env.NEXT_PUBLIC_GA_ID || DEFAULT_GA_ID);
 const DEFAULT_PIXEL_ID = "4573203199565862";
 const isLocalHost = (): boolean => typeof window !== "undefined" && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname);
 export const pixelId = (): string | null => (isLocalHost() ? null : validPixelId(process.env.NEXT_PUBLIC_META_PIXEL_ID || DEFAULT_PIXEL_ID));
