@@ -71,7 +71,7 @@ describe("modèles Supabase Auth générés", () => {
     expect(config).not.toMatch(/site_url = "http:\/\/(localhost|127)/);
   });
   it("uniquement des variables Supabase connues ; aucune donnée saisie par l'utilisateur (prénom…)", () => {
-    const allowed = new Set([".ConfirmationURL", ".SiteURL", ".Token", ".NewEmail", "else", "end"]);
+    const allowed = new Set([".TokenHash", ".SiteURL", ".Token", ".NewEmail", "else", "end"]);
     for (const f of files) {
       const html = readFileSync(join(dir, f), "utf8");
       for (const m of html.matchAll(/\{\{\s*([^}]*?)\s*\}\}/g)) {
@@ -93,6 +93,19 @@ describe("modèles Supabase Auth générés", () => {
         continue;
       }
       expect(html, f).toMatch(/^\{\{ if [^}]+\}\}<!doctype html>[\s\S]*lang="en"[\s\S]*\{\{ else \}\}<!doctype html>[\s\S]*lang="fr"[\s\S]*\{\{ end \}\}\s*$/);
+    }
+  });
+  it("liens sur le domaine de la boutique (/api/auth/confirm), type et langue de chaque branche ; jamais supabase.co", () => {
+    const types: Record<string, string> = { confirmation: "email", recovery: "recovery", email_change: "email_change", magic_link: "email", invite: "invite" };
+    for (const [name, type] of Object.entries(types)) {
+      const html = readFileSync(join(dir, `${name}.html`), "utf8");
+      expect(html, name).not.toContain("ConfirmationURL");
+      const [en, fr] = html.split("{{ else }}");
+      for (const [part, lang] of [[en, "en"], [fr, "fr"]] as const) {
+        const links = [...part.matchAll(/href="([^"]*\/api\/auth\/confirm[^"]*)"/g)].map((m) => m[1]);
+        expect(links.length, `${name} ${lang}`).toBe(2); // bouton + lien de secours
+        for (const l of links) expect(l).toBe(`{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&amp;type=${type}&amp;lang=${lang}`);
+      }
     }
   });
   it("logo servi par le site (suivi automatique du domaine)", () => {

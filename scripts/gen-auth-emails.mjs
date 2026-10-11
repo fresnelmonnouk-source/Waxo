@@ -4,13 +4,16 @@
 //
 // Contraintes Supabase (GoTrue) : pas de variable personnalisée → marque écrite en dur ; une seule version par modèle →
 // FR/EN choisis par condition sur `locale` (métadonnée posée à l'inscription), français par défaut ; aucune donnée saisie par
-// l'utilisateur n'est insérée (pas d'injection possible). Variables utilisées : .ConfirmationURL, .Token, .SiteURL, .NewEmail.
+// l'utilisateur n'est insérée (pas d'injection possible). Variables utilisées : .TokenHash, .Token, .SiteURL, .NewEmail.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { button, code, fallbackLink, helpBlock, join as j, notice, p, raw, renderLayout } from "../src/lib/email/layout.ts";
 
 const OUT = "supabase/email-templates";
 const LOGO = "{{ .SiteURL }}/email/logo-light.png";
+// Lien sur le domaine de la boutique (et non supabase.co), traité par src/app/api/auth/confirm/route.ts. La langue vient de la
+// branche FR/EN du modèle.
+const confirmLink = (type) => (locale) => `{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=${type}&lang=${locale}`;
 
 const COMMON = {
   fr: {
@@ -59,7 +62,7 @@ const TEMPLATES = {
       cta: "Confirm my address",
       after: "Didn't create an account? Simply ignore this message, nothing will be activated.",
     },
-    link: "{{ .ConfirmationURL }}",
+    link: confirmLink("email"),
   },
   recovery: {
     subject: "Réinitialisez votre mot de passe · Wá xɔ",
@@ -79,7 +82,7 @@ const TEMPLATES = {
       cta: "Choose a new password",
       after: "Didn't ask for this? Ignore this message: your current password still works.",
     },
-    link: "{{ .ConfirmationURL }}",
+    link: confirmLink("recovery"),
   },
   email_change: {
     subject: "Confirmez votre nouvelle adresse e-mail · Wá xɔ",
@@ -99,7 +102,7 @@ const TEMPLATES = {
       cta: "Confirm the new address",
       after: "Wasn't you? Don't click and contact us: your current address stays active.",
     },
-    link: "{{ .ConfirmationURL }}",
+    link: confirmLink("email_change"),
   },
   magic_link: {
     subject: "Votre lien de connexion · Wá xɔ",
@@ -119,7 +122,7 @@ const TEMPLATES = {
       cta: "Sign me in",
       after: "Didn't try to sign in? Ignore this message.",
     },
-    link: "{{ .ConfirmationURL }}",
+    link: confirmLink("email"),
   },
   invite: {
     subject: "Vous êtes invité(e) sur Wá xɔ",
@@ -139,7 +142,7 @@ const TEMPLATES = {
       cta: "Accept the invitation",
       after: "Not expecting this invitation? Ignore this message.",
     },
-    link: "{{ .ConfirmationURL }}",
+    link: confirmLink("invite"),
   },
   reauthentication: {
     subject: "Votre code de vérification · Wá xɔ",
@@ -200,13 +203,14 @@ const TEMPLATES = {
 function render(locale, tpl) {
   const c = COMMON[locale];
   const t = tpl[locale];
+  const link = tpl.link?.(locale);
   const body = j(
     p(c.hello, "strong"),
     ...t.lines.map((l) => p(l)),
-    tpl.link ? button(tpl.link, t.cta) : null,
+    link ? button(link, t.cta) : null,
     tpl.token ? code(tpl.token) : null,
     t.after ? notice(t.after) : null,
-    tpl.link ? fallbackLink(c.fallback, tpl.link) : null,
+    link ? fallbackLink(c.fallback, link) : null,
     p(c.sign, "strong"),
   );
   return renderLayout({

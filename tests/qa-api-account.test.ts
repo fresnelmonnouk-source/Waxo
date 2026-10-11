@@ -356,6 +356,53 @@ describe("GET /api/auth/callback/[lang]/[kind]", () => {
   });
 });
 
+describe("GET /api/auth/confirm (liens des e-mails de compte, token_hash)", () => {
+  const verify = vi.fn();
+  beforeEach(() => {
+    verify.mockReset();
+    session.create.mockResolvedValue({ auth: { verifyOtp: verify } });
+    vi.stubEnv("RECOVERY_COOKIE_SECRET", "test-recovery-secret");
+  });
+  afterEach(() => vi.unstubAllEnvs());
+  const go = async (qs: string) => {
+    const m = await import("@/app/api/auth/confirm/route");
+    const res = await m.GET(new Request(`http://localhost/api/auth/confirm${qs}`));
+    return { status: res.status, location: res.headers.get("location") };
+  };
+
+  it("paramètres manquants ou type inconnu → connexion avec erreur, sans appel à Supabase", async () => {
+    for (const qs of ["", "?type=email&lang=en", "?token_hash=h&lang=en", "?token_hash=h&type=sms&lang=en"]) {
+      expect((await go(qs)).location, qs).toMatch(/\/connexion\?error=link$/);
+    }
+    expect(verify).not.toHaveBeenCalled();
+  });
+  it("confirmation d'inscription → verifyOtp(type, token_hash) puis /compte dans la langue du lien", async () => {
+    verify.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+    expect(await go("?token_hash=pkce_abc&type=email&lang=en")).toEqual({ status: 303, location: "http://localhost/en/compte" });
+    expect(verify).toHaveBeenCalledWith({ type: "email", token_hash: "pkce_abc" });
+    expect(cookieStore.set).not.toHaveBeenCalled();
+  });
+  it("réinitialisation (et invitation) → cookie de récupération signé + onglet sécurité", async () => {
+    verify.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+    for (const type of ["recovery", "invite"]) {
+      expect((await go(`?token_hash=h&type=${type}&lang=fr`)).location).toBe("http://localhost/fr/compte?tab=security&recovery=1");
+    }
+    expect(cookieStore.set.mock.calls[0][1]).toMatch(/^u1\.\d+\.[0-9a-f]{64}$/);
+  });
+  it("lien expiré ou Supabase qui plante → connexion avec erreur (jamais de 500)", async () => {
+    verify.mockResolvedValueOnce({ data: { user: null }, error: { message: "expired" } });
+    expect((await go("?token_hash=h&type=email&lang=fr")).location).toBe("http://localhost/fr/connexion?error=link");
+    verify.mockRejectedValueOnce(new Error("timeout"));
+    expect((await go("?token_hash=h&type=email&lang=en")).location).toBe("http://localhost/en/connexion?error=link");
+  });
+  it("OPEN REDIRECT : langue piégée → toujours sur le site, en français", async () => {
+    verify.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+    for (const lang of ["evil.com", "//evil.com", "https%3A%2F%2Fevil.com", "FR"]) {
+      expect((await go(`?token_hash=h&type=email&lang=${lang}`)).location, lang).toBe("http://localhost/fr/compte");
+    }
+  });
+});
+
 // ───────────────────────── Espace client ─────────────────────────
 describe("routes /api/me/* — accès refusé aux anonymes", () => {
   beforeEach(() => userMod.getSessionContext.mockResolvedValue(null));

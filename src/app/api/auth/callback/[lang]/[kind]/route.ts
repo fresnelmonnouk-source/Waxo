@@ -1,14 +1,14 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { isLocale, siteOrigin } from "@/lib/auth/http";
-import { RECOVERY_COOKIE, RECOVERY_TTL_SECONDS, signRecovery } from "@/lib/auth/recovery";
+import { finishEmailLink } from "@/lib/auth/email-link";
 import { withTimeout } from "@/lib/auth/timeout";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { createSessionClient } from "@/lib/supabase/server";
 
 /**
- * Retour des liens envoyés par e-mail (confirmation d'inscription, réinitialisation) : échange du code PKCE contre une session,
- * puis redirection vers l'espace client. Lien invalide/expiré → page de connexion avec un message.
+ * Retour des liens Supabase au format PKCE (?code=…) : échange du code contre une session, puis redirection vers l'espace client.
+ * Les modèles d'e-mails actuels passent par /api/auth/confirm ; cette route reste pour les liens déjà envoyés.
+ * Lien invalide/expiré → page de connexion avec un message.
  * À autoriser dans Supabase (Auth → URL Configuration) : https://<site>/api/auth/callback/**
  */
 export async function GET(req: Request, ctx: { params: Promise<{ lang: string; kind: string }> }) {
@@ -24,18 +24,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ lang: string; k
     const sb = await createSessionClient();
     const { data, error } = await withTimeout(sb.auth.exchangeCodeForSession(code), 8000);
     if (error || !data.user) return go(`/${lang}/connexion?error=link`);
-
-    if (kind === "recovery") {
-      // Marque « session ouverte via un lien de réinitialisation » : l'ancien mot de passe n'est alors pas exigé (il est oublié).
-      // Valeur SIGNÉE (id.exp.hmac) : l'id seul serait forgeable (il est lisible via /api/me). Sans secret serveur : pas de cookie.
-      const signed = signRecovery(data.user.id);
-      if (signed) {
-        const store = await cookies();
-        store.set(RECOVERY_COOKIE, signed, { httpOnly: true, sameSite: "lax", secure: origin.startsWith("https"), path: "/api", maxAge: RECOVERY_TTL_SECONDS });
-      }
-      return go(`/${lang}/compte?tab=security&recovery=1`);
-    }
-    return go(`/${lang}/compte`);
+    return await finishEmailLink(data.user.id, kind === "recovery", lang, origin);
   } catch {
     return go(`/${lang}/connexion?error=link`);
   }
