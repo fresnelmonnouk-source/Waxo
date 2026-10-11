@@ -23,9 +23,9 @@
     "openCart": "Open the cart",
     "productCount": "{count, plural, one {# product} other {# products}}",
     "topbar": {
-      "delivery": "Fast delivery in Cotonou & Calavi",
-      "freeShip": "Free delivery from {amount}",
-      "cod": "Cash on delivery accepted"
+      "delivery": "<b>Express Delivery</b>: same day before {hour} in Cotonou & Calavi",
+      "freeShip": "Free delivery from <b>{amount}</b>",
+      "cod": "Pay on delivery"
     },
     "search": {
       "label": "Search for a product",
@@ -79,9 +79,9 @@
     }
   },
   "Home": {
-    "heroEyebrow": "Stock in Cotonou · Shipped by us",
+    "heroEyebrow": "Stocked in Cotonou · Delivered by us 7 days a week",
     "title": "Small useful things, delivered fast to your door.",
-    "lead": "Everyday items picked for their usefulness and their price. You order, we pack, we deliver.",
+    "lead": "Everyday items picked for their usefulness and their price.",
     "payCod": "Pay by Mobile Money, by card or on delivery.",
     "payNoCod": "Pay by Mobile Money or by card.",
     "seeProducts": "Browse all {count} products",
@@ -95,8 +95,8 @@
     "g2CodSub": "Or MTN MoMo, Moov Money, Celtiis Cash, card",
     "g2Title": "Mobile Money payment",
     "g2Sub": "MTN MoMo, Moov Money, Celtiis Cash or card",
-    "g3Title": "Fast delivery",
-    "g3Sub": "As soon as the next day in Cotonou & Calavi if you order before {hour}:00, Monday to Saturday",
+    "g3Title": "Express Delivery",
+    "g3Sub": "Ordered before {hour}, delivered the same day in Cotonou & Calavi. 7 days a week, Sundays too. Other cities: 48 to 72 h.",
     "g4Title": "24/7 online assistant",
     "g4Sub": "Our site assistant answers any time, 7 days a week. Our team also replies on WhatsApp.",
     "browse": "Browse by aisle",
@@ -120,7 +120,8 @@
     "step2Title": "We confirm",
     "step2Text": "A WhatsApp message within the hour with your delivery slot.",
     "step3Title": "You receive",
-    "step3Text": "The courier calls you on arrival. You pay then if you have not already."
+    "step3Text": "The courier calls you on arrival. You pay then if you have not already.",
+    "g3Hour": "{hour}"
   },
   "Catalog": {
     "crumb": "Breadcrumb",
@@ -181,8 +182,8 @@
   },
   "Footer": {
     "label": "Footer",
-    "tagline": "Shop from home",
-    "blurb": "Online shop based in Cotonou. Local stock, home delivery across Benin.",
+    "tagline": "Your orders, delivered as fast as we can.",
+    "blurb": "Online shop based in Cotonou. Same-day delivery in Cotonou & Calavi if you order before {hour}, 7 days a week. Elsewhere in Benin: 48 to 72 h.",
     "shop": "Shop",
     "all": "Whole catalogue",
     "new": "New arrivals",

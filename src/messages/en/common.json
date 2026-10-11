@@ -7,5 +7,31 @@
     "label": "Language",
     "fr": "Français",
     "en": "English"
+  },
+  "Express": {
+    "badge": "Express",
+    "name": "Express Delivery",
+    "topbarShort": {
+      "neutral": "<b>Express</b>: same day before {hour}, Cotonou & Calavi",
+      "today": "<b>Express</b>: delivered today before {hour}, Cotonou & Calavi",
+      "tomorrow": "<b>Express</b>: order now, delivered tomorrow, Cotonou & Calavi",
+      "tomorrowSunday": "<b>Express</b>: order now, delivered tomorrow, Sunday, Cotonou & Calavi"
+    },
+    "hero": {
+      "neutral": "Ordered before {hour}, delivered the same day in Cotonou & Calavi. Sundays too.",
+      "today": "Ordered before {hour}, delivered the same day in Cotonou & Calavi. Sundays too.",
+      "tomorrow": "Order now, delivered tomorrow in Cotonou & Calavi. Sundays too.",
+      "tomorrowSunday": "Order now, delivered tomorrow, Sunday, in Cotonou & Calavi."
+    },
+    "stock": {
+      "neutral": "Delivered the same day in Cotonou & Calavi if you order before {hour}.",
+      "today": "Order before {hour}, delivered today in Cotonou & Calavi.",
+      "tomorrow": "Order now, delivered tomorrow in Cotonou & Calavi.",
+      "tomorrowSunday": "Order now, delivered tomorrow, Sunday, in Cotonou & Calavi."
+    },
+    "noteZone": "Cotonou & Calavi · {price}, free from {free}",
+    "noteZoneNoFree": "Cotonou & Calavi · {price}",
+    "noteOther": "Other cities in Benin: 48 to 72 h, {price}.",
+    "noteCod": "Pay on delivery available."
   }
 }

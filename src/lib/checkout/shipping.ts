@@ -10,7 +10,7 @@ export type ShippingConfig = { cotonou: number; autre: number; freeFrom: number;
 export type PayConfig = Record<PayMethod, boolean>;
 
 /** Valeurs de repli (mêmes que DEFAULT_SETTINGS du catalogue, qui est « server-only »). */
-export const DEFAULT_SHIPPING: ShippingConfig = { cotonou: 1000, autre: 2500, freeFrom: 15000, cutoff: 18, returnDays: 7 };
+export const DEFAULT_SHIPPING: ShippingConfig = { cotonou: 1000, autre: 2500, freeFrom: 15000, cutoff: 20, returnDays: 7 };
 export const DEFAULT_PAY: PayConfig = { momo: true, moov: true, celtiis: true, carte: true, cod: true };
 
 /** Mobile Money : demande un numéro à valider sur le téléphone. */

@@ -52,13 +52,13 @@ WhatsApp confirmation, home delivery, and an exchange or refund within {{shippin
       title: "Livraison et retours",
       body: `| Zone | Délai | Frais |
 |---|---|---|
-| Cotonou et Calavi | Le lendemain si vous commandez avant {{shipping.cutoff}} h. Commandes et livraisons du lundi au samedi | {{shipping.cotonou}}, offerte dès {{shipping.freeFrom}} |
+| Cotonou et Calavi (Livraison Express) | Le jour même si vous commandez avant {{shipping.cutoff}} h, sinon le lendemain. 7 j/7, dimanche compris | {{shipping.cotonou}}, offerte dès {{shipping.freeFrom}} |
 | Autres villes du Bénin | 48 à 72 h | {{shipping.autre}} |
 | Hors du Bénin | Pas encore disponible | Sans objet |
 
 ## Le jour de la livraison
 
-Nous vous envoyons une confirmation sur WhatsApp avec le créneau de livraison. Le livreur vous appelle avant d'arriver. {{pay.codShip}}
+Nous vous envoyons une confirmation sur WhatsApp avec le créneau de livraison. Si vous payez à la réception, l'heure limite s'applique à l'heure de cette confirmation. Le livreur vous appelle avant d'arriver. {{pay.codShip}}
 
 ## Retourner un produit
 
@@ -76,13 +76,13 @@ Le produit doit être non utilisé, complet et dans son emballage d'origine. Les
       title: "Delivery and returns",
       body: `| Zone | Lead time | Fee |
 |---|---|---|
-| Cotonou and Calavi | Next day if you order before {{shipping.cutoff}}:00. Orders and deliveries Monday to Saturday | {{shipping.cotonou}}, free from {{shipping.freeFrom}} |
+| Cotonou and Calavi (Express Delivery) | Same day if you order before {{shipping.cutoff}}:00, otherwise the next day. 7 days a week, Sundays included | {{shipping.cotonou}}, free from {{shipping.freeFrom}} |
 | Other cities in Benin | 48 to 72 hours | {{shipping.autre}} |
 | Outside Benin | Not available yet | N/A |
 
 ## On delivery day
 
-We send you a WhatsApp confirmation with your delivery time slot. The courier calls you before arriving. {{pay.codShip}}
+We send you a WhatsApp confirmation with your delivery time slot. If you pay on delivery, the cut-off time applies to the time of that confirmation. The courier calls you before arriving. {{pay.codShip}}
 
 ## Returning a product
 
@@ -124,11 +124,13 @@ Nous acceptons MTN MoMo, Moov Money, Celtiis Cash et les cartes bancaires Visa o
 
 ## 6. Livraison
 
-Cotonou et Calavi : nous traitons les commandes et nous livrons du lundi au samedi. Une commande passée avant {{shipping.cutoff}} h est livrée le lendemain, et nous ne livrons pas le dimanche. La livraison coûte {{shipping.cotonou}} et elle est offerte dès {{shipping.freeFrom}} d'achat.
+Cotonou et Calavi (Livraison Express) : nous livrons tous les jours, dimanche compris. Une commande passée avant {{shipping.cutoff}} h (heure du Bénin) est livrée le jour même, sinon le lendemain. Si vous payez à la livraison, l'heure limite s'applique à l'heure à laquelle nous confirmons votre commande sur WhatsApp. La livraison coûte {{shipping.cotonou}} et elle est offerte dès {{shipping.freeFrom}} d'achat.
 
 Autres villes du Bénin : livraison sous 48 à 72 h, pour {{shipping.autre}}.
 
 Le livreur vous appelle avant de venir. Si vous n'êtes pas là, nous vous proposons une nouvelle livraison. Après deux tentatives sans succès, nous pouvons annuler la commande. Pour le moment, nous ne livrons pas hors du Bénin.
+
+Ces délais s'appliquent hors force majeure (intempéries, grève, route coupée…). En cas de retard, nous vous prévenons sur WhatsApp ; vous pouvez alors annuler et être remboursé intégralement.
 
 ## 7. Échange et remboursement
 
@@ -176,11 +178,13 @@ We accept MTN MoMo, Moov Money, Celtiis Cash and Visa or Mastercard bank cards{{
 
 ## 6. Delivery
 
-Cotonou and Calavi: we process orders and deliver Monday to Saturday. An order placed before {{shipping.cutoff}}:00 is delivered the next day, and we don't deliver on Sundays. Delivery costs {{shipping.cotonou}} and is free from {{shipping.freeFrom}} of purchases.
+Cotonou and Calavi (Express Delivery): we deliver every day, Sundays included. An order placed before {{shipping.cutoff}}:00 (Benin time) is delivered the same day, otherwise the next day. If you pay on delivery, the cut-off time applies to the time we confirm your order on WhatsApp. Delivery costs {{shipping.cotonou}} and is free from {{shipping.freeFrom}} of purchases.
 
 Other cities in Benin: delivery within 48 to 72 hours, for {{shipping.autre}}.
 
 The courier calls you before coming. If you're not there, we offer you a new delivery. After two unsuccessful attempts, we may cancel the order. For now, we don't deliver outside Benin.
+
+These lead times apply except in cases of force majeure (severe weather, strikes, road closures…). If there is a delay, we let you know on WhatsApp; you can then cancel and get a full refund.
 
 ## 7. Exchange and refund
 

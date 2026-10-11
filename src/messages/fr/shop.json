@@ -23,9 +23,9 @@
     "openCart": "Ouvrir le panier",
     "productCount": "{count, plural, one {# produit} other {# produits}}",
     "topbar": {
-      "delivery": "Livraison rapide à Cotonou & Calavi",
-      "freeShip": "Livraison offerte dès {amount}",
-      "cod": "Paiement à la livraison accepté"
+      "delivery": "<b>Livraison Express</b> : le jour même avant {hour} à Cotonou & Calavi",
+      "freeShip": "Livraison offerte dès <b>{amount}</b>",
+      "cod": "Payez à la réception"
     },
     "search": {
       "label": "Rechercher un produit",
@@ -79,9 +79,9 @@
     }
   },
   "Home": {
-    "heroEyebrow": "Stock à Cotonou · Expédié par nous",
+    "heroEyebrow": "Stock à Cotonou · Livré par nous 7 j/7",
     "title": "Les petites choses utiles, livrées vite chez vous.",
-    "lead": "Des objets du quotidien choisis pour leur utilité et leur prix. Vous commandez, on emballe, on livre.",
+    "lead": "Des objets du quotidien choisis pour leur utilité et leur prix.",
     "payCod": "Vous payez par Mobile Money, par carte ou à la réception.",
     "payNoCod": "Vous payez par Mobile Money ou par carte.",
     "seeProducts": "Voir les {count} produits",
@@ -95,8 +95,8 @@
     "g2CodSub": "Ou MTN MoMo, Moov Money, Celtiis Cash, carte",
     "g2Title": "Paiement Mobile Money",
     "g2Sub": "MTN MoMo, Moov Money, Celtiis Cash ou carte",
-    "g3Title": "Livraison rapide",
-    "g3Sub": "Dès le lendemain à Cotonou & Calavi si vous commandez avant {hour} h, du lundi au samedi",
+    "g3Title": "Livraison Express",
+    "g3Sub": "Commandé avant {hour}, livré le jour même à Cotonou & Calavi. 7 j/7, dimanche compris. Autres villes : 48 à 72 h.",
     "g4Title": "Assistant en ligne 24 h/24",
     "g4Sub": "L'assistant du site répond à toute heure, 7 j/7. Notre équipe vous répond aussi sur WhatsApp.",
     "browse": "Parcourir par rayon",
@@ -120,7 +120,8 @@
     "step2Title": "On vous confirme",
     "step2Text": "Un message WhatsApp dans l'heure avec le créneau de livraison.",
     "step3Title": "Vous recevez",
-    "step3Text": "Le livreur vous appelle à l'arrivée. Vous payez si ce n'est pas déjà fait."
+    "step3Text": "Le livreur vous appelle à l'arrivée. Vous payez si ce n'est pas déjà fait.",
+    "g3Hour": "{hour}"
   },
   "Catalog": {
     "crumb": "Fil d'Ariane",
@@ -181,8 +182,8 @@
   },
   "Footer": {
     "label": "Pied de page",
-    "tagline": "Shopper depuis chez vous",
-    "blurb": "Boutique en ligne basée à Cotonou. Stock local, livraison à domicile dans tout le Bénin.",
+    "tagline": "Vos commandes livrées dans les meilleurs délais.",
+    "blurb": "Boutique en ligne basée à Cotonou. Livré le jour même à Cotonou & Calavi si vous commandez avant {hour}, 7 j/7. Ailleurs au Bénin : 48 à 72 h.",
     "shop": "Boutique",
     "all": "Tout le catalogue",
     "new": "Nouveautés",

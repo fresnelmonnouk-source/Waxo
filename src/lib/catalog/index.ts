@@ -30,7 +30,7 @@ export const DEFAULT_SETTINGS: ShopSettings = {
     email: "contact@waxo.bj",
     hours: "Du lundi au samedi, de 8 h à 19 h",
   },
-  shipping: { cotonou: 1000, autre: 2500, freeFrom: 15000, cutoff: 18, returnDays: 7 },
+  shipping: { cotonou: 1000, autre: 2500, freeFrom: 15000, cutoff: 20, returnDays: 7 },
   pay: { momo: true, moov: true, celtiis: true, carte: true, cod: true },
   features: { packs: true },
 };

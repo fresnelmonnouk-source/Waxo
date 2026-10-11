@@ -7,6 +7,7 @@ import { PackCard } from "@/components/packs/PackCard";
 import { PackContents } from "@/components/packs/PackContents";
 import { PackVisual } from "@/components/packs/PackVisual";
 import { STOCK_COLOR, stockKind } from "@/components/shop/logic";
+import { DeliveryNote, StockPromise } from "@/components/shop/DeliveryPromise";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getSettings } from "@/lib/catalog";
@@ -53,7 +54,7 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
   const { cutoff, returnDays } = settings.shipping;
   const soldOut = pack.stock <= 0;
   const kind = stockKind(pack.stock);
-  const stockText = soldOut ? t("stockOut") : kind === "low" ? t("stockLow", { count: pack.stock, cutoff }) : t("stockOk", { cutoff });
+  const stockText = soldOut ? t("stockOut") : kind === "low" ? t("stockLow", { count: pack.stock }) : t("stockOk");
   const others = all.filter((p) => p.id !== pack.id).slice(0, 3);
 
   return (
@@ -122,9 +123,7 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
             <p className="text-text m-0 text-[14px]">{t("noSaving")}</p>
           )}
 
-          <span className="text-[14px] font-medium" style={{ color: STOCK_COLOR[kind] }}>
-            {stockText}
-          </span>
+          <StockPromise label={stockText} color={STOCK_COLOR[kind]} cutoff={cutoff} soldOut={soldOut} />
 
           {soldOut ? (
             <div className="bg-card flex flex-col items-start gap-2.5 rounded-2xl p-4">
@@ -140,9 +139,16 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
           ) : (
             <PackBuy pack={pack} />
           )}
+          {soldOut ? null : (
+            <DeliveryNote
+              cotonou={settings.shipping.cotonou}
+              autre={settings.shipping.autre}
+              freeFrom={settings.shipping.freeFrom}
+              cod={settings.pay.cod}
+            />
+          )}
 
           <div className="border-border text-text flex flex-col gap-2 border-t pt-4 text-[14px]">
-            <span>{t("deliveryNote", { cutoff })}</span>
             <span>{settings.pay.cod ? t("payAll") : t("payNoCod")}</span>
             <span>
               {t("returns", { days: returnDays })} <Link href="/livraison-retours">{t("conditions")}</Link>

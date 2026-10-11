@@ -20,6 +20,8 @@ import { useApproxPrice } from "@/lib/currency/client";
 import { fmtXof } from "@/lib/money";
 import { cssImage, FALLBACK_BG } from "@/components/product/media";
 import { CheckoutShell } from "./CheckoutShell";
+import { checkoutEta, formatRange, type Eta } from "./eta";
+import { cutoffParams, ExpressBadge, ExpressPicto } from "@/components/shop/ExpressBadge";
 import { clearIdempotencyKey, idempotencyKeyFor, orderSignature } from "./idempotency";
 
 type Props = { shipping: ShippingConfig; pay: PayConfig };
@@ -39,14 +41,26 @@ function useHydrated(): boolean {
   return useSyncExternalStore(noopSubscribe, () => true, () => false);
 }
 
+/** Instant courant arrondi à la minute (0 côté serveur) : l'estimation suit l'horloge sans re-rendu à chaque seconde. */
+const subscribeMinute = (cb: () => void) => {
+  const id = setInterval(cb, 30_000);
+  return () => clearInterval(id);
+};
+function useMinute(): number {
+  return useSyncExternalStore(subscribeMinute, () => Math.floor(Date.now() / 60_000) * 60_000, () => 0);
+}
+
 function RadioCard({
   checked,
   onSelect,
   children,
+  zoneCard = false,
 }: {
   checked: boolean;
   onSelect: () => void;
   children: ReactNode;
+  /** Carte de zone (spec 6.1) : rayon 20 px, bordure 1 px, sélection 2 px encre (sans décalage de mise en page). */
+  zoneCard?: boolean;
 }) {
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === " " || e.key === "Enter") {
@@ -61,10 +75,20 @@ function RadioCard({
       tabIndex={0}
       onClick={onSelect}
       onKeyDown={onKey}
-      className="flex cursor-pointer items-center gap-3.5 rounded-2xl border-[1.5px] bg-card p-4"
-      style={{ borderColor: checked ? "#141210" : "#E2DCCF" }}
+      className={
+        zoneCard
+          ? "flex cursor-pointer items-start gap-3.5 rounded-[20px] border bg-white px-5 py-[18px]"
+          : "flex cursor-pointer items-center gap-3.5 rounded-2xl border-[1.5px] bg-card p-4"
+      }
+      style={
+        zoneCard
+          ? { borderColor: checked ? "#141210" : "#E2DCCF", boxShadow: checked ? "inset 0 0 0 1px #141210" : undefined }
+          : { borderColor: checked ? "#141210" : "#E2DCCF" }
+      }
     >
-      <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full border-2 border-ink">
+      <span
+        className={`flex h-5 w-5 flex-none items-center justify-center rounded-full border-2 border-ink${zoneCard ? " mt-px" : ""}`}
+      >
         <span className="h-2.5 w-2.5 rounded-full" style={{ background: checked ? "#141210" : "transparent" }} />
       </span>
       {children}
@@ -81,6 +105,7 @@ export function CheckoutFlow({ shipping, pay }: Props) {
   const locale = useLocale();
   const router = useRouter();
   const hydrated = useHydrated();
+  const minute = useMinute();
   const lines = useCartLines();
   const subtotal = useCartSubtotal();
 
@@ -291,6 +316,15 @@ export function CheckoutFlow({ shipping, pay }: Props) {
   }
 
   const errBorder = (msg?: string) => (msg ? "#C2410C" : "#E2DCCF");
+  const eta: Eta = checkoutEta(minute, zone, shipping.cutoff);
+  const etaText =
+    eta.kind === "range"
+      ? t("etaRange", formatRange(eta.from, eta.to, locale))
+      : eta.kind === "tomorrowSunday"
+        ? t("etaTomorrowSunday")
+        : eta.kind === "tomorrow"
+          ? t("etaTomorrow")
+          : t("etaToday");
 
   return shell(
     <div className="mx-auto grid max-w-[1100px] grid-cols-[repeat(auto-fit,minmax(min(100%,340px),1fr))] items-start gap-8 px-5 pt-8 pb-16">
@@ -366,19 +400,42 @@ export function CheckoutFlow({ shipping, pay }: Props) {
               <span className="text-[13px] font-normal text-text">{t("emailHelp")}</span>
               <span className="text-[13px] font-normal text-terracotta-deep">{errors.email}</span>
             </label>
-            <div role="radiogroup" aria-label={t("zoneGroup")} className="flex flex-col gap-2.5">
+            <div role="radiogroup" aria-label={t("zoneGroup")} className="@container flex flex-col gap-2.5">
               <span className="text-[14px] font-medium">{t("zoneLabel")}</span>
-              {(["cotonou", "autre"] as const).map((z) => (
-                <RadioCard key={z} checked={zone === z} onSelect={() => setZone(z)}>
-                  <div className="flex flex-1 flex-col gap-0.5">
-                    <strong className="text-[15px]">{z === "cotonou" ? t("zoneCotonou") : t("zoneAutre")}</strong>
-                    <span className="text-[13px] text-text">
-                      {z === "cotonou" ? t("zoneCotonouSub", { cutoff: shipping.cutoff }) : t("zoneAutreSub")}
-                    </span>
-                  </div>
-                  <strong className="text-[15px]">{fmtXof(shippingFee(subtotal, z, shipping))}</strong>
-                </RadioCard>
-              ))}
+              <div className="grid gap-2.5 @2xl:grid-cols-2">
+                {(["cotonou", "autre"] as const).map((z) => {
+                  const zoneFee = shippingFee(subtotal, z, shipping);
+                  return (
+                    <RadioCard key={z} zoneCard checked={zone === z} onSelect={() => setZone(z)}>
+                      <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+                          <strong className="text-[16px] leading-[1.25] font-semibold text-ink">
+                            {z === "cotonou" ? t("zoneCotonou") : t("zoneAutre")}
+                          </strong>
+                          {z === "cotonou" ? <ExpressBadge label={t("express")} size="S" variant="onLight" /> : null}
+                        </div>
+                        <span className="text-[14px] leading-[1.45] text-text">
+                          {z === "cotonou"
+                            ? t("zoneCotonouSub", cutoffParams(shipping.cutoff, locale))
+                            : t("zoneAutreSub")}
+                        </span>
+                      </div>
+                      <strong
+                        className="text-[15px] font-semibold whitespace-nowrap"
+                        style={{ color: zoneFee ? "#141210" : "#1F6B4A" }}
+                      >
+                        {zoneFee ? fmtXof(zoneFee) : t("shippingFree")}
+                      </strong>
+                    </RadioCard>
+                  );
+                })}
+              </div>
+              <p aria-live="polite" className="m-0 flex items-start gap-2 text-[14px] leading-[1.4] font-medium text-ink">
+                <span className="mt-px">
+                  <ExpressPicto size={16} color="#C2410C" />
+                </span>
+                {etaText}
+              </p>
             </div>
             <label className="flex flex-col gap-1.5 text-[14px] font-medium">
               {t("address")}
@@ -449,9 +506,7 @@ export function CheckoutFlow({ shipping, pay }: Props) {
               </span>
             ) : null}
             {method === "cod" ? (
-              <span className="rounded-[14px] bg-card px-3.5 py-3 text-[14px] leading-normal text-text">
-                {t("codNote")}
-              </span>
+              <span className="rounded-xl bg-leaf-bg px-3.5 py-3 text-[14px] leading-normal text-ink">{t("codNote")}</span>
             ) : null}
             {submitError ? (
               <span role="alert" className="rounded-[14px] bg-card px-3.5 py-3 text-[14px] leading-normal text-terracotta-deep">

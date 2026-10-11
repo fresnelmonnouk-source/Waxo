@@ -270,7 +270,7 @@
     "title": "Frequently asked questions",
     "intro": "Can't find your answer? <contact>Write to us</contact>.",
     "q1": "How long does delivery take?",
-    "a1": "In Cotonou and Calavi, you are delivered the next day for any order placed before {cutoff}:00, Monday to Saturday. In other cities in Benin, allow 48 to 72 hours.",
+    "a1": "In Cotonou and Calavi, with Express Delivery, you are delivered the same day for any order placed before {cutoff}:00 (Benin time), otherwise the next day, 7 days a week, Sundays included. If you pay on delivery, the cut-off time applies to the time of your WhatsApp confirmation. In other cities in Benin, allow 48 to 72 hours.",
     "q2": "How much does delivery cost?",
     "a2": "{cotonou} in Cotonou and Calavi, free from {freeShip} of purchases. {autre} in other cities in Benin.",
     "q3": "How can I pay?",
@@ -325,7 +325,7 @@
       },
       "s6": {
         "h": "6. Delivery",
-        "p": "Cotonou and Calavi: next-day delivery for any order placed before {cutoff}:00, Monday to Saturday, for {cotonou}, free from {freeShip} of purchases. Other cities in Benin: within 48 to 72 hours, for {autre}. The courier calls the customer before arriving. If the customer is absent, a new delivery is offered; after two unsuccessful attempts, the order may be cancelled. No delivery outside Benin for now."
+        "p": "Cotonou and Calavi (Express Delivery): same-day delivery for any order placed before {cutoff}:00 (Benin time), otherwise the next day, 7 days a week, Sundays included (pay on delivery: the cut-off time applies to the time of the WhatsApp confirmation), for {cotonou}, free from {freeShip} of purchases. Other cities in Benin: within 48 to 72 hours, for {autre}. The courier calls the customer before arriving. If the customer is absent, a new delivery is offered; after two unsuccessful attempts, the order may be cancelled. No delivery outside Benin for now."
       },
       "s7": {
         "h": "7. Exchange and refund",
@@ -443,7 +443,7 @@
       "colDelay": "Lead time",
       "colFee": "Fee",
       "r1z": "Cotonou and Calavi",
-      "r1d": "Next day, order before {cutoff}:00, Monday to Saturday",
+      "r1d": "Same day before {cutoff}:00, otherwise the next day, 7 days a week",
       "r1f": "{cotonou}, free from {freeShip}",
       "r2z": "Other cities in Benin",
       "r2d": "48 to 72 hours",

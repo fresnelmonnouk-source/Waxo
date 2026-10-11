@@ -119,7 +119,7 @@ export function SettingsForm({ initial, connected }: { initial: Form; connected:
               <Field label="Cotonou & Calavi (F)" value={form.shipCotonou} onChange={(v) => set("shipCotonou", v)} error={errors.shipCotonou} inputMode="numeric" />
               <Field label="Autres villes (F)" value={form.shipOther} onChange={(v) => set("shipOther", v)} error={errors.shipOther} inputMode="numeric" />
               <Field label="Livraison offerte dès (F)" value={form.freeFrom} onChange={(v) => set("freeFrom", v)} error={errors.freeFrom} inputMode="numeric" />
-              <Field label="Heure limite pour J+1" value={form.cutoff} onChange={(v) => set("cutoff", v)} error={errors.cutoff} inputMode="numeric" />
+              <Field label="Heure limite pour une livraison le jour même" value={form.cutoff} onChange={(v) => set("cutoff", v)} error={errors.cutoff} inputMode="numeric" />
             </div>
             <span className="text-[13px] text-text leading-normal">Appliqué au panier, au paiement et aux réponses des assistants.</span>
           </section>

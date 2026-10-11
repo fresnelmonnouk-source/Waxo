@@ -22,6 +22,7 @@ import { RatingLink } from "@/components/product/RatingLink";
 import { RelatedItem } from "@/components/product/RelatedItem";
 import { ReviewsSection, type ReviewView } from "@/components/product/ReviewsSection";
 import { Stars } from "@/components/product/Stars";
+import { DeliveryNote, StockPromise } from "@/components/shop/DeliveryPromise";
 import { withSeo } from "@/lib/seo/metadata";
 
 // Page statique (ISR) : aucun cookies()/headers(). Les avis et le stock se rafraîchissent toutes les 2 minutes.
@@ -94,8 +95,8 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   const stockText = soldOut
     ? t("stockOut")
     : product.stock <= 5
-      ? t("stockLow", { count: product.stock, cutoff })
-      : t("stockOk", { cutoff });
+      ? t("stockLow", { count: product.stock })
+      : t("stockOk");
   const avgTxt = decimal(product.rating.average, lang);
   const countTxt = t("reviewsCount", { count: product.rating.count });
   const alsoBought = related.filter((r) => r.stock > 0).slice(0, 3);
@@ -178,9 +179,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
             </div>
           </div>
           <p className="m-0 text-[16px] leading-[1.6] text-text text-pretty">{product.description}</p>
-          <span className="text-[14px] font-medium" style={{ color: stockColor }}>
-            {stockText}
-          </span>
+          <StockPromise label={stockText} color={stockColor} cutoff={cutoff} soldOut={soldOut} />
 
           {soldOut ? (
             <div className="flex flex-col gap-2.5 rounded-2xl bg-card p-4">
@@ -199,9 +198,16 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
               imageUrl={product.imageUrl}
             />
           )}
+          {soldOut ? null : (
+            <DeliveryNote
+              cotonou={settings.shipping.cotonou}
+              autre={settings.shipping.autre}
+              freeFrom={settings.shipping.freeFrom}
+              cod={settings.pay.cod}
+            />
+          )}
 
           <div className="flex flex-col gap-2 border-t border-border pt-4 text-[14px] text-text">
-            <span>{t("deliveryNote", { cutoff })}</span>
             <span>{settings.pay.cod ? t("payAll") : t("payNoCod")}</span>
             <span>
               {t("returns", { days: returnDays })}{" "}

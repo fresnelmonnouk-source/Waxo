@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { renderOrderEmail, escapeHtml, formatAmount, type OrderEmailData } from "@/lib/email/template";
-import { deliveryExpression } from "@/lib/email/delivery";
 import { EMAIL_COPY, type OrderEmailKind } from "@/lib/email/copy";
 
 const base: OrderEmailData = {
@@ -122,37 +121,3 @@ describe("gabarits e-mail", () => {
   });
 });
 
-describe("date de livraison annoncée", () => {
-  // 2026-10-07 (mercredi) 10:00 UTC = 11:00 à Cotonou.
-  const wed = Date.UTC(2026, 9, 7, 10, 0);
-  const args = { cutoff: 18, locale: "fr" as const };
-
-  it("Cotonou avant l'heure limite : demain ; après : sous 48 h", () => {
-    expect(deliveryExpression({ zone: "cotonou", createdAt: wed, now: wed, ...args })).toBe("demain");
-    const late = Date.UTC(2026, 9, 7, 18, 0); // 19 h locales
-    expect(deliveryExpression({ zone: "cotonou", createdAt: late, now: late, ...args })).toBe("sous 48 h");
-  });
-  it("autres villes : 48 à 72 h ; EN traduit", () => {
-    expect(deliveryExpression({ zone: "autre", createdAt: wed, now: wed, ...args })).toBe("sous 48 à 72 h");
-    expect(deliveryExpression({ zone: "autre", createdAt: wed, now: wed, cutoff: 18, locale: "en" })).toBe("within 48 to 72 hours");
-  });
-  it("jamais « demain » le jour même ou après coup, jamais le dimanche", () => {
-    const nextDay = wed + 86_400_000;
-    expect(deliveryExpression({ zone: "cotonou", createdAt: wed, now: nextDay, ...args })).toBe("aujourd'hui");
-    // Samedi 10 octobre 2026, avant la limite : le lendemain (dimanche) est repoussé au lundi.
-    const sat = Date.UTC(2026, 9, 10, 9, 0);
-    expect(deliveryExpression({ zone: "cotonou", createdAt: sat, now: sat, ...args })).toBe("sous 48 h");
-    const mon = Date.UTC(2026, 9, 12, 9, 0);
-    expect(deliveryExpression({ zone: "cotonou", createdAt: sat, now: mon, ...args })).toBe("aujourd'hui");
-  });
-  it("reste dans la limite de 25 caractères du gabarit", () => {
-    for (const locale of ["fr", "en"] as const) {
-      for (const zone of ["cotonou", "autre"]) {
-        for (const h of [8, 20]) {
-          const t = Date.UTC(2026, 9, 7, h - 1, 0);
-          expect(deliveryExpression({ zone, createdAt: t, now: t, cutoff: 18, locale }).length).toBeLessThanOrEqual(25);
-        }
-      }
-    }
-  });
-});

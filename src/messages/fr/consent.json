@@ -25,9 +25,9 @@
   },
   "Seo": {
     "siteName": "Wá xɔ",
-    "description": "Les petites choses utiles du quotidien, à petit prix et livrées vite à Cotonou et Calavi. Paiement Mobile Money ou carte.",
-    "ogTitle": "Les petites choses utiles",
-    "ogSubtitle": "Livrées vite à Cotonou & Calavi",
-    "ogFooter": "Paiement Mobile Money, carte ou à la livraison"
+    "description": "Les petites choses utiles du quotidien, à petit prix. Livraison Express 7 j/7 à Cotonou & Calavi. Paiement Mobile Money ou carte.",
+    "ogTitle": "Vos commandes livrées dans les meilleurs délais.",
+    "ogSubtitle": "Cotonou & Calavi : le jour même avant {hour}. 7 j/7.",
+    "ogFooter": "waxo.boutique"
   }
 }

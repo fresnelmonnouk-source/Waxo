@@ -49,7 +49,7 @@ export default async function ShopLayout({
         {t("skip")}
       </a>
       {campaign.banner ? <CampaignBanner campaign={campaign.banner} /> : null}
-      <TopBar freeFrom={settings.shipping.freeFrom} cod={settings.pay.cod} />
+      <TopBar freeFrom={settings.shipping.freeFrom} cod={settings.pay.cod} cutoff={settings.shipping.cutoff} />
       <Header
         categories={data.categories}
         searchIndex={data.searchIndex}
@@ -64,6 +64,7 @@ export default async function ShopLayout({
       <Footer
         brand={settings.brand}
         cod={settings.pay.cod}
+        cutoff={settings.shipping.cutoff}
         lang={lang}
         defaultHours={DEFAULT_SETTINGS.brand.hours}
       />

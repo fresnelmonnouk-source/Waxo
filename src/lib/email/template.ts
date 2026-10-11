@@ -9,7 +9,13 @@ import {
   type EmailLocale,
   type OrderEmailKind,
 } from "./copy";
-import { button, escapeHtml, helpBlock, infoBox, items as itemsBlock, join, p, raw, renderLayout, steps, type Html } from "./layout";
+import { button, escapeHtml, expressBadge, helpBlock, infoBox, items as itemsBlock, join, p, raw, renderLayout, steps, type Html } from "./layout";
+
+/** Livraison Express (décision 2026-10-11, direction Vincent) : slogan en signature, pastille dans le corps. */
+const EXPRESS: Record<"fr" | "en", { slogan: string; badge: string; detail: string }> = {
+  fr: { slogan: "Vos commandes livrées dans les meilleurs délais.", badge: "Livraison Express", detail: "Cotonou & Calavi" },
+  en: { slogan: "Your orders, delivered as fast as we can.", badge: "Express Delivery", detail: "Cotonou & Calavi" },
+};
 
 /**
  * E-mails de commande : textes de Marcus (copy.ts, docs/copy/emails.md) dans le gabarit commun (layout.ts) — bandeau encre,
@@ -32,6 +38,8 @@ export type OrderEmailData = {
   brand: { shopName: string; whatsapp: string; waNumber: string; email: string; hours: string };
   /** Origine publique du site (https://…) ; null → pas de bouton de suivi ni de logo image. */
   siteUrl: string | null;
+  /** Zone de livraison (« cotonou » = Livraison Express). Absente = pas de pastille. */
+  zone?: string;
 };
 
 export type RenderedEmail = { subject: string; preheader: string; html: string; text: string };
@@ -136,9 +144,15 @@ export function renderOrderEmail(data: OrderEmailData, kind: OrderEmailKind): Re
   // Ordre : salutation, suivi, encadré, puis le texte ; bouton avant la signature.
   const [greeting, ...rest] = bodyBlocks;
   const signature = rest.pop();
+  // Livraison Express : seulement Cotonou & Calavi, et seulement quand la livraison est à venir (pas annulée ni livrée).
+  const express =
+    data.zone === "cotonou" && (kind === "confirmation" || kind === "paid" || kind === "livraison")
+      ? expressBadge(EXPRESS[loc].badge, EXPRESS[loc].detail)
+      : null;
   const body = join(
     greeting,
     step !== null ? steps(ui.steps, step) : null,
+    express,
     info,
     ...rest,
     ctaUrl && variant.cta ? button(ctaUrl, variant.cta) : null,
@@ -159,6 +173,7 @@ export function renderOrderEmail(data: OrderEmailData, kind: OrderEmailKind): Re
     help: kind === "annulee" ? null : help,
     footer,
     logoUrl: site ? `${site}/email/logo-light.png` : null,
+    baseline: EXPRESS[loc].slogan,
   });
 
   const textParts: string[] = [];

@@ -157,7 +157,19 @@ export type LayoutInput = {
   footer: (string | Html)[];
   /** URL absolue du logo clair (sur fond encre) ; null → logo en texte. */
   logoUrl: string | null;
+  /** Signature de marque sous le logo (ex. slogan livraison), discrète. */
+  baseline?: string;
 };
+
+/** Pastille « Livraison Express » (cellule de tableau : compatible Gmail/Outlook, sans SVG ni image). */
+export function expressBadge(label: string, detail: string): Html {
+  return raw(
+    `<tr><td style="padding:4px 0 14px;"><table role="presentation" cellpadding="0" cellspacing="0"><tr>` +
+      `<td bgcolor="${C.ink}" style="background:${C.ink};border-radius:999px;padding:5px 12px;font:700 12px/1.2 ${FONT_TITLE};color:${C.cream};white-space:nowrap;"><span style="color:#FFC93C;">&#9679;</span>&nbsp;${escapeHtml(label)}</td>` +
+      `<td style="padding:0 0 0 10px;font:500 14px/1.3 ${FONT_BODY};color:${C.ink};">${escapeHtml(detail)}</td>` +
+      `</tr></table></td></tr>`,
+  );
+}
 
 export function renderLayout(i: LayoutInput): string {
   const logo = i.logoUrl
@@ -167,6 +179,9 @@ export function renderLayout(i: LayoutInput): string {
     ? `<div style="padding:0 0 10px;font:600 12px/1.3 ${FONT_BODY};letter-spacing:.1em;text-transform:uppercase;color:${C.terracotta};">${escapeHtml(i.eyebrow)}</div>`
     : "";
   const footer = i.footer.map((l) => esc(l)).join("<br>");
+  const baseline = i.baseline
+    ? `<div style="padding:8px 0 0;font:400 13px/1.4 ${FONT_BODY};color:${C.cream};opacity:.7;">${escapeHtml(i.baseline)}</div>`
+    : "";
 
   return `<!doctype html>
 <html lang="${i.locale}" xmlns="http://www.w3.org/1999/xhtml">
@@ -191,6 +206,7 @@ export function renderLayout(i: LayoutInput): string {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;">
 <tr><td class="wx-pad" bgcolor="${C.ink}" style="background:${C.ink};border-radius:24px 24px 0 0;padding:26px 32px 28px;">
 ${logo}
+${baseline}
 <div style="height:26px;line-height:26px;font-size:0;">&nbsp;</div>
 ${eyebrow}
 <h1 class="wx-h1" style="margin:0;font:700 28px/1.15 ${FONT_TITLE};letter-spacing:-0.6px;color:${C.cream};">${escapeHtml(i.heading)}</h1>

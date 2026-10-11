@@ -7,5 +7,31 @@
     "label": "Langue",
     "fr": "Français",
     "en": "English"
+  },
+  "Express": {
+    "badge": "Express",
+    "name": "Livraison Express",
+    "topbarShort": {
+      "neutral": "<b>Express</b> : le jour même avant {hour}, Cotonou & Calavi",
+      "today": "<b>Express</b> : livré aujourd'hui avant {hour}, Cotonou & Calavi",
+      "tomorrow": "<b>Express</b> : commandez maintenant, livré demain, Cotonou & Calavi",
+      "tomorrowSunday": "<b>Express</b> : commandez maintenant, livré demain dimanche, Cotonou & Calavi"
+    },
+    "hero": {
+      "neutral": "Commandé avant {hour}, livré le jour même à Cotonou & Calavi. Dimanche compris.",
+      "today": "Commandé avant {hour}, livré le jour même à Cotonou & Calavi. Dimanche compris.",
+      "tomorrow": "Commandez maintenant, livré demain à Cotonou & Calavi. Dimanche compris.",
+      "tomorrowSunday": "Commandez maintenant, livré demain dimanche à Cotonou & Calavi."
+    },
+    "stock": {
+      "neutral": "Livré le jour même à Cotonou & Calavi si vous commandez avant {hour}.",
+      "today": "Commandez avant {hour}, livré aujourd'hui à Cotonou & Calavi.",
+      "tomorrow": "Commandez maintenant, livré demain à Cotonou & Calavi.",
+      "tomorrowSunday": "Commandez maintenant, livré demain dimanche à Cotonou & Calavi."
+    },
+    "noteZone": "Cotonou & Calavi · {price}, offerte dès {free}",
+    "noteZoneNoFree": "Cotonou & Calavi · {price}",
+    "noteOther": "Autres villes du Bénin : 48 à 72 h, {price}.",
+    "noteCod": "Paiement à la réception possible."
   }
 }

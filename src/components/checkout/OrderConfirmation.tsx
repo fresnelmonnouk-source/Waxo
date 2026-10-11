@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { fetchMe, type MeUser } from "@/lib/checkout/me";
 import { parseLastOrder, readLastOrderRaw } from "@/lib/checkout/last-order";
@@ -9,6 +9,8 @@ import { prettyPhone } from "@/lib/checkout/phone";
 import type { PayMethod } from "@/lib/checkout/shipping";
 import { fmtXof } from "@/lib/money";
 import { CheckoutShell } from "./CheckoutShell";
+import { confirmationEta, formatRange } from "./eta";
+import { cutoffParams, ExpressBadge } from "@/components/shop/ExpressBadge";
 import { parseReturnParams, type ReturnPayState } from "./return-params";
 
 const noopSubscribe = () => () => {};
@@ -36,6 +38,7 @@ export function OrderConfirmation({ cutoff }: { cutoff: number }) {
   const t = useTranslations("Thanks");
   const tp = useTranslations("Checkout");
   const router = useRouter();
+  const locale = useLocale();
   const raw = useStoredOrder();
   const search = useSearch();
   const ret = useMemo(() => parseReturnParams(search), [search]);
@@ -154,14 +157,22 @@ export function OrderConfirmation({ cutoff }: { cutoff: number }) {
   const first = order?.name.trim().split(/\s+/)[0] ?? "";
   const paid = payState === "paid";
   const pendingOnline = payState === "pending" || (payState === "none" && !!order?.pending);
-  const hour = order?.placedAt ? new Date(order.placedAt).getHours() : 0;
-  const eta = !order
+  // Estimation en heure du Bénin (jamais le fuseau du téléphone), à partir de l'heure de la commande.
+  const eta = order ? confirmationEta({ zone: order.zone, pay: order.pay, placedAt: order.placedAt, cutoff }) : null;
+  const etaText = !eta
     ? ""
-    : order.zone === "cotonou"
-      ? hour < cutoff
-        ? t("etaTomorrow")
-        : t("eta48")
-      : t("etaOther");
+    : eta.kind === "range"
+      ? t("etaRange", formatRange(eta.from, eta.to, locale))
+      : eta.kind === "codCotonou"
+        ? t("etaCod", cutoffParams(cutoff, locale))
+        : eta.kind === "codOther"
+          ? t("etaCodOther")
+          : eta.kind === "tomorrowSunday"
+            ? t("etaTomorrowSunday")
+            : eta.kind === "tomorrow"
+              ? t("etaTomorrow")
+              : t("etaToday");
+  const express = order?.zone === "cotonou";
   const totalText = total === null ? "" : fmtXof(total);
   const note = paid
     ? t("paidNote")
@@ -191,7 +202,6 @@ export function OrderConfirmation({ cutoff }: { cutoff: number }) {
                 total: totalText,
                 pay: tp(`${order.pay}Name`),
                 phone: prettyPhone(order.phone),
-                eta,
               })
             : t.rich("lineShort", {
                 b: (chunks) => <strong className="text-ink">{chunks}</strong>,
@@ -200,6 +210,15 @@ export function OrderConfirmation({ cutoff }: { cutoff: number }) {
                 pay: method ? tp(`${method}Name`) : "",
               })}
         </p>
+        {eta ? (
+          <div className="flex w-full flex-col items-center gap-3 rounded-[20px] bg-ink px-6 py-5 text-cream">
+            {express ? <ExpressBadge label={t("express")} size="M" variant="onDark" /> : null}
+            <p className="font-display m-0 text-[20px] leading-[1.3] font-semibold tracking-[-0.01em] text-cream">{etaText}</p>
+            {eta.kind === "codCotonou" || eta.kind === "codOther" ? (
+              <span className="text-[14px] text-cream/[0.72]">{t("etaCodSub")}</span>
+            ) : null}
+          </div>
+        ) : null}
         <span role="status" className="rounded-[14px] bg-card px-4 py-3 text-[15px]">
           {note}
         </span>

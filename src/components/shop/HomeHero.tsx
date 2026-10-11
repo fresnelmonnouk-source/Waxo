@@ -3,6 +3,8 @@ import { HeroAssistantCard } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
 import type { Product, ShopSettings } from "@/lib/catalog/types";
 import { Price } from "@/lib/currency/client";
+import { HeroDeliveryProof } from "./DeliveryPromise";
+import { ExpressInline, cutoffParams } from "./ExpressBadge";
 import { TAG_STYLE, cssUrl, fmtRating, heroProducts, productTag, promoLabel, storeRating, type TagKind } from "./logic";
 
 const STAR = "M12 2.6l2.8 6 6.6.6-5 4.5 1.5 6.5L12 16.9l-5.9 3.3 1.5-6.5-5-4.5 6.6-.6z";
@@ -27,6 +29,8 @@ export function HomeHero({
   const tc = useTranslations("Card");
   const locale = useLocale();
   const cod = settings.pay.cod;
+  const cutoff = settings.shipping.cutoff;
+  const hourParams = cutoffParams(cutoff, locale);
   const hero = heroProducts(products, bestIds);
   const feat = hero[0];
   const side = hero.slice(1, 3);
@@ -46,6 +50,9 @@ export function HomeHero({
             <p className="m-0 max-w-[500px] text-[18px] leading-normal text-[#D6CFC0] text-pretty">
               {t("lead")} {cod ? t("payCod") : t("payNoCod")}
             </p>
+            <div className="mb-[6px]">
+              <HeroDeliveryProof cutoff={cutoff} />
+            </div>
             <HeroAssistantCard />
             <div className="flex flex-wrap items-center gap-4">
               <Link
@@ -133,11 +140,23 @@ export function HomeHero({
           {[
             [t("g1Title"), t("g1Sub")],
             [cod ? t("g2CodTitle") : t("g2Title"), cod ? t("g2CodSub") : t("g2Sub")],
-            [t("g3Title"), t("g3Sub", { hour: settings.shipping.cutoff })],
+            [t("g3Title"), t("g3Sub", hourParams)],
             [t("g4Title"), t("g4Sub")],
-          ].map(([title, sub]) => (
+          ].map(([title, sub], i) => (
             <div key={title} className="bg-ink flex flex-col gap-[3px] px-6 py-[18px]">
-              <strong className="text-[15px]">{title}</strong>
+              {i === 2 ? (
+                // Carte Livraison Express : seul picto du bloc + chiffre-signature « 20 h » à droite, même ligne de base.
+                <div className="flex items-baseline justify-between gap-3">
+                  <strong className="text-[15px]">
+                    <ExpressInline size={16}>{title}</ExpressInline>
+                  </strong>
+                  <span aria-hidden="true" className="font-display text-sun text-[20px] leading-none font-semibold whitespace-nowrap">
+                    {t("g3Hour", hourParams)}
+                  </span>
+                </div>
+              ) : (
+                <strong className="text-[15px]">{title}</strong>
+              )}
               <span className="text-[13px] text-[#B9B1A4]">{sub}</span>
             </div>
           ))}

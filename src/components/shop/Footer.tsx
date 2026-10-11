@@ -1,13 +1,30 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { BrandSettings } from "@/lib/catalog/types";
+import { DEFAULT_CUTOFF } from "@/lib/delivery/promise";
+import { cutoffParams } from "./ExpressBadge";
 import { LangSwitch } from "./LangSwitch";
 
 const COL_TITLE = "text-[13px] font-bold tracking-[0.08em] text-[#B9B1A4] uppercase";
 const LINK = "text-cream! hover:text-sun! no-underline";
 
-/** Pied de page (maquette lignes 913-956). Coordonnées et paiement à la livraison viennent des réglages. */
-export function Footer({ brand, cod, lang, defaultHours }: { brand: BrandSettings; cod: boolean; lang: string; defaultHours: string }) {
+/**
+ * Pied de page (maquette lignes 913-956). Coordonnées et paiement à la livraison viennent des réglages.
+ * Baseline de marque sous le logo (spec Livraison Express §9), toujours suivie de sa preuve (règle de l'heure limite).
+ */
+export function Footer({
+  brand,
+  cod,
+  cutoff = DEFAULT_CUTOFF,
+  lang,
+  defaultHours,
+}: {
+  brand: BrandSettings;
+  cod: boolean;
+  cutoff?: number;
+  lang: string;
+  defaultHours: string;
+}) {
   const t = useTranslations("Footer");
   // Les horaires des réglages sont saisis en français : en anglais, on ne remplace que le texte par défaut.
   const hours = lang === "en" && brand.hours === defaultHours ? t("hours") : brand.hours;
@@ -20,8 +37,8 @@ export function Footer({ brand, cod, lang, defaultHours }: { brand: BrandSetting
           <span className="font-display text-[28px] font-bold tracking-[-0.03em]">
             Wá x<span className="text-terracotta">ɔ</span>
           </span>
-          <span className="text-cream text-[14px]">{t("tagline")}</span>
-          <span className="text-[14px] leading-normal text-[#B9B1A4]">{t("blurb")}</span>
+          <span className="text-cream/70 text-[13px] leading-snug">{t("tagline")}</span>
+          <span className="text-[14px] leading-normal text-[#B9B1A4]">{t("blurb", cutoffParams(cutoff, lang))}</span>
         </div>
         <div className="flex flex-col gap-[10px] text-[14px]">
           <strong className={COL_TITLE}>{t("shop")}</strong>

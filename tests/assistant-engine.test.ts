@@ -163,7 +163,7 @@ describe("assistant — moteur déterministe", () => {
     expect(g.intent).toBe("products");
     expect(g.text).toMatch(/Here/);
     const d = plan(input("How long does delivery take?", { lang: "en", kb: kbEn }));
-    expect(d.text).toMatch(/Next-day delivery/);
+    expect(d.text).toMatch(/Express Delivery/);
     const c = plan(input("Against power cuts", { lang: "en", kb: kbEn }));
     expect(c.productIds.some((id) => ["lampe", "batterie"].includes(id))).toBe(true);
   });

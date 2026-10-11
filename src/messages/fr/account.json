@@ -270,7 +270,7 @@
     "title": "Questions fréquentes",
     "intro": "Vous ne trouvez pas votre réponse ? <contact>Écrivez-nous</contact>.",
     "q1": "Combien de temps prend la livraison ?",
-    "a1": "À Cotonou et Calavi, vous êtes livré le lendemain pour toute commande passée avant {cutoff} h, du lundi au samedi. Dans les autres villes du Bénin, comptez 48 à 72 h.",
+    "a1": "À Cotonou et Calavi, avec la Livraison Express, vous êtes livré le jour même pour toute commande passée avant {cutoff} h (heure du Bénin), sinon le lendemain, 7 j/7, dimanche compris. Si vous payez à la réception, l'heure limite s'applique à l'heure de votre confirmation sur WhatsApp. Dans les autres villes du Bénin, comptez 48 à 72 h.",
     "q2": "Combien coûte la livraison ?",
     "a2": "{cotonou} à Cotonou et Calavi, offerte dès {freeShip} d'achat. {autre} dans les autres villes du Bénin.",
     "q3": "Comment puis-je payer ?",
@@ -325,7 +325,7 @@
       },
       "s6": {
         "h": "6. Livraison",
-        "p": "Cotonou et Calavi : livraison le lendemain pour toute commande passée avant {cutoff} h, du lundi au samedi, pour {cotonou}, offerte dès {freeShip} d'achat. Autres villes du Bénin : sous 48 à 72 h, pour {autre}. Le livreur appelle le client avant son arrivée. En cas d'absence, une nouvelle livraison est proposée ; après deux tentatives sans succès, la commande peut être annulée. Pas de livraison hors du Bénin pour le moment."
+        "p": "Cotonou et Calavi (Livraison Express) : livraison le jour même pour toute commande passée avant {cutoff} h (heure du Bénin), sinon le lendemain, 7 j/7, dimanche compris (paiement à la livraison : l'heure limite s'applique à l'heure de la confirmation WhatsApp), pour {cotonou}, offerte dès {freeShip} d'achat. Autres villes du Bénin : sous 48 à 72 h, pour {autre}. Le livreur appelle le client avant son arrivée. En cas d'absence, une nouvelle livraison est proposée ; après deux tentatives sans succès, la commande peut être annulée. Pas de livraison hors du Bénin pour le moment."
       },
       "s7": {
         "h": "7. Échange et remboursement",
@@ -443,7 +443,7 @@
       "colDelay": "Délai",
       "colFee": "Frais",
       "r1z": "Cotonou et Calavi",
-      "r1d": "Le lendemain, commande avant {cutoff} h, du lundi au samedi",
+      "r1d": "Le jour même avant {cutoff} h, sinon le lendemain, 7 j/7",
       "r1f": "{cotonou}, offerte dès {freeShip}",
       "r2z": "Autres villes du Bénin",
       "r2d": "48 à 72 h",

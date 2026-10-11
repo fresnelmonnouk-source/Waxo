@@ -13,6 +13,12 @@ function demoKb(lang: Lang): KbEntry[] {
   });
 }
 
+/** Fiches génériques de secours (livraison, paiement, retours, compte, boutique) : jamais les fiches PRODUIT de la démo,
+ * qui décrivent des articles fictifs (après la purge, la base réelle peut être vide). */
+function genericKb(lang: Lang): KbEntry[] {
+  return demoKb(lang).filter((e) => e.tag !== "Produit" && e.tag !== "Product");
+}
+
 const TTL_MS = 5 * 60_000;
 let cache: { at: number; rows: KbEntry[] } | null = null;
 
@@ -22,7 +28,7 @@ let cache: { at: number; rows: KbEntry[] } | null = null;
  */
 export async function loadKb(lang: Lang): Promise<KbEntry[]> {
   const now = Date.now();
-  if (cache && now - cache.at < TTL_MS) return cache.rows.length ? cache.rows : demoKb(lang);
+  if (cache && now - cache.at < TTL_MS) return cache.rows.length ? cache.rows : genericKb(lang);
   let rows: KbEntry[] = [];
   try {
     const { data, error } = await withTimeout(
@@ -33,5 +39,5 @@ export async function loadKb(lang: Lang): Promise<KbEntry[]> {
   } catch {
     /* Supabase absent ou injoignable : repli démo, on réessaiera plus tard */
   }
-  return rows.length ? rows : demoKb(lang);
+  return rows.length ? rows : genericKb(lang);
 }

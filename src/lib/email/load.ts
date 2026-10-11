@@ -16,6 +16,7 @@ type OrderRow = {
   address: string;
   zone: string;
   created_at: string;
+  status?: string | null;
   pay: string;
   paid: boolean;
   subtotal: number;
@@ -25,7 +26,7 @@ type OrderRow = {
   order_items: { name: string; qty: number; unit_price: number }[] | null;
 };
 
-const COLUMNS = "id,number,user_id,name,email,address,zone,created_at,pay,paid,subtotal,shipping_fee,total,order_items(name,qty,unit_price)";
+const COLUMNS = "id,number,user_id,name,email,address,zone,status,created_at,pay,paid,subtotal,shipping_fee,total,order_items(name,qty,unit_price)";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export type LoadedOrderEmail = { to: string; data: OrderEmailData } | { to: null; reason: "order_not_found" | "no_recipient" | "unavailable" };
@@ -74,7 +75,15 @@ export async function loadOrderEmail(orderId: string): Promise<LoadedOrderEmail>
       total: row.total,
       pay: row.pay,
       paid: row.paid,
-      deliveryDate: deliveryExpression({ zone: row.zone, createdAt: row.created_at, cutoff: settings.shipping.cutoff, locale }),
+      zone: row.zone,
+      deliveryDate: deliveryExpression({
+        zone: row.zone,
+        createdAt: row.created_at,
+        cutoff: settings.shipping.cutoff,
+        locale,
+        // Paiement à la livraison : le délai démarre à la confirmation WhatsApp (commande encore « nouvelle »).
+        awaitingConfirmation: row.pay === "cod" && (row.status ?? "nouvelle") === "nouvelle",
+      }),
       brand: settings.brand,
       siteUrl: siteUrl(),
     },
