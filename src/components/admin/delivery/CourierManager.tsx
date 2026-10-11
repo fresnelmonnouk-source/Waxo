@@ -168,7 +168,7 @@ export function CourierManager({ couriers, connected }: { couriers: CourierCard[
   return (
     <section className="flex flex-col gap-3.5 rounded-[22px] bg-white p-5" aria-label="Livreurs">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 className="m-0 text-[17px]">Livreurs</h2>
+        <h2 className="m-0 text-[17px] font-bold">Livreurs</h2>
         <span className="text-[13px] text-[#4A443C]">
           La tournée envoyée sur WhatsApp liste les adresses, téléphones et montants à encaisser.
         </span>

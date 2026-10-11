@@ -182,7 +182,7 @@ export function PageEditor({
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,460px),1fr))] items-start gap-5">
         <section aria-label={`Édition de ${label}`} className="flex flex-col gap-3.5 rounded-[22px] bg-white p-5">
-          <h2 className="m-0 text-[17px]">{label}</h2>
+          <h2 className="m-0 text-[17px] font-bold">{label}</h2>
           <label className="flex flex-col gap-1.5 text-[14px] font-medium">
             Titre ({LANG_LABEL[locale]})
             <input value={draft.title} maxLength={TITLE_MAX} onChange={(e) => setField("title", e.target.value)} className={FIELD} />
@@ -298,7 +298,7 @@ export function PageEditor({
 
         <section aria-label="Aperçu" className="flex flex-col gap-3 rounded-[22px] bg-white p-5">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="m-0 text-[17px]">Aperçu</h2>
+            <h2 className="m-0 text-[17px] font-bold">Aperçu</h2>
             <span className="text-[12px] text-[#4A443C]">
               {isAbout ? "La page À propos affiche le texte en héro et en cartes numérotées." : "Rendu des textes avec les réglages actuels."}
             </span>

@@ -44,7 +44,7 @@ export function PasswordForm({ email }: { email: string }) {
       }}
       noValidate
     >
-      <h2 id="pw-title" className="m-0 text-[17px]">
+      <h2 id="pw-title" className="m-0 text-[17px] font-bold">
         Compte administrateur
       </h2>
       <span className="text-[13px] text-text">Connecté en tant que {email}</span>

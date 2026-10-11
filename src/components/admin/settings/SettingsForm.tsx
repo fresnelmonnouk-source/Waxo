@@ -104,7 +104,7 @@ export function SettingsForm({ initial, connected }: { initial: Form; connected:
       >
         <div className="grid gap-5 items-start" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,440px),1fr))" }}>
           <section className={`${cardCls} gap-3.5`}>
-            <h2 className="m-0 text-[17px]">Boutique</h2>
+            <h2 className="m-0 text-[17px] font-bold">Boutique</h2>
             <Field label="Nom de la boutique" value={form.shopName} onChange={(v) => set("shopName", v)} error={errors.shopName} maxLength={80} />
             <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))" }}>
               <Field label="WhatsApp" value={form.whatsapp} onChange={(v) => set("whatsapp", v)} error={errors.whatsapp} inputMode="tel" autoComplete="off" maxLength={40} />
@@ -114,7 +114,7 @@ export function SettingsForm({ initial, connected }: { initial: Form; connected:
           </section>
 
           <section className={`${cardCls} gap-3.5`}>
-            <h2 className="m-0 text-[17px]">Livraison</h2>
+            <h2 className="m-0 text-[17px] font-bold">Livraison</h2>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Cotonou & Calavi (F)" value={form.shipCotonou} onChange={(v) => set("shipCotonou", v)} error={errors.shipCotonou} inputMode="numeric" />
               <Field label="Autres villes (F)" value={form.shipOther} onChange={(v) => set("shipOther", v)} error={errors.shipOther} inputMode="numeric" />
@@ -125,7 +125,7 @@ export function SettingsForm({ initial, connected }: { initial: Form; connected:
           </section>
 
           <section className={`${cardCls} gap-1`}>
-            <h2 className="m-0 mb-1.5 text-[17px]">Moyens de paiement</h2>
+            <h2 className="m-0 mb-1.5 text-[17px] font-bold">Moyens de paiement</h2>
             {PAY_IDS.map((id) => (
               <div key={id} className="border-t border-[#F0EBE1] py-1.5 first:border-t-0">
                 <Switch on={form.pay[id]} onToggle={() => togglePay(id)} label={PAY_LABELS[id]} />
@@ -139,7 +139,7 @@ export function SettingsForm({ initial, connected }: { initial: Form; connected:
           </section>
 
           <section className={`${cardCls} gap-3`}>
-            <h2 className="m-0 text-[17px]">Assistants IA</h2>
+            <h2 className="m-0 text-[17px] font-bold">Assistants IA</h2>
             <Switch
               on={form.autoDraft}
               onToggle={() => set("autoDraft", !form.autoDraft)}
@@ -152,7 +152,7 @@ export function SettingsForm({ initial, connected }: { initial: Form; connected:
 
         <section className={`${cardCls} gap-3.5`}>
           <div className="flex flex-col gap-1 max-w-[640px]">
-            <h2 className="m-0 text-[17px]">Mentions légales</h2>
+            <h2 className="m-0 text-[17px] font-bold">Mentions légales</h2>
             <span className="text-[13px] text-text leading-normal">
               Ces informations remplissent les pages légales de la boutique (mentions légales, CGV, confidentialité). Un champ laissé vide reste affiché comme « [à compléter] » :
               ne saisissez que des informations exactes.

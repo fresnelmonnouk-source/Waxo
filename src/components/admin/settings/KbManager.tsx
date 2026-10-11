@@ -136,7 +136,7 @@ export function KbManager({ initial, productDocs, connected }: { initial: KbEntr
     <section className={`${cardCls} gap-3.5`} aria-labelledby="kb-title">
       <div className="flex justify-between items-start gap-3 flex-wrap">
         <div className="flex flex-col gap-1 max-w-[640px]">
-          <h2 id="kb-title" className="m-0 text-[17px]">
+          <h2 id="kb-title" className="m-0 text-[17px] font-bold">
             Base de connaissances
           </h2>
           <span className="text-[13px] text-text leading-normal">

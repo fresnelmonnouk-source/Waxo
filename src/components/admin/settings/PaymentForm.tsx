@@ -104,7 +104,7 @@ export function PaymentForm({ view }: { view: PaymentAdminView }) {
       className={`${cardCls} gap-4`}
       aria-labelledby="pay-title"
     >
-      <h2 id="pay-title" className="m-0 text-[17px]">
+      <h2 id="pay-title" className="m-0 text-[17px] font-bold">
         Paiement en ligne (FedaPay)
       </h2>
       <DemoBanner connected={view.connected} />

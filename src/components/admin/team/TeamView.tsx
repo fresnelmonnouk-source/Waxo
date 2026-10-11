@@ -60,7 +60,7 @@ export function TeamView({ data }: { data: TeamData }) {
         }}
         aria-labelledby="team-add-title"
       >
-        <h2 id="team-add-title" className="m-0 text-[17px]">
+        <h2 id="team-add-title" className="m-0 text-[17px] font-bold">
           Ajouter un administrateur
         </h2>
         <p className="m-0 text-[13px] text-text">
@@ -95,7 +95,7 @@ export function TeamView({ data }: { data: TeamData }) {
       </form>
 
       <section className={`${cardCls} gap-1`} aria-labelledby="team-list-title">
-        <h2 id="team-list-title" className="m-0 mb-2 text-[17px]">
+        <h2 id="team-list-title" className="m-0 mb-2 text-[17px] font-bold">
           Administrateurs ({data.members.length})
         </h2>
         <ul className="m-0 flex list-none flex-col p-0">
@@ -123,7 +123,7 @@ export function TeamView({ data }: { data: TeamData }) {
 
       {data.events.length > 0 ? (
         <section className={`${cardCls} gap-1`} aria-labelledby="team-log-title">
-          <h2 id="team-log-title" className="m-0 mb-2 text-[17px]">
+          <h2 id="team-log-title" className="m-0 mb-2 text-[17px] font-bold">
             Historique
           </h2>
           <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-[13px]">

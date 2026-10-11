@@ -232,7 +232,7 @@ export function DeliveryBoard({ board, fees, zone, connected, todayLabel }: Prop
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,460px),1fr))] items-start gap-5">
         <section className="flex flex-col gap-3 rounded-[22px] bg-white p-5" aria-label="À expédier">
           <div className="flex items-baseline justify-between gap-3">
-            <h2 className="m-0 text-[17px]">À expédier</h2>
+            <h2 className="m-0 text-[17px] font-bold">À expédier</h2>
             <span className="text-[13px] text-[#4A443C]">{plural(board.toShip.length, "commande", "commandes")}</span>
           </div>
           {board.toShip.length === 0 ? <span className="text-sm text-[#4A443C]">Rien à expédier dans cette zone.</span> : null}
@@ -242,7 +242,7 @@ export function DeliveryBoard({ board, fees, zone, connected, todayLabel }: Prop
         </section>
         <section className="flex flex-col gap-3 rounded-[22px] bg-white p-5" aria-label="En cours de livraison">
           <div className="flex items-baseline justify-between gap-3">
-            <h2 className="m-0 text-[17px]">En cours de livraison</h2>
+            <h2 className="m-0 text-[17px] font-bold">En cours de livraison</h2>
             <span className="text-[13px] text-[#4A443C]">{plural(board.onRoad.length, "commande", "commandes")}</span>
           </div>
           {board.onRoad.length === 0 ? <span className="text-sm text-[#4A443C]">Aucune commande en route.</span> : null}
@@ -255,7 +255,7 @@ export function DeliveryBoard({ board, fees, zone, connected, todayLabel }: Prop
       <CourierManager couriers={board.couriers} connected={connected} />
 
       <section className="flex flex-col gap-1 rounded-[22px] bg-white p-5" aria-label="Livrées récemment">
-        <h2 className="m-0 mb-2 text-[17px]">Livrées récemment</h2>
+        <h2 className="m-0 mb-2 text-[17px] font-bold">Livrées récemment</h2>
         {board.delivered.length === 0 ? <EmptyBox>Aucune livraison récente.</EmptyBox> : null}
         {board.delivered.map((o) => (
           <div key={o.id} className="flex flex-wrap items-center gap-x-3.5 gap-y-1 border-t border-[#F0EBE1] py-2.5 text-sm">
