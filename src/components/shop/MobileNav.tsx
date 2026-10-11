@@ -5,13 +5,25 @@ import { useTranslations } from "next-intl";
 import { AssistantCta } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
 import { LangSwitch } from "./LangSwitch";
+import type { HeaderCampaign } from "./campaign-logic";
 import { COLLECTIONS, type ShellCategory } from "./logic";
 
-const SECTION = "text-muted text-[12px] font-semibold tracking-[0.08em] uppercase";
+const SECTION =
+  "text-muted text-[12px] font-semibold tracking-[0.08em] uppercase";
 const PLAIN = "text-ink! hover:text-ink! no-underline";
 
 /** Tiroir de navigation mobile (maquette lignes 958-987), ouvert par le bouton ☰ sous 980 px. */
-export function MobileNav({ categories, onClose, packsEnabled = true }: { categories: ShellCategory[]; onClose: () => void; packsEnabled?: boolean }) {
+export function MobileNav({
+  categories,
+  onClose,
+  packsEnabled = true,
+  campaign = null,
+}: {
+  categories: ShellCategory[];
+  onClose: () => void;
+  packsEnabled?: boolean;
+  campaign?: HeaderCampaign | null;
+}) {
   const t = useTranslations();
   const closeRef = useRef<HTMLButtonElement>(null);
   const [logged, setLogged] = useState(false);
@@ -55,13 +67,36 @@ export function MobileNav({ categories, onClose, packsEnabled = true }: { catego
           </button>
         </div>
         <div className="flex flex-col gap-1 px-5 pt-3 pb-7">
-          <Link href="/" onClick={onClose} className={`${PLAIN} py-3 text-[17px] font-semibold`}>
+          <Link
+            href="/"
+            onClick={onClose}
+            className={`${PLAIN} py-3 text-[17px] font-semibold`}
+          >
             {t("Shell.nav.home")}
           </Link>
-          <Link href="/catalogue" onClick={onClose} className={`${PLAIN} py-3 text-[17px] font-semibold`}>
+          <Link
+            href="/catalogue"
+            onClick={onClose}
+            className={`${PLAIN} py-3 text-[17px] font-semibold`}
+          >
             {t("Shell.mobile.all")}
           </Link>
-          <span className={`${SECTION} pt-[14px] pb-2`}>{t("Shell.mobile.categories")}</span>
+          {campaign?.showMenu ? (
+            <Link
+              href={`/campagne/${encodeURIComponent(campaign.slug)}`}
+              onClick={onClose}
+              className="text-terracotta-deep! hover:text-terracotta-deep! flex min-h-11 items-center gap-2 py-3 text-[17px] font-semibold no-underline"
+            >
+              <span
+                aria-hidden="true"
+                className="bg-terracotta h-2 w-2 flex-none rounded-full"
+              />
+              {campaign.name}
+            </Link>
+          ) : null}
+          <span className={`${SECTION} pt-[14px] pb-2`}>
+            {t("Shell.mobile.categories")}
+          </span>
           <div className="grid grid-cols-2 gap-2">
             {categories.map((c) => (
               <Link
@@ -75,28 +110,57 @@ export function MobileNav({ categories, onClose, packsEnabled = true }: { catego
               </Link>
             ))}
           </div>
-          <span className={`${SECTION} pt-[18px] pb-1`}>{t("Shell.mobile.collections")}</span>
+          <span className={`${SECTION} pt-[18px] pb-1`}>
+            {t("Shell.mobile.collections")}
+          </span>
           {COLLECTIONS.map((col) => (
-            <Link key={col} href={`/catalogue?col=${col}`} onClick={onClose} className={`${PLAIN} border-border border-b py-[11px] text-[15px]`}>
+            <Link
+              key={col}
+              href={`/catalogue?col=${col}`}
+              onClick={onClose}
+              className={`${PLAIN} border-border border-b py-[11px] text-[15px]`}
+            >
               {t(`Catalog.col.${col}`)}
             </Link>
           ))}
           {packsEnabled ? (
-            <Link href="/packs" onClick={onClose} className={`${PLAIN} border-border border-b py-[11px] text-[15px]`}>
+            <Link
+              href="/packs"
+              onClick={onClose}
+              className={`${PLAIN} border-border border-b py-[11px] text-[15px]`}
+            >
               {t("Packs.navLabel")}
             </Link>
           ) : null}
-          <span className={`${SECTION} pt-[18px] pb-1`}>{t("Shell.mobile.help")}</span>
-          <Link href="/a-propos" onClick={onClose} className={`${PLAIN} py-[11px] text-[15px]`}>
+          <span className={`${SECTION} pt-[18px] pb-1`}>
+            {t("Shell.mobile.help")}
+          </span>
+          <Link
+            href="/a-propos"
+            onClick={onClose}
+            className={`${PLAIN} py-[11px] text-[15px]`}
+          >
             {t("Shell.nav.about")}
           </Link>
-          <Link href="/contact" onClick={onClose} className={`${PLAIN} py-[11px] text-[15px]`}>
+          <Link
+            href="/contact"
+            onClick={onClose}
+            className={`${PLAIN} py-[11px] text-[15px]`}
+          >
             {t("Shell.nav.contact")}
           </Link>
-          <Link href="/faq" onClick={onClose} className={`${PLAIN} py-[11px] text-[15px]`}>
+          <Link
+            href="/faq"
+            onClick={onClose}
+            className={`${PLAIN} py-[11px] text-[15px]`}
+          >
             {t("Shell.mobile.faq")}
           </Link>
-          <Link href="/suivi" onClick={onClose} className={`${PLAIN} py-[11px] text-[15px]`}>
+          <Link
+            href="/suivi"
+            onClick={onClose}
+            className={`${PLAIN} py-[11px] text-[15px]`}
+          >
             {t("Shell.nav.track")}
           </Link>
           <div className="mt-[18px] flex flex-col gap-2">

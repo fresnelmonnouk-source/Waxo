@@ -16,6 +16,7 @@ vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => ({ rpc, from: 
 const refreshFxRates = vi.fn();
 vi.mock("@/lib/currency/refresh", () => ({ refreshFxRates: (...a: unknown[]) => refreshFxRates(...a) }));
 vi.mock("@/lib/email", () => ({ sendOrderEmail: (...a: unknown[]) => sendOrderEmail(...a) }));
+vi.mock("@/lib/email/review-request", () => ({ sendReviewRequests: async () => ({ sent: 0, skipped: 0, failed: 0 }) }));
 
 import { GET } from "@/app/api/cron/expire-orders/route";
 
@@ -48,7 +49,7 @@ describe("GET /api/cron/expire-orders", () => {
     sendOrderEmail.mockResolvedValue({ sent: true });
     const res = await call("Bearer cron-secret");
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ ok: true, expired: 1, rescued: 0, notified: 1, fx: "updated" });
+    expect(await res.json()).toEqual({ ok: true, expired: 1, rescued: 0, notified: 1, fx: "updated", reviews: { sent: 0, skipped: 0, failed: 0 } });
     expect(rpc).toHaveBeenCalledWith("expire_stale_orders", { p_minutes: 60 });
     expect(sendOrderEmail).toHaveBeenCalledWith("o1", "annulee");
   });

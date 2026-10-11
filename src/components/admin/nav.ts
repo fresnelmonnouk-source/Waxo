@@ -9,6 +9,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { id: "clients", label: "Clients", href: "/admin/clients", group: "vente" },
   { id: "products", label: "Produits", href: "/admin/produits", group: "boutique" },
   { id: "packs", label: "Packs", href: "/admin/packs", group: "boutique" },
+  { id: "campaigns", label: "Campagnes", href: "/admin/campagnes", group: "boutique" },
   { id: "reviews", label: "Avis", href: "/admin/avis", group: "boutique" },
   { id: "pages", label: "Pages d'infos", href: "/admin/pages", group: "boutique" },
   { id: "messages", label: "Messages", href: "/admin/messages", group: "vente" },

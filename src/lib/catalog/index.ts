@@ -4,6 +4,8 @@ import type { Locale } from "@/i18n/routing";
 import { createPublicClient } from "@/lib/supabase/public";
 import { DEFAULT_FX, sanitizeFx, type FxRates } from "@/lib/currency/core";
 import { supabasePublicEnv } from "@/lib/supabase/env";
+import { getLiveCampaigns } from "@/lib/campaigns/data";
+import { applyCampaigns } from "@/lib/campaigns/logic";
 import type {
   Category,
   Product,
@@ -180,7 +182,10 @@ async function fetchDbProducts(locale: Locale): Promise<Product[] | null> {
 }
 
 async function allProducts(locale: Locale): Promise<Product[]> {
-  return (await fetchDbProducts(locale)) ?? demo.products.map((p) => demoProduct(p, locale));
+  const [db, campaigns] = await Promise.all([fetchDbProducts(locale), getLiveCampaigns()]);
+  if (!db) return demo.products.map((p) => demoProduct(p, locale));
+  // Campagnes en cours : prix de campagne + prix barré = prix normal (même règle que place_order, migration 0015).
+  return applyCampaigns(db, campaigns, Date.now(), locale === "en" ? "en" : "fr");
 }
 
 export async function getProducts(locale: Locale, query: ProductQuery = {}): Promise<Product[]> {

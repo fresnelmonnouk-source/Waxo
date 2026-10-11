@@ -206,5 +206,27 @@
     "copyright": "© {year} Wá xɔ · Cotonou, Benin",
     "payments": "MTN MoMo · Moov Money · Celtiis Cash · Visa · Mastercard",
     "paymentsCod": " · Cash on delivery"
+  },
+  "Campaign": {
+    "bannerLabel": "{name} campaign",
+    "cta": "See the deals",
+    "endsIn": "Ends in",
+    "startsIn": "Starts in",
+    "unitDays": "d",
+    "unitHours": "h",
+    "unitMinutes": "min",
+    "unitSeconds": "s",
+    "until": "Until {date}",
+    "startsOn": "From {date}",
+    "eyebrow": "Limited-time offer",
+    "upcomingEyebrow": "Coming soon",
+    "upcomingText": "The deals are not open yet. Come back at launch to make the most of them.",
+    "count": "{count, plural, one {# product on offer} other {# products on offer}}",
+    "empty": "No products yet",
+    "emptyCta": "Browse the full catalogue",
+    "home": "Home",
+    "crumb": "Breadcrumb",
+    "listLabel": "Campaign products",
+    "metaDescription": "{name} deals at the Wá xɔ shop, for a limited time."
   }
 }

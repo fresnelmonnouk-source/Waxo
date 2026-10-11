@@ -6,7 +6,8 @@ import { getPaymentProvider } from "@/lib/payment";
 import { sendOrderEmail } from "@/lib/email";
 import { sendShopNewOrderEmail } from "@/lib/email/shop";
 import { withTimeout } from "@/lib/auth/timeout";
-import { getPacksEnabled } from "@/lib/catalog/packs";
+import { getPacks, getPacksEnabled } from "@/lib/catalog/packs";
+import { getProductsByIds } from "@/lib/catalog";
 import {
   API_STATUS,
   apiMessage,
@@ -34,6 +35,22 @@ const MAX_BODY_BYTES = 20_000;
 const RATE_LIMIT = { max: 8, windowMs: 10 * 60_000 };
 
 type GuardCode = "too_fast" | "quantity_limit";
+
+/**
+ * Prix courants (campagnes comprises) des articles demandés, ou null si l'un d'eux est introuvable (place_order tranchera).
+ * Sert à refuser AVANT la création une commande dont le total serait plus élevé que celui affiché (fin de campagne).
+ */
+async function currentPrices(lang: ApiLang, items: { kind: "product" | "pack"; id: string }[]): Promise<Record<string, number> | null> {
+  const productIds = items.filter((i) => i.kind === "product").map((i) => i.id);
+  const [products, packs] = await Promise.all([
+    productIds.length ? getProductsByIds(lang, productIds) : Promise.resolve([]),
+    items.some((i) => i.kind === "pack") ? getPacks(lang) : Promise.resolve([]),
+  ]);
+  const prices: Record<string, number> = {};
+  for (const p of products) prices[p.id] = p.price;
+  for (const k of packs) prices[k.id] = k.price;
+  return items.every((i) => typeof prices[i.id] === "number") ? prices : null;
+}
 
 function fail(lang: ApiLang, code: ApiErrorCode, extra: Record<string, unknown> = {}) {
   return NextResponse.json({ ok: false, code, message: apiMessage(lang, code), ...extra }, { status: API_STATUS[code] });
@@ -152,6 +169,16 @@ export async function POST(request: Request) {
     }
 
     if (!placed) {
+      // Total attendu par le client (prix affichés). Si un prix a AUGMENTÉ depuis (fin de campagne), on ne crée rien :
+      // le client reçoit les prix à jour et valide en connaissance de cause (audit Tariq). Une baisse ne bloque pas.
+      const expected = typeof rawObj.expectedSubtotal === "number" && Number.isFinite(rawObj.expectedSubtotal) ? Math.round(rawObj.expectedSubtotal) : null;
+      if (expected !== null) {
+        const prices = await currentPrices(lang, input.items).catch(() => null);
+        if (prices) {
+          const now = input.items.reduce((sum, i) => sum + prices[i.id] * i.qty, 0);
+          if (now > expected) return fail(lang, "price_changed", { prices });
+        }
+      }
       const phone = normPhone(input.customer.phone);
       const { data, error } = await admin.rpc("place_order", {
         p_items: input.items,

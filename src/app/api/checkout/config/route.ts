@@ -31,9 +31,16 @@ export async function GET(request: Request) {
     ]);
     const packsEnabled = settings.features?.packs !== false;
     const stock: Record<string, number> = {};
-    for (const p of products) if (ids.has(p.id)) stock[p.id] = p.stock;
+    const prices: Record<string, number> = {};
+    for (const p of products) if (ids.has(p.id)) {
+      stock[p.id] = p.stock;
+      prices[p.id] = p.price; // prix courant (campagne comprise) : le panier se met à jour quand une campagne commence ou finit
+    }
     // Packs du panier : stock = min des stocks des produits / quantité (calculé par getPacks).
-    if (packsEnabled) for (const k of packs) if (ids.has(k.id)) stock[k.id] = k.stock;
+    if (packsEnabled) for (const k of packs) if (ids.has(k.id)) {
+      stock[k.id] = k.stock;
+      prices[k.id] = k.price;
+    }
 
     // Ids du panier absents du catalogue ET qui ne sont pas des UUID (restes de la démo) : à retirer côté navigateur.
     // Jamais un UUID : si la base est lente et que le catalogue retombe sur la démo, un vrai panier ne doit pas être vidé.
@@ -46,7 +53,7 @@ export async function GET(request: Request) {
       .map((p) => ({ id: p.id, slug: p.slug, name: p.name, price: p.price, bg: p.bg, imageUrl: p.imageUrl }));
 
     return NextResponse.json(
-      { ok: true, shipping: settings.shipping, pay: settings.pay, stock, upsell, stale, packsEnabled },
+      { ok: true, shipping: settings.shipping, pay: settings.pay, stock, prices, upsell, stale, packsEnabled },
       { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } },
     );
   } catch {

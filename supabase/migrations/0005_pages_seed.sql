@@ -251,7 +251,7 @@ These terms may change. The version that applies is the one published on this pa
 
 ## Les données que nous collectons
 
-- Quand vous commandez : votre nom, votre téléphone, votre adresse de livraison, les produits commandés et le moyen de paiement choisi.
+- Quand vous commandez : votre nom, votre téléphone, votre adresse de livraison, votre e-mail si vous le donnez, les produits commandés et le moyen de paiement choisi.
 - Si vous créez un compte : votre prénom, votre nom, votre téléphone, votre e-mail, votre mot de passe (enregistré sous forme chiffrée), l''historique de vos commandes et les avis que vous publiez.
 - Pour la newsletter : votre e-mail ou votre numéro WhatsApp.
 - Quand vous nous écrivez ou utilisez l''assistant : le contenu de vos messages.
@@ -260,7 +260,7 @@ Les paiements en ligne sont traités directement par notre prestataire de paieme
 
 ## À quoi elles servent
 
-Nous utilisons vos données pour préparer, livrer et suivre vos commandes, vous contacter au sujet d''une commande, gérer votre compte et vos avis, vous envoyer la newsletter si vous l''avez demandée, répondre à vos messages et améliorer le site.
+Nous utilisons vos données pour préparer, livrer et suivre vos commandes, vous contacter au sujet d''une commande, gérer votre compte et vos avis, vous demander une seule fois votre avis par e-mail quelques jours après une livraison, vous envoyer la newsletter si vous l''avez demandée, répondre à vos messages et améliorer le site.
 
 ## Qui les reçoit
 
@@ -303,7 +303,7 @@ Les échanges avec le site sont chiffrés (HTTPS). Seules les personnes habilit�
 
 ## The data we collect
 
-- When you order: your name, phone number, delivery address, the products you ordered and the payment method you chose.
+- When you order: your name, phone number, delivery address, your email if you give it, the products you ordered and the payment method you chose.
 - If you create an account: your first name, last name, phone number, email, password (stored in encrypted form), your order history and the reviews you post.
 - For the newsletter: your email or WhatsApp number.
 - When you write to us or use the assistant: the content of your messages.
@@ -312,7 +312,7 @@ Online payments are handled directly by our payment provider. We don''t keep sec
 
 ## What we use it for
 
-We use your data to prepare, deliver and track your orders, contact you about an order, manage your account and reviews, send you the newsletter if you asked for it, reply to your messages and improve the site.
+We use your data to prepare, deliver and track your orders, contact you about an order, manage your account and reviews, ask once by email for your review a few days after a delivery, send you the newsletter if you asked for it, reply to your messages and improve the site.
 
 ## Who receives it
 

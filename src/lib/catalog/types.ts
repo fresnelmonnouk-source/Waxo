@@ -23,6 +23,8 @@ export type Product = {
   imageUrl: string | null;
   createdAt: string;
   rating: { average: number; count: number };
+  /** Campagne en cours qui fixe le prix (0015) ; `comparePrice` vaut alors le prix normal. */
+  campaign?: { slug: string; name: string; endsAt: string };
 };
 
 export type Review = {

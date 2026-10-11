@@ -14,6 +14,7 @@ export type ApiErrorCode =
   | "unavailable"
   | "login_required"
   | "already_reviewed"
+  | "price_changed"
   | "server_error";
 
 export const API_STATUS: Record<ApiErrorCode, number> = {
@@ -28,6 +29,7 @@ export const API_STATUS: Record<ApiErrorCode, number> = {
   unavailable: 503,
   login_required: 401,
   already_reviewed: 409,
+  price_changed: 409,
   server_error: 500,
 };
 
@@ -44,6 +46,7 @@ const MESSAGES: Record<ApiLang, Record<ApiErrorCode, string>> = {
     unavailable: "Le service est momentanément indisponible. Réessayez dans quelques instants.",
     login_required: "Connectez-vous pour donner votre avis. Seuls les clients inscrits peuvent publier un avis.",
     already_reviewed: "Vous avez déjà donné votre avis sur ce produit.",
+    price_changed: "Un prix a changé depuis l'ouverture de cette page (fin d'une promotion). Votre panier est à jour : vérifiez le total puis validez à nouveau.",
     server_error: "Une erreur est survenue. Réessayez dans quelques instants.",
   },
   en: {
@@ -58,6 +61,7 @@ const MESSAGES: Record<ApiLang, Record<ApiErrorCode, string>> = {
     unavailable: "The service is temporarily unavailable. Please try again in a moment.",
     login_required: "Sign in to leave a review. Only registered customers can post a review.",
     already_reviewed: "You have already reviewed this product.",
+    price_changed: "A price changed since this page was opened (a promotion ended). Your cart is updated: check the total and confirm again.",
     server_error: "Something went wrong. Please try again in a moment.",
   },
 };

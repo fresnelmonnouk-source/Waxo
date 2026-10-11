@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { MegaAssistantBlock } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
+import type { HeaderCampaign } from "./campaign-logic";
 import { COLLECTIONS, type ShellCategory } from "./logic";
 
 /**
@@ -14,11 +15,13 @@ export function MegaMenu({
   total,
   onNavigate,
   packsEnabled = true,
+  campaign = null,
 }: {
   categories: ShellCategory[];
   total: number;
   onNavigate: () => void;
   packsEnabled?: boolean;
+  campaign?: HeaderCampaign | null;
 }) {
   const t = useTranslations();
   return (
@@ -28,7 +31,9 @@ export function MegaMenu({
     >
       <div className="mx-auto grid max-w-[1280px] grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)] gap-8 px-5 pt-6 pb-7">
         <div className="flex flex-col gap-3">
-          <span className="text-muted text-[12px] font-semibold tracking-[0.08em] uppercase">{t("Shell.mega.categories")}</span>
+          <span className="text-muted text-[12px] font-semibold tracking-[0.08em] uppercase">
+            {t("Shell.mega.categories")}
+          </span>
           <div className="grid grid-cols-3 gap-[10px]">
             {categories.map((c) => (
               <Link
@@ -38,14 +43,33 @@ export function MegaMenu({
                 className="text-ink! hover:text-ink! flex flex-col gap-[2px] rounded-[16px] px-4 py-[14px] no-underline transition-transform duration-150 hover:-translate-y-0.5"
                 style={{ background: c.bg }}
               >
-                <strong className="font-display text-[15px] font-semibold">{c.label}</strong>
-                <span className="text-text text-[13px]">{t("Shell.productCount", { count: c.count })}</span>
+                <strong className="font-display text-[15px] font-semibold">
+                  {c.label}
+                </strong>
+                <span className="text-text text-[13px]">
+                  {t("Shell.productCount", { count: c.count })}
+                </span>
               </Link>
             ))}
           </div>
         </div>
         <div className="flex flex-col">
-          <span className="text-muted mb-[6px] text-[12px] font-semibold tracking-[0.08em] uppercase">{t("Shell.mega.collections")}</span>
+          <span className="text-muted mb-[6px] text-[12px] font-semibold tracking-[0.08em] uppercase">
+            {t("Shell.mega.collections")}
+          </span>
+          {campaign?.showMenu ? (
+            <Link
+              href={`/campagne/${encodeURIComponent(campaign.slug)}`}
+              onClick={onNavigate}
+              className="text-terracotta-deep! border-border hover:text-ink! flex items-center gap-2 border-b py-[10px] text-[15px] font-semibold no-underline"
+            >
+              <span
+                aria-hidden="true"
+                className="bg-terracotta h-2 w-2 flex-none rounded-full"
+              />
+              {campaign.name}
+            </Link>
+          ) : null}
           {COLLECTIONS.map((col) => (
             <Link
               key={col}
@@ -57,11 +81,19 @@ export function MegaMenu({
             </Link>
           ))}
           {packsEnabled ? (
-            <Link href="/packs" onClick={onNavigate} className="text-ink! border-border hover:text-terracotta-deep! border-b py-[10px] text-[15px] no-underline">
+            <Link
+              href="/packs"
+              onClick={onNavigate}
+              className="text-ink! border-border hover:text-terracotta-deep! border-b py-[10px] text-[15px] no-underline"
+            >
               {t("Packs.navLabel")}
             </Link>
           ) : null}
-          <Link href="/catalogue" onClick={onNavigate} className="pt-3 text-[15px] font-semibold">
+          <Link
+            href="/catalogue"
+            onClick={onNavigate}
+            className="pt-3 text-[15px] font-semibold"
+          >
             {t("Shell.mega.all", { count: total })}
           </Link>
         </div>

@@ -7,6 +7,7 @@ import { cronAuthorized } from "@/lib/payment/cron-auth";
 import { fetchTransaction } from "@/lib/payment/fedapay";
 import { settleApprovedTransaction } from "@/lib/payment/settle";
 import { isApproved } from "@/lib/payment/transaction";
+import { sendReviewRequests } from "@/lib/email/review-request";
 
 /**
  * GET /api/cron/expire-orders — libère le stock des commandes en ligne jamais payées (RPC expire_stale_orders).
@@ -22,11 +23,14 @@ export const maxDuration = 30;
 
 const EXPIRE_AFTER_MINUTES = 60;
 const MAX_CANDIDATES = 100;
+/** Les demandes d'avis s'arrêtent à 22 s après le début : marge avant la limite de 30 s de la fonction. */
+const REVIEW_DEADLINE_MS = 22_000;
 
 const reply = (body: Record<string, unknown>, status = 200) =>
   NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
 export async function GET(request: Request) {
+  const startedAt = Date.now();
   const secret = process.env.CRON_SECRET?.trim();
   if (!secret) return reply({ ok: false, code: "not_configured" }, 503);
   if (!cronAuthorized(request.headers.get("authorization"), secret)) return reply({ ok: false, code: "unauthorized" }, 401);
@@ -103,7 +107,16 @@ export async function GET(request: Request) {
       }
     }
 
-    return reply({ ok: true, expired: typeof expired === "number" ? expired : 0, rescued, notified, fx });
+    // 3) EN DERNIER (audit Raphaël) : demandes d'avis, jamais avant la partie argent, avec le temps qui reste.
+    let reviews: { sent: number; skipped: number; failed: number } | null = null;
+    try {
+      reviews = await sendReviewRequests(admin, { deadline: startedAt + REVIEW_DEADLINE_MS });
+    } catch (e) {
+      console.error("[cron] demandes d'avis", e instanceof Error ? e.message.slice(0, 120) : "");
+      reviews = null;
+    }
+
+    return reply({ ok: true, expired: typeof expired === "number" ? expired : 0, rescued, notified, fx, reviews });
   } catch {
     return reply({ ok: false, code: "failed", fx }, 500);
   }

@@ -9,11 +9,13 @@ import { useCartCount } from "@/lib/cart/store";
 import { useFavoritesCount } from "@/lib/favorites/store";
 import { cartDrawer } from "@/lib/ui/cart-drawer";
 import { HeaderSearch } from "./HeaderSearch";
+import type { HeaderCampaign } from "./campaign-logic";
 import type { SearchEntry, ShellCategory } from "./logic";
 import { MegaMenu } from "./MegaMenu";
 import { MobileNav } from "./MobileNav";
 
-const NAV_LINK = "text-ink! hover:text-terracotta-deep! flex items-center px-3 no-underline";
+const NAV_LINK =
+  "text-ink! hover:text-terracotta-deep! flex items-center px-3 no-underline";
 
 /**
  * En-tête collant (maquette lignes 35-145) : logo, recherche, compte, favoris, panier, navigation principale,
@@ -25,11 +27,14 @@ export function Header({
   searchIndex,
   total,
   packsEnabled = true,
+  campaign = null,
 }: {
   categories: ShellCategory[];
   searchIndex: SearchEntry[];
   total: number;
   packsEnabled?: boolean;
+  /** Campagne en cours (Black Friday, Noël…) : lien mis en valeur dans le menu si `showMenu`. */
+  campaign?: HeaderCampaign | null;
 }) {
   const t = useTranslations("Shell");
   const tp = useTranslations("Packs");
@@ -67,9 +72,15 @@ export function Header({
     };
   }, [mobileOpen]);
 
-  const underline = (active: boolean) => (active ? "border-b-2 border-ink" : "border-b-2 border-transparent");
+  const underline = (active: boolean) =>
+    active ? "border-b-2 border-ink" : "border-b-2 border-transparent";
   const onHome = pathname === "/";
-  const onCatalog = pathname === "/catalogue" || pathname.startsWith("/produit");
+  const onCatalog =
+    pathname === "/catalogue" || pathname.startsWith("/produit");
+  const menuCampaign = campaign?.showMenu ? campaign : null;
+  const campaignHref = menuCampaign
+    ? `/campagne/${encodeURIComponent(menuCampaign.slug)}`
+    : null;
 
   return (
     <>
@@ -82,25 +93,51 @@ export function Header({
             aria-haspopup="dialog"
             className="border-border-strong flex h-11 w-11 flex-none cursor-pointer items-center justify-center rounded-full border bg-transparent min-[980px]:hidden"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#141210" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#141210"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
               <path d="M4 7h16M4 12h16M4 17h16" />
             </svg>
           </button>
-          <Link href="/" aria-label={t("homeAria")} className="text-ink! hover:text-ink! flex flex-none items-baseline gap-3 no-underline">
+          <Link
+            href="/"
+            aria-label={t("homeAria")}
+            className="text-ink! hover:text-ink! flex flex-none items-baseline gap-3 no-underline"
+          >
             <span className="font-display text-[25px] leading-none font-bold tracking-[-0.03em] whitespace-nowrap">
               Wá x<span className="text-terracotta">ɔ</span>
             </span>
-            <span className="text-muted text-[13px] whitespace-nowrap max-[979px]:hidden">{t("tagline")}</span>
+            <span className="text-muted text-[13px] whitespace-nowrap max-[979px]:hidden">
+              {t("tagline")}
+            </span>
           </Link>
           <HeaderSearch entries={searchIndex} />
           <div className="ml-auto flex flex-none items-center gap-2">
             <AccountMenu />
             <Link
               href="/favoris"
-              aria-label={favCount ? `${t("favorites")} (${favCount})` : t("favorites")}
+              aria-label={
+                favCount ? `${t("favorites")} (${favCount})` : t("favorites")
+              }
               className="text-ink! hover:text-ink! border-border-strong relative flex h-11 w-11 items-center justify-center rounded-full border bg-transparent no-underline hover:bg-white"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#141210" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#141210"
+                strokeWidth="2"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
                 <path d="M12 21s-7-4.4-9.3-8.7C.8 8.7 2.5 4.5 6.5 4.5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3 4 0 5.7 4.2 3.8 7.8C19 16.6 12 21 12 21z" />
               </svg>
               {favCount ? (
@@ -126,8 +163,14 @@ export function Header({
             </button>
           </div>
         </div>
-        <nav aria-label={t("nav.label")} className="mx-auto h-11 max-w-[1280px] items-stretch gap-1 px-5 text-[15px] max-[979px]:hidden min-[980px]:flex">
-          <Link href="/" className={`${NAV_LINK} ${underline(onHome)} pr-3 pl-0 font-semibold`}>
+        <nav
+          aria-label={t("nav.label")}
+          className="mx-auto h-11 max-w-[1280px] items-stretch gap-1 px-5 text-[15px] max-[979px]:hidden min-[980px]:flex"
+        >
+          <Link
+            href="/"
+            className={`${NAV_LINK} ${underline(onHome)} pr-3 pl-0 font-semibold`}
+          >
             {t("nav.home")}
           </Link>
           <button
@@ -145,13 +188,35 @@ export function Header({
               stroke="#141210"
               strokeWidth="2.5"
               aria-hidden="true"
-              style={{ transform: megaOpen ? "rotate(180deg)" : "none", transition: "transform .2s" }}
+              style={{
+                transform: megaOpen ? "rotate(180deg)" : "none",
+                transition: "transform .2s",
+              }}
             >
               <path d="M6 9l6 6 6-6" />
             </svg>
           </button>
+          {menuCampaign && campaignHref ? (
+            <Link
+              href={campaignHref}
+              className={`text-terracotta-deep! hover:text-ink! flex items-center gap-2 px-3 font-semibold whitespace-nowrap no-underline ${
+                pathname === campaignHref
+                  ? "border-terracotta-deep border-b-2"
+                  : "border-b-2 border-transparent"
+              }`}
+            >
+              <span
+                aria-hidden="true"
+                className="bg-terracotta h-2 w-2 flex-none rounded-full"
+              />
+              {menuCampaign.name}
+            </Link>
+          ) : null}
           {packsEnabled ? (
-            <Link href="/packs" className={`${NAV_LINK} ${underline(pathname.startsWith("/packs"))}`}>
+            <Link
+              href="/packs"
+              className={`${NAV_LINK} ${underline(pathname.startsWith("/packs"))}`}
+            >
               {tp("navLabel")}
             </Link>
           ) : null}
@@ -164,15 +229,32 @@ export function Header({
           <Link href="/catalogue?col=promos" className={NAV_LINK}>
             {t("nav.promos")}
           </Link>
-          <Link href="/a-propos" className={`${NAV_LINK} ${underline(pathname === "/a-propos")}`}>
+          <Link
+            href="/a-propos"
+            className={`${NAV_LINK} ${underline(pathname === "/a-propos")}`}
+          >
             {t("nav.about")}
           </Link>
-          <Link href="/contact" className={`${NAV_LINK} ${underline(pathname === "/contact")}`}>
+          <Link
+            href="/contact"
+            className={`${NAV_LINK} ${underline(pathname === "/contact")}`}
+          >
             {t("nav.contact")}
           </Link>
           <span className="flex-1" />
-          <Link href="/suivi" className="text-text! hover:text-terracotta-deep! flex items-center gap-[6px] pl-3 text-[14px] no-underline">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <Link
+            href="/suivi"
+            className="text-text! hover:text-terracotta-deep! flex items-center gap-[6px] pl-3 text-[14px] no-underline"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
               <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7" />
               <circle cx="7" cy="17.5" r="1.8" />
               <circle cx="17" cy="17.5" r="1.8" />
@@ -180,10 +262,31 @@ export function Header({
             {t("nav.track")}
           </Link>
         </nav>
-        {megaOpen ? <MegaMenu categories={categories} total={total} onNavigate={closeAll} packsEnabled={packsEnabled} /> : null}
+        {megaOpen ? (
+          <MegaMenu
+            categories={categories}
+            total={total}
+            onNavigate={closeAll}
+            packsEnabled={packsEnabled}
+            campaign={menuCampaign}
+          />
+        ) : null}
       </header>
-      {megaOpen ? <div onClick={closeAll} aria-hidden="true" className="fixed inset-0 z-25 bg-[rgba(20,18,16,0.25)] max-[979px]:hidden" /> : null}
-      {mobileOpen ? <MobileNav categories={categories} onClose={closeAll} packsEnabled={packsEnabled} /> : null}
+      {megaOpen ? (
+        <div
+          onClick={closeAll}
+          aria-hidden="true"
+          className="fixed inset-0 z-25 bg-[rgba(20,18,16,0.25)] max-[979px]:hidden"
+        />
+      ) : null}
+      {mobileOpen ? (
+        <MobileNav
+          categories={categories}
+          onClose={closeAll}
+          packsEnabled={packsEnabled}
+          campaign={menuCampaign}
+        />
+      ) : null}
     </>
   );
 }

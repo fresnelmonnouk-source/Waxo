@@ -2,6 +2,8 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { AssistantWidget } from "@/components/assistant/AssistantWidget";
+import { CampaignBanner } from "@/components/shop/CampaignBanner";
+import { shopCampaigns } from "@/components/shop/campaign-logic";
 import { CartSanitizer } from "@/components/shop/CartSanitizer";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import { DEFAULT_SETTINGS, getShopData } from "@/components/shop/data";
@@ -10,6 +12,7 @@ import { Header } from "@/components/shop/Header";
 import { Newsletter } from "@/components/shop/Newsletter";
 import { ShopToast } from "@/components/shop/ShopToast";
 import { TopBar } from "@/components/shop/TopBar";
+import { getLiveCampaigns } from "@/lib/campaigns/data";
 import { CurrencyProvider } from "@/lib/currency/client";
 import { routing } from "@/i18n/routing";
 
@@ -20,13 +23,22 @@ export const revalidate = 120;
  * Coque de la boutique : bandeau, en-tête collant, contenu, newsletter, pied de page, tiroir panier et messages éphémères.
  * Reste statique : aucune lecture de cookies/headers (l'état de session et le panier sont lus côté navigateur).
  */
-export default async function ShopLayout({ children, params }: LayoutProps<"/[lang]">) {
+export default async function ShopLayout({
+  children,
+  params,
+}: LayoutProps<"/[lang]">) {
   const { lang } = await params;
   if (!hasLocale(routing.locales, lang)) notFound();
   setRequestLocale(lang);
 
-  const [data, t] = await Promise.all([getShopData(lang), getTranslations({ locale: lang, namespace: "Shell" })]);
+  const [data, t, campaigns] = await Promise.all([
+    getShopData(lang),
+    getTranslations({ locale: lang, namespace: "Shell" }),
+    getLiveCampaigns(),
+  ]);
   const { settings } = data;
+  // Campagne en cours mise en avant (lien du menu + bannière), selon les interrupteurs de l'admin.
+  const campaign = shopCampaigns(campaigns, lang);
 
   return (
     <CurrencyProvider fx={data.fx}>
@@ -36,18 +48,25 @@ export default async function ShopLayout({ children, params }: LayoutProps<"/[la
       >
         {t("skip")}
       </a>
+      {campaign.banner ? <CampaignBanner campaign={campaign.banner} /> : null}
       <TopBar freeFrom={settings.shipping.freeFrom} cod={settings.pay.cod} />
       <Header
         categories={data.categories}
         searchIndex={data.searchIndex}
         total={data.products.length}
         packsEnabled={settings.features.packs}
+        campaign={campaign.header}
       />
       <div id="contenu" tabIndex={-1} className="outline-none">
         {children}
       </div>
       <Newsletter />
-      <Footer brand={settings.brand} cod={settings.pay.cod} lang={lang} defaultHours={DEFAULT_SETTINGS.brand.hours} />
+      <Footer
+        brand={settings.brand}
+        cod={settings.pay.cod}
+        lang={lang}
+        defaultHours={DEFAULT_SETTINGS.brand.hours}
+      />
       <CartDrawer />
       <CartSanitizer />
       <ShopToast />

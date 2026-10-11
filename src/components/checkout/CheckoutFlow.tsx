@@ -182,6 +182,8 @@ export function CheckoutFlow({ shipping, pay }: Props) {
           t: shownAt.current,
           // Durée écoulée mesurée sur la seule horloge du téléphone : insensible à un décalage d'heure.
           elapsed: Date.now() - shownAt.current,
+          // Sous-total affiché : le serveur refuse si un prix a augmenté depuis (fin de campagne), sans rien créer.
+          expectedSubtotal: subtotal,
         }),
       });
       const json = (await res.json().catch(() => null)) as {
@@ -191,7 +193,16 @@ export function CheckoutFlow({ shipping, pay }: Props) {
         fields?: string[];
         order?: { number: string; total: number };
         payment?: { kind: "cod" | "pending" | "redirect"; url?: string };
+        prices?: Record<string, number>;
       } | null;
+
+      // Un prix a augmenté depuis l'affichage (fin de campagne) : panier mis à jour, le client vérifie et valide à nouveau.
+      if (json?.code === "price_changed") {
+        if (json.prices) cart.syncPrices(json.prices);
+        setSubmitError(json.message || t("errGeneric"));
+        setPaying(false);
+        return;
+      }
 
       // Commande créée (y compris paiement en ligne non lancé : la commande existe, on l'indique à l'écran de confirmation).
       const created = json?.order && (json.ok || json.code === "payment_unavailable") ? json.order : null;

@@ -83,6 +83,18 @@ export const cart = {
     if (qty <= 0) return cart.remove(kind, id);
     write(snapshot().map((l) => (l.kind === kind && l.id === id ? { ...l, qty: Math.min(MAX_QTY, qty) } : l)));
   },
+  /** Aligne le prix affiché des articles du panier (produits et packs) sur le prix courant (début ou fin d'une campagne). Renvoie true si un prix a changé. */
+  syncPrices(prices: Record<string, number>): boolean {
+    let changed = false;
+    const next = snapshot().map((l) => {
+      const p = prices[l.id];
+      if (typeof p !== "number" || !Number.isInteger(p) || p <= 0 || p === l.price) return l;
+      changed = true;
+      return { ...l, price: p };
+    });
+    if (changed) write(next);
+    return changed;
+  },
   /** Retire toutes les lignes dont l'id est listé (articles disparus du catalogue). */
   removeMany(ids: string[]) {
     const set = new Set(ids);
