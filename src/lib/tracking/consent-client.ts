@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react";
 import {
   CONSENT_CHANGED_EVENT,
   CONSENT_STORAGE_KEY,
-  NO_CONSENT,
+  effectiveConsent,
   consentCookieString,
   isTrackingCookieName,
   makeConsent,
@@ -80,7 +80,7 @@ export function purgeTrackingCookies(): void {
 
 /** Enregistre le choix (localStorage + cookie) et prévient les écouteurs. */
 export function saveConsent(choice: ConsentChoice): StoredConsent {
-  const prev = snapshot();
+  const prev = effectiveConsent(snapshot() ?? null);
   const next = makeConsent(choice, Date.now());
   cache = next;
   try {
@@ -93,7 +93,7 @@ export function saveConsent(choice: ConsentChoice): StoredConsent {
   } catch {
     /* cookies bloqués : le choix reste valable pour la session via le cache mémoire */
   }
-  if ((prev?.analytics && !next.analytics) || (prev?.marketing && !next.marketing)) purgeTrackingCookies();
+  if ((prev.analytics && !next.analytics) || (prev.marketing && !next.marketing)) purgeTrackingCookies();
   emit();
   try {
     window.dispatchEvent(new CustomEvent(CONSENT_CHANGED_EVENT, { detail: { analytics: next.analytics, marketing: next.marketing } }));
@@ -103,12 +103,17 @@ export function saveConsent(choice: ConsentChoice): StoredConsent {
   return next;
 }
 
-/** Choix courant sans hook (hors React) ; refus total par défaut. */
+/** Choix effectif sans hook (hors React) ; sans choix enregistré : le défaut (Meta actif, GA4 coupé). */
 export function currentConsent(): ConsentChoice {
-  const s = snapshot();
-  return s ? { analytics: s.analytics, marketing: s.marketing } : NO_CONSENT;
+  return effectiveConsent(snapshot() ?? null);
 }
 
 export function useConsent(): ConsentState {
   return useSyncExternalStore(subscribe, snapshot, () => undefined);
+}
+
+/** Choix effectif pour le suivi ; `undefined` tant que le navigateur n'a pas été lu (serveur / hydratation). */
+export function useEffectiveConsent(): ConsentChoice | undefined {
+  const c = useConsent();
+  return c === undefined ? undefined : effectiveConsent(c);
 }

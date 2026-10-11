@@ -3,6 +3,7 @@ import {
   CONSENT_MAX_AGE_S,
   consentCookieString,
   consentToCookieValue,
+  effectiveConsent,
   isTrackingCookieName,
   makeConsent,
   parseConsent,
@@ -62,5 +63,14 @@ describe("identifiants et cookies de suivi", () => {
   it("reconnaît les cookies GA / Meta à purger, pas les autres", () => {
     for (const n of ["_ga", "_ga_ABC123", "_gid", "_fbp", "_fbc"]) expect(isTrackingCookieName(n)).toBe(true);
     for (const n of ["waxo_consent", "sb-access-token", "NEXT_LOCALE"]) expect(isTrackingCookieName(n)).toBe(false);
+  });
+});
+
+describe("consentement par défaut (décision 2026-10-11 : Meta en opt-out, GA4 en opt-in)", () => {
+  it("sans choix enregistré : Meta actif, mesure d'audience coupée", () => {
+    expect(effectiveConsent(null)).toEqual({ analytics: false, marketing: true });
+  });
+  it("un refus enregistré l'emporte toujours sur le défaut", () => {
+    expect(effectiveConsent(makeConsent({ analytics: false, marketing: false }, 1_700_000_000_000))).toEqual({ analytics: false, marketing: false });
   });
 });

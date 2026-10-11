@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useCartLines } from "@/lib/cart/store";
-import { useConsent } from "@/lib/tracking/consent-client";
+import { useEffectiveConsent } from "@/lib/tracking/consent-client";
 import {
   cartAdditions,
   isAdminPath,
@@ -84,7 +84,7 @@ function markOrderTracked(number: string) {
 function RouteTracker() {
   const pathname = usePathname();
   const search = useSearchParams();
-  const consent = useConsent();
+  const consent = useEffectiveConsent();
   const active = !!consent && (consent.analytics || consent.marketing);
   const lastPage = useRef<string | null>(null);
   const lastSearch = useRef<string>("");
@@ -155,10 +155,10 @@ function RouteTracker() {
 
 /**
  * Charge GA4 / Meta Pixel selon le consentement et branche les événements e-commerce.
- * Aucun script avant choix ; aucun effet sans identifiant ; jamais monté dans /admin (autre layout racine).
+ * GA4 seulement après accord ; Meta dès l'arrivée sauf refus ; aucun effet sans identifiant ; jamais monté dans /admin (autre layout racine).
  */
 export function TrackingProvider() {
-  const consent = useConsent();
+  const consent = useEffectiveConsent();
   const lines = useCartLines();
   const prevCart = useRef<CartSnap[] | null>(null);
   const analytics = !!consent?.analytics;

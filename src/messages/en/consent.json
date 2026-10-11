@@ -2,7 +2,7 @@
   "Consent": {
     "region": "Cookie settings",
     "title": "Your data, your choice",
-    "text": "We only use trackers with your consent: to measure the site’s audience and to measure the effectiveness of our ads. Nothing is stored before you choose, and you can change your mind at any time.",
+    "text": "We use the Meta pixel to measure the effectiveness of our Facebook and Instagram ads: it is active as soon as you arrive, and you can refuse it here or at any time. Audience measurement (Google Analytics) is only turned on with your consent.",
     "privacyLink": "Learn more (privacy)",
     "acceptAll": "Accept all",
     "refuseAll": "Refuse all",

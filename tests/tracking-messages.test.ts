@@ -14,7 +14,8 @@ describe("consent.json", () => {
     expect(JSON.stringify(en)).not.toContain('""');
   });
   it("FR : espace insécable avant les deux-points", () => {
-    expect(fr.Consent.text).toContain("accord :");
+    expect(fr.Consent.text).toContain("Instagram :");
+    expect(fr.Consent.text).not.toMatch(/ [:;!?]/);
   });
   it("Accepter et Refuser existent dans les deux langues", () => {
     expect(fr.Consent.acceptAll).toBe("Tout accepter");

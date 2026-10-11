@@ -53,7 +53,7 @@ function Toggle({ id, checked, onChange, label, text, disabled, stateLabel }: { 
   );
 }
 
-/** Bandeau de consentement strict (opt-in). Aucun script de suivi n'est chargé avant « Tout accepter » / « Enregistrer ». */
+/** Bandeau de cookies : informe que Meta est actif (refusable) et demande l'accord pour la mesure d'audience. */
 export function ConsentBanner() {
   const t = useTranslations("Consent");
   const consent = useConsent();
@@ -68,7 +68,7 @@ export function ConsentBanner() {
 
   const openFromEvent = useCallback(() => {
     setAnalytics(consent?.analytics ?? false);
-    setMarketing(consent?.marketing ?? false);
+    setMarketing(consent?.marketing ?? true);
     setDetails(true);
     setReopened(true);
   }, [consent]);
@@ -161,7 +161,7 @@ export function ConsentBanner() {
                   className={BTN_SECONDARY}
                   onClick={() => {
                     setAnalytics(false);
-                    setMarketing(false);
+                    setMarketing(true);
                     setDetails(true);
                   }}
                 >

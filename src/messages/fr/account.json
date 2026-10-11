@@ -419,7 +419,7 @@
       },
       "s4": {
         "h": "Destinataires",
-        "p": "L'équipe Wá xɔ, le livreur (nom, téléphone et adresse uniquement), le prestataire de paiement, l'hébergeur du site et le fournisseur de la technologie d'intelligence artificielle de l'assistant, pour générer les réponses. Vos données ne sont jamais vendues."
+        "p": "L'équipe Wá xɔ, le livreur (nom, téléphone et adresse uniquement), le prestataire de paiement, l'hébergeur du site, le fournisseur de la technologie d'intelligence artificielle de l'assistant, pour générer les réponses, et Meta, pour la mesure de nos publicités. Vos données ne sont jamais vendues."
       },
       "s5": {
         "h": "Durée de conservation",
@@ -431,7 +431,7 @@
       },
       "s7": {
         "h": "Stockage sur votre appareil",
-        "p": "Le site enregistre sur votre appareil votre panier, les produits consultés (pour la sélection personnalisée) et votre session de connexion. <tbc>[Préciser ici l'outil de mesure d'audience, s'il y en a un.]</tbc>"
+        "p": "Le site enregistre sur votre appareil votre panier, les produits consultés (pour la sélection personnalisée) et votre session de connexion. Le site utilise aussi le pixel de Meta (Meta Platforms Ireland Ltd, et Meta Platforms Inc. aux États-Unis) pour mesurer l'efficacité de nos publicités Facebook et Instagram : pages vues, ajouts au panier, commandes et leur montant, associés à un identifiant technique de votre navigateur. Aucun nom, e-mail ni téléphone n'est transmis. Ces données sont traitées par Meta, notamment aux États-Unis. Le pixel est actif dès votre arrivée sur le site ; vous pouvez le refuser à tout moment depuis « Gérer mes cookies » : l'envoi s'arrête alors et ses cookies sont effacés. La mesure d'audience (Google Analytics) n'est activée qu'avec votre accord."
       },
       "s8": {
         "h": "Sécurité",

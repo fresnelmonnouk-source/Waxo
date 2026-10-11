@@ -2,7 +2,7 @@
   "Consent": {
     "region": "Gestion des cookies",
     "title": "Vos données, votre choix",
-    "text": "Nous utilisons des traceurs uniquement avec votre accord : mesurer l’audience du site et mesurer l’efficacité de nos publicités. Rien n’est déposé avant votre choix, et vous pouvez le modifier à tout moment.",
+    "text": "Nous utilisons le pixel de Meta pour mesurer l’efficacité de nos publicités Facebook et Instagram : il est actif dès votre arrivée, et vous pouvez le refuser ici ou à tout moment. La mesure d’audience (Google Analytics) n’est activée qu’avec votre accord.",
     "privacyLink": "En savoir plus (confidentialité)",
     "acceptAll": "Tout accepter",
     "refuseAll": "Tout refuser",

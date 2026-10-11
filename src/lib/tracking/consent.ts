@@ -1,5 +1,6 @@
 // Consentement aux traceurs : logique PURE (sans accès au navigateur), testée dans tests/tracking-consent.test.ts.
-// Régime strict opt-in : sans choix explicite de l'internaute, tout est refusé et aucun script de suivi n'est chargé.
+// Régime (décision de Fresnel, 2026-10-11) : Meta Pixel actif par défaut, refusable à tout moment (opt-out) ;
+// mesure d'audience (GA4) uniquement sur accord explicite (opt-in).
 
 export const CONSENT_STORAGE_KEY = "waxo:consent:v1";
 export const CONSENT_COOKIE = "waxo_consent";
@@ -20,6 +21,14 @@ export type ConsentChoice = {
 export type StoredConsent = ConsentChoice & { v: 1; ts: number };
 
 export const NO_CONSENT: ConsentChoice = { analytics: false, marketing: false };
+
+/** Choix appliqué tant que l'internaute n'a rien choisi : publicité Meta active, mesure d'audience coupée. */
+export const DEFAULT_CONSENT: ConsentChoice = { analytics: false, marketing: true };
+
+/** Choix effectif : celui enregistré, sinon le défaut. */
+export function effectiveConsent(stored: ConsentChoice | null): ConsentChoice {
+  return stored ? { analytics: stored.analytics, marketing: stored.marketing } : DEFAULT_CONSENT;
+}
 
 export function makeConsent(choice: ConsentChoice, now: number): StoredConsent {
   return { v: 1, analytics: choice.analytics === true, marketing: choice.marketing === true, ts: now };

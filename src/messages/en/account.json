@@ -419,7 +419,7 @@
       },
       "s4": {
         "h": "Recipients",
-        "p": "The Wá xɔ team, the courier (name, phone and address only), the payment provider, the site host and the provider of the artificial intelligence technology behind the assistant, to generate answers. Your data is never sold."
+        "p": "The Wá xɔ team, the courier (name, phone and address only), the payment provider, the site host, the provider of the artificial intelligence technology behind the assistant, to generate answers, and Meta, to measure our ads. Your data is never sold."
       },
       "s5": {
         "h": "Retention period",
@@ -431,7 +431,7 @@
       },
       "s7": {
         "h": "Storage on your device",
-        "p": "The site stores on your device your cart, the products you viewed (for the personalized selection) and your sign-in session. <tbc>[State here the audience measurement tool, if any.]</tbc>"
+        "p": "The site stores on your device your cart, the products you viewed (for the personalized selection) and your sign-in session. The site also uses the Meta pixel (Meta Platforms Ireland Ltd, and Meta Platforms Inc. in the United States) to measure the performance of our Facebook and Instagram ads: pages viewed, items added to cart, orders and their amount, linked to a technical identifier of your browser. No name, email or phone number is shared. This data is processed by Meta, including in the United States. The pixel is active as soon as you arrive on the site; you can refuse it at any time from \"Manage my cookies\": sending then stops and its cookies are deleted. Audience measurement (Google Analytics) is only turned on with your consent."
       },
       "s8": {
         "h": "Security",

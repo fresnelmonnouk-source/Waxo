@@ -269,7 +269,7 @@ Préparer, livrer et suivre vos commandes ; vous contacter au sujet d'une comma
 
 ## Destinataires
 
-L'équipe Wá xɔ, le livreur (nom, téléphone et adresse uniquement), le prestataire de paiement, l'hébergeur du site et le fournisseur de la technologie d'intelligence artificielle de l'assistant, pour générer les réponses. Vos données ne sont jamais vendues.
+L'équipe Wá xɔ, le livreur (nom, téléphone et adresse uniquement), le prestataire de paiement, l'hébergeur du site, le fournisseur de la technologie d'intelligence artificielle de l'assistant, pour générer les réponses, et Meta, pour la mesure de nos publicités. Vos données ne sont jamais vendues.
 
 ## Durée de conservation
 
@@ -281,7 +281,7 @@ Vous pouvez accéder à vos données, les rectifier, vous opposer à leur utilis
 
 ## Stockage sur votre appareil
 
-Le site enregistre sur votre appareil votre panier, les produits consultés (pour la sélection personnalisée) et votre session de connexion. {{todo:Préciser ici l'outil de mesure d'audience, s'il y en a un.}}
+Le site enregistre sur votre appareil votre panier, les produits consultés (pour la sélection personnalisée) et votre session de connexion. Le site utilise aussi le pixel de Meta (Meta Platforms Ireland Ltd, et Meta Platforms Inc. aux États-Unis) pour mesurer l'efficacité de nos publicités Facebook et Instagram : pages vues, ajouts au panier, commandes et leur montant, associés à un identifiant technique de votre navigateur. Aucun nom, e-mail ni téléphone n'est transmis. Ces données sont traitées par Meta, notamment aux États-Unis. Le pixel est actif dès votre arrivée sur le site ; vous pouvez le refuser à tout moment depuis « Gérer mes cookies » : l'envoi s'arrête alors et ses cookies sont effacés. La mesure d'audience (Google Analytics) n'est activée qu'avec votre accord.
 
 ## Sécurité
 
@@ -303,7 +303,7 @@ Preparing, delivering and tracking your orders; contacting you about an order; m
 
 ## Recipients
 
-The Wá xɔ team, the courier (name, phone and address only), the payment provider, the site host and the provider of the artificial intelligence technology behind the assistant, to generate answers. Your data is never sold.
+The Wá xɔ team, the courier (name, phone and address only), the payment provider, the site host, the provider of the artificial intelligence technology behind the assistant, to generate answers, and Meta, to measure our ads. Your data is never sold.
 
 ## Retention period
 
@@ -315,7 +315,7 @@ You can access your data, correct it, object to its use or ask for its deletion 
 
 ## Storage on your device
 
-The site stores on your device your cart, the products you viewed (for the personalized selection) and your sign-in session. {{todo:State here the audience measurement tool, if any.}}
+The site stores on your device your cart, the products you viewed (for the personalized selection) and your sign-in session. The site also uses the Meta pixel (Meta Platforms Ireland Ltd, and Meta Platforms Inc. in the United States) to measure the performance of our Facebook and Instagram ads: pages viewed, items added to cart, orders and their amount, linked to a technical identifier of your browser. No name, email or phone number is shared. This data is processed by Meta, including in the United States. The pixel is active as soon as you arrive on the site; you can refuse it at any time from "Manage my cookies": sending then stops and its cookies are deleted. Audience measurement (Google Analytics) is only turned on with your consent.
 
 ## Security
 
