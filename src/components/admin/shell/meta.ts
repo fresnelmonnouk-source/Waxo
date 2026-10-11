@@ -18,6 +18,7 @@ const TITLES: Record<string, string> = {
   newsletter: "Newsletter",
   stats: "Statistiques",
   ledger: "Carnet de comptes",
+  team: "Équipe",
   settings: "Réglages",
 };
 
@@ -35,6 +36,7 @@ export function buildPageMeta(c: ShellCounts, todayLabel: string): PageMeta[] {
     newsletter: plural(c.subscribers, "inscrit", "inscrits"),
     stats: "Sur la période choisie, hors commandes annulées",
     ledger: "Ventes, prix d'achat, dépenses et résultat, avec votre comptable IA",
+    team: "Qui a accès au back-office",
     settings: "Boutique, livraison, paiement et assistants IA",
   };
   return ADMIN_NAV.map((n) => ({ href: n.href, title: TITLES[n.id] ?? n.label, sub: subs[n.id] ?? "" }));

@@ -15,5 +15,6 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { id: "newsletter", label: "Newsletter", href: "/admin/newsletter", group: "vente" },
   { id: "stats", label: "Statistiques", href: "/admin/stats", group: "pilotage" },
   { id: "ledger", label: "Carnet de comptes", href: "/admin/carnet", group: "pilotage" },
+  { id: "team", label: "Équipe", href: "/admin/equipe", group: "pilotage" },
   { id: "settings", label: "Réglages", href: "/admin/reglages", group: "pilotage" },
 ];

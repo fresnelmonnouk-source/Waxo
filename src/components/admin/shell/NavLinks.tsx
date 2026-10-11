@@ -41,7 +41,7 @@ export function NavLinks({ items, variant }: { items: NavEntry[]; variant: "side
     );
   }
   return (
-    <nav aria-label="Back office" className="flex gap-1.5 overflow-x-auto border-b border-[#E2DCCF] px-4 py-2.5">
+    <nav aria-label="Back office" className="relative flex gap-1.5 overflow-x-auto border-b border-[#E2DCCF] px-4 py-2.5">
       {items.map((n) => {
         const on = isActive(pathname, n.href);
         return (
