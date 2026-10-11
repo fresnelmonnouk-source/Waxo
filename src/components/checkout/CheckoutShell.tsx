@@ -51,9 +51,7 @@ export function CheckoutShell({ step, onExit, scrollRef, children }: Props) {
                     {done ? "✓" : n}
                   </span>
                   {label}
-                  <span aria-hidden="true" className="px-1 text-[#C9C1B2]">
-                    {i < 2 ? "—" : ""}
-                  </span>
+                  {i < 2 ? <span aria-hidden="true" className="mx-1 inline-block h-px w-4 bg-[#C9C1B2] align-middle" /> : null}
                 </li>
               );
             })}

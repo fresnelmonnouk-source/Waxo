@@ -11,7 +11,7 @@ const MAX_USER_PAGES = 20; // 20 000 comptes : bien au-delà du besoin d'une bou
 
 function displayName(u: User | null, p: { first_name?: string | null; last_name?: string | null }): string {
   const n = `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim();
-  return n || (u?.email ? u.email.split("@")[0] : "—");
+  return n || (u?.email ? u.email.split("@")[0] : "Sans nom");
 }
 
 /** Recherche un compte par e-mail (l'API admin Auth n'offre pas de recherche directe : pages successives). */

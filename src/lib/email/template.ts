@@ -163,7 +163,7 @@ export function renderOrderEmail(data: OrderEmailData, kind: OrderEmailKind): Re
 
   const textParts: string[] = [];
   for (const b of blocks) {
-    if (b.kind === "items") textParts.push(data.items.map((it) => `${qtyLine(it)} — ${formatAmount(it.unitPrice * it.qty, loc)}`).join("\n"));
+    if (b.kind === "items") textParts.push(data.items.map((it) => `${qtyLine(it)} · ${formatAmount(it.unitPrice * it.qty, loc)}`).join("\n"));
     else textParts.push(b.text);
   }
   if (ctaUrl) textParts.push(`${variant.cta} : ${ctaUrl}`);

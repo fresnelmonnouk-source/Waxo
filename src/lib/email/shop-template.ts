@@ -68,9 +68,9 @@ export function renderShopNewOrder(o: ShopOrderData): RenderedEmail {
 
   const text = [
     `${o.name} vient de passer commande.`,
-    `Commande ${o.number} — ${fmtXof(o.total)} — ${PAY[o.pay] ?? o.pay}${o.paid ? " (payée)" : ""}`,
+    `Commande ${o.number} · ${fmtXof(o.total)} · ${PAY[o.pay] ?? o.pay}${o.paid ? " (payée)" : ""}`,
     `Livraison : ${ZONE[o.zone] ?? o.zone}`,
-    o.items.map((i) => `${i.qty} × ${i.name} — ${fmtXof(i.unitPrice * i.qty)}`).join("\n"),
+    o.items.map((i) => `${i.qty} × ${i.name} · ${fmtXof(i.unitPrice * i.qty)}`).join("\n"),
     `Client : ${o.name} · ${phone}\n${o.address}`,
     o.note ? `Note : ${o.note}` : "",
     site ? `Admin : ${site}/admin/commandes` : "",

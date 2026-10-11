@@ -82,7 +82,7 @@ export function CostTable({ rows, monthName, readOnly }: { rows: CostTableRow[];
               style={{ border: `1px solid ${live == null ? "#C2410C" : "#E2DCCF"}` }}
             />
             <strong className="text-right" style={{ color: m == null ? "#6B645A" : m < 0.3 ? "#C2410C" : "#1F6B4A" }}>
-              {m == null ? "—" : pctTxt(m)}
+              {m == null ? "-" : pctTxt(m)}
             </strong>
           </div>
         );
