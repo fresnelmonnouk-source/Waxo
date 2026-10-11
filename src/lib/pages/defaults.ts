@@ -52,9 +52,9 @@ WhatsApp confirmation, home delivery, and an exchange or refund within {{shippin
       title: "Livraison et retours",
       body: `| Zone | Délai | Frais |
 |---|---|---|
-| Cotonou et Calavi | Le lendemain si vous commandez avant {{shipping.cutoff}} h, du lundi au samedi | {{shipping.cotonou}}, offerte dès {{shipping.freeFrom}} |
+| Cotonou et Calavi | Le lendemain si vous commandez avant {{shipping.cutoff}} h. Commandes et livraisons du lundi au samedi | {{shipping.cotonou}}, offerte dès {{shipping.freeFrom}} |
 | Autres villes du Bénin | 48 à 72 h | {{shipping.autre}} |
-| Hors du Bénin | Pas encore disponible | – |
+| Hors du Bénin | Pas encore disponible | Sans objet |
 
 ## Le jour de la livraison
 
@@ -68,7 +68,7 @@ Nous vous envoyons une confirmation sur WhatsApp avec le créneau de livraison. 
 
 ## Conditions
 
-Le produit doit être non utilisé, complet et dans son emballage d'origine. Les produits d'hygiène ne sont plus repris une fois descellés, sauf s'ils ont un défaut. Si le produit a un défaut ou si l'erreur vient de nous, le retour est gratuit. {{todo:Préciser qui paie le retour pour un changement d'avis hors de Cotonou.}}
+Le produit doit être non utilisé, complet et dans son emballage d'origine. Les produits d'hygiène ne sont plus repris une fois descellés, sauf s'ils ont un défaut. Si le produit a un défaut ou si l'erreur vient de nous, le retour est gratuit. Pour un simple changement d'avis hors de Cotonou et Calavi, les frais de retour sont à votre charge.
 
 [Écrire au service client](/contact){button}`,
     },
@@ -76,9 +76,9 @@ Le produit doit être non utilisé, complet et dans son emballage d'origine. Les
       title: "Delivery and returns",
       body: `| Zone | Lead time | Fee |
 |---|---|---|
-| Cotonou and Calavi | Next day if you order before {{shipping.cutoff}}:00, Monday to Saturday | {{shipping.cotonou}}, free from {{shipping.freeFrom}} |
+| Cotonou and Calavi | Next day if you order before {{shipping.cutoff}}:00. Orders and deliveries Monday to Saturday | {{shipping.cotonou}}, free from {{shipping.freeFrom}} |
 | Other cities in Benin | 48 to 72 hours | {{shipping.autre}} |
-| Outside Benin | Not available yet | – |
+| Outside Benin | Not available yet | N/A |
 
 ## On delivery day
 
@@ -92,7 +92,7 @@ We send you a WhatsApp confirmation with your delivery time slot. The courier ca
 
 ## Conditions
 
-The product must be unused, complete and in its original packaging. Hygiene products can't be returned once unsealed, unless they're faulty. If the product is faulty or the mistake is ours, the return is free. {{todo:State who pays for the return on a change of mind outside Cotonou.}}
+The product must be unused, complete and in its original packaging. Hygiene products can't be returned once unsealed, unless they're faulty. If the product is faulty or the mistake is ours, the return is free. For a simple change of mind outside Cotonou and Calavi, the return costs are paid by you.
 
 [Write to customer service](/contact){button}`,
     },
@@ -124,7 +124,7 @@ Nous acceptons MTN MoMo, Moov Money, Celtiis Cash et les cartes bancaires Visa o
 
 ## 6. Livraison
 
-Cotonou et Calavi : livraison le lendemain pour toute commande passée avant {{shipping.cutoff}} h, du lundi au samedi. Elle coûte {{shipping.cotonou}} et elle est offerte dès {{shipping.freeFrom}} d'achat.
+Cotonou et Calavi : nous traitons les commandes et nous livrons du lundi au samedi. Une commande passée avant {{shipping.cutoff}} h est livrée le lendemain, et nous ne livrons pas le dimanche. La livraison coûte {{shipping.cotonou}} et elle est offerte dès {{shipping.freeFrom}} d'achat.
 
 Autres villes du Bénin : livraison sous 48 à 72 h, pour {{shipping.autre}}.
 
@@ -136,7 +136,7 @@ Vous avez {{shipping.returnDays}} à partir de la réception pour demander un é
 
 Les produits d'hygiène ou de soin descellés (par exemple une brosse visage, une tondeuse ou des pinceaux de maquillage) ne sont ni repris ni échangés, sauf s'ils ont un défaut.
 
-Nous vous remboursons sous {{shipping.returnDays}} après avoir reçu le produit retourné, avec le moyen de paiement utilisé pour la commande. Si vous avez payé à la livraison, nous vous remboursons par Mobile Money. Toute la marche à suivre est sur la page [Livraison et retours](/livraison-retours).
+Nous vous remboursons sous {{shipping.returnDays}} après avoir reçu le produit retourné, avec le moyen de paiement utilisé pour la commande. Si vous avez payé à la livraison, nous vous remboursons par Mobile Money. Pour un simple changement d'avis hors de Cotonou et Calavi, les frais de retour sont à votre charge. Toute la marche à suivre est sur la page [Livraison et retours](/livraison-retours).
 
 ## 8. Produit défectueux ou non conforme
 
@@ -176,7 +176,7 @@ We accept MTN MoMo, Moov Money, Celtiis Cash and Visa or Mastercard bank cards{{
 
 ## 6. Delivery
 
-Cotonou and Calavi: next-day delivery for any order placed before {{shipping.cutoff}}:00, Monday to Saturday. It costs {{shipping.cotonou}} and is free from {{shipping.freeFrom}} of purchases.
+Cotonou and Calavi: we process orders and deliver Monday to Saturday. An order placed before {{shipping.cutoff}}:00 is delivered the next day, and we don't deliver on Sundays. Delivery costs {{shipping.cotonou}} and is free from {{shipping.freeFrom}} of purchases.
 
 Other cities in Benin: delivery within 48 to 72 hours, for {{shipping.autre}}.
 
@@ -188,7 +188,7 @@ You have {{shipping.returnDays}} from receipt to ask for an exchange or a refund
 
 Unsealed hygiene or care products (for example a face brush, a trimmer or makeup brushes) are neither taken back nor exchanged, unless they're faulty.
 
-We refund you within {{shipping.returnDays}} of receiving the returned product, using the payment method you used for the order. If you paid on delivery, we refund you by Mobile Money. All the steps are on the [Delivery and returns](/livraison-retours) page.
+We refund you within {{shipping.returnDays}} of receiving the returned product, using the payment method you used for the order. If you paid on delivery, we refund you by Mobile Money. For a simple change of mind outside Cotonou and Calavi, the return costs are paid by you. All the steps are on the [Delivery and returns](/livraison-retours) page.
 
 ## 8. Faulty or non-conforming product
 
