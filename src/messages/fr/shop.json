@@ -85,6 +85,7 @@
     "payCod": "Vous payez par Mobile Money, par carte ou à la réception.",
     "payNoCod": "Vous payez par Mobile Money ou par carte.",
     "seeProducts": "Voir les {count} produits",
+    "seeCatalog": "Voir le catalogue",
     "rating": "{rating}/5 · {count, plural, one {# avis client} other {# avis clients}}",
     "promosTitle": "Les promos du moment",
     "seeAllArrow": "Tout voir →",

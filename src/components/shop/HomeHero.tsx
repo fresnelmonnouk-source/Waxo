@@ -59,7 +59,7 @@ export function HomeHero({
                 href="/catalogue"
                 className="bg-sun text-ink! hover:bg-cream hover:text-ink! rounded-full px-[26px] py-[15px] text-[16px] font-semibold no-underline"
               >
-                {t("seeProducts", { count: products.length })}
+                {products.length > 0 ? t("seeProducts", { count: products.length }) : t("seeCatalog")}
               </Link>
               {rating.count > 0 ? (
                 <span className="flex items-center gap-[6px] text-[14px] text-[#D6CFC0]">

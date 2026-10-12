@@ -163,7 +163,8 @@ async function fetchDbPacks(locale: Locale, products: Product[]): Promise<Pack[]
         .eq("active", true)
         .order("created_at", { ascending: true }),
     );
-    if (error || !data?.length) return null;
+    if (error) return null;
+    if (!data?.length) return [];
     const byId = new Map(products.map((p) => [p.id, p]));
     const packs = (data as unknown as DbPackRow[]).flatMap((row) => {
       const tr = row.pack_translations.find((t) => t.locale === locale) ?? row.pack_translations.find((t) => t.locale === "fr");
@@ -180,7 +181,7 @@ async function fetchDbPacks(locale: Locale, products: Product[]): Promise<Pack[]
         ),
       ];
     });
-    return packs.length ? packs : null;
+    return packs;
   } catch {
     return null;
   }
@@ -191,7 +192,9 @@ async function fetchDbPacks(locale: Locale, products: Product[]): Promise<Pack[]
 export const getPacks = cache(async (locale: Locale): Promise<Pack[]> => {
   try {
     const products = await getProducts(locale);
-    return (await fetchDbPacks(locale, products)) ?? buildDemoPacks(locale, products);
+    // Packs de démo seulement sans base (développement) : jamais de packs fictifs en production.
+    if (!supabasePublicEnv()) return buildDemoPacks(locale, products);
+    return (await fetchDbPacks(locale, products)) ?? [];
   } catch {
     return [];
   }

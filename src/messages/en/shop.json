@@ -85,6 +85,7 @@
     "payCod": "Pay by Mobile Money, by card or on delivery.",
     "payNoCod": "Pay by Mobile Money or by card.",
     "seeProducts": "Browse all {count} products",
+    "seeCatalog": "Browse the catalogue",
     "rating": "{rating}/5 · {count, plural, one {# customer review} other {# customer reviews}}",
     "promosTitle": "Deals of the moment",
     "seeAllArrow": "See all →",

@@ -135,9 +135,14 @@ type DbProductRow = {
   product_translations: { locale: string; name: string; slug: string; description: string }[];
 };
 
+/**
+ * Produits de la base. `null` UNIQUEMENT sans Supabase (développement) → catalogue de démo.
+ * Base branchée : base vide = boutique vide (jamais de produits fictifs en production, constat du 2026-10-12 après la
+ * purge) ; base injoignable = exception (une page ISR garde alors sa version en cache au lieu d'afficher la démo).
+ */
 async function fetchDbProducts(locale: Locale): Promise<Product[] | null> {
   if (!supabasePublicEnv()) return null;
-  try {
+  {
     const sb = createPublicClient();
     const [{ data: rows, error }, { data: revs }] = await withTimeout(
       Promise.all([
@@ -150,7 +155,8 @@ async function fetchDbProducts(locale: Locale): Promise<Product[] | null> {
         sb.from("reviews").select("product_id,rating").eq("seed", false).eq("hidden", false),
       ]),
     );
-    if (error || !rows?.length) return null;
+    if (error) throw new Error("catalog_unavailable");
+    if (!rows?.length) return [];
     const own = new Map<string, Review[]>();
     (revs ?? []).forEach((r) => {
       const list = own.get(r.product_id) ?? [];
@@ -176,8 +182,6 @@ async function fetchDbProducts(locale: Locale): Promise<Product[] | null> {
         rating: ratingOf(Number(p.rating_seed), p.rating_seed_count, own.get(p.id) ?? []),
       };
     });
-  } catch {
-    return null;
   }
 }
 
@@ -232,8 +236,9 @@ export async function getReviews(productId: string): Promise<Review[]> {
         }));
       }
     } catch {
-      /* repli démo */
+      /* base injoignable : aucun avis plutôt que des avis fictifs */
     }
+    return [];
   }
   return demo.reviews
     .filter((r) => r.productId === productId)
