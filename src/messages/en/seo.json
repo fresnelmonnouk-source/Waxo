@@ -1,0 +1,20 @@
+{
+  "SeoPages": {
+    "brand": "Waxo",
+    "home": { "title": "Waxo · Online shop in Cotonou, same-day delivery", "description": "Small useful everyday things at small prices. Express Delivery 7 days a week in Cotonou & Calavi. Pay by Mobile Money or card." },
+    "catalogue": { "title": "Catalogue", "description": "TODO Marcus" },
+    "faq": { "title": "Questions fréquentes", "description": "TODO Marcus" },
+    "contact": { "title": "Contact", "description": "TODO Marcus" },
+    "aPropos": { "title": "À propos", "description": "TODO Marcus" },
+    "livraisonRetours": { "title": "Livraison et retours", "description": "TODO Marcus" },
+    "packs": { "title": "Packs", "description": "TODO Marcus" },
+    "cgv": { "title": "Conditions générales de vente", "description": "TODO Marcus" },
+    "cgu": { "title": "Conditions générales d'utilisation", "description": "TODO Marcus" },
+    "confidentialite": { "title": "Politique de confidentialité", "description": "TODO Marcus" },
+    "mentionsLegales": { "title": "Mentions légales", "description": "TODO Marcus" },
+    "product": { "title": "{name} · {price}", "descriptionFallback": "{name} à {price}. Livraison Express à Cotonou & Calavi, paiement Mobile Money ou à la livraison." },
+    "pack": { "title": "{name} · Pack", "descriptionFallback": "TODO Marcus" },
+    "campaign": { "title": "{name}", "descriptionFallback": "TODO Marcus" },
+    "notFound": { "title": "Page introuvable" }
+  }
+}
