@@ -30,6 +30,12 @@ describe("catalogue en production : jamais la démo", () => {
     products.mockReturnValue({ data: null, error: { code: "500" } });
     await expect(getProducts("en")).rejects.toThrow("catalog_unavailable");
   });
+  it("pendant le build, base lente → liste vide (le build ne casse pas), toujours sans démo", async () => {
+    vi.stubEnv("NEXT_PHASE", "phase-production-build");
+    products.mockReturnValue({ data: null, error: { code: "500" } });
+    expect(await getProducts("fr")).toEqual([]);
+    vi.unstubAllEnvs();
+  });
   it("avis : jamais les avis de démo quand la base est branchée", async () => {
     expect(await getReviews("5b4e688a-1bb0-4e16-aeb8-a933014cd3ac")).toEqual([]);
   });

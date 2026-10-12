@@ -139,9 +139,20 @@ type DbProductRow = {
  * Produits de la base. `null` UNIQUEMENT sans Supabase (développement) → catalogue de démo.
  * Base branchée : base vide = boutique vide (jamais de produits fictifs en production, constat du 2026-10-12 après la
  * purge) ; base injoignable = exception (une page ISR garde alors sa version en cache au lieu d'afficher la démo).
+ * Pendant le BUILD (prérendu parallèle, base parfois lente) : liste vide plutôt qu'un build en échec ; la page est
+ * régénérée par l'ISR quelques minutes après le déploiement.
  */
 async function fetchDbProducts(locale: Locale): Promise<Product[] | null> {
   if (!supabasePublicEnv()) return null;
+  try {
+    return await readDbProducts(locale);
+  } catch (e) {
+    if (process.env.NEXT_PHASE === "phase-production-build") return [];
+    throw e;
+  }
+}
+
+async function readDbProducts(locale: Locale): Promise<Product[]> {
   {
     const sb = createPublicClient();
     const [{ data: rows, error }, { data: revs }] = await withTimeout(
