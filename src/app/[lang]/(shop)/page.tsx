@@ -6,7 +6,9 @@ import { getShopData } from "@/components/shop/data";
 import { HomeHero } from "@/components/shop/HomeHero";
 import { BestSellers, CategoryTiles, HomeCatalog, HowItWorks } from "@/components/shop/HomeSections";
 import { Selection } from "@/components/shop/Selection";
+import { SiteReviews } from "@/components/shop/SiteReviews";
 import { routing } from "@/i18n/routing";
+import { getPublishedSiteReviews } from "@/lib/site-reviews/data";
 import { withSeo } from "@/lib/seo/metadata";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
@@ -14,12 +16,13 @@ export async function generateMetadata({ params }: PageProps<"/[lang]">): Promis
   return withSeo({}, lang, "/");
 }
 
-// Accueil : héro, rayons, aperçu du catalogue, sélection, meilleures ventes, « Comment ça marche ». Page statique.
+// Accueil : héro, rayons, aperçu du catalogue, sélection, meilleures ventes, « Comment ça marche », avis sur la boutique. Page statique.
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!hasLocale(routing.locales, lang)) notFound();
   setRequestLocale(lang);
-  const data = await getShopData(lang);
+  // Avis boutique : jusqu'à 200 avis publiés pour une moyenne réelle ; l'accueil n'en affiche que 6.
+  const [data, siteReviews] = await Promise.all([getShopData(lang), getPublishedSiteReviews(200)]);
 
   return (
     <main data-screen-label="Accueil">
@@ -29,6 +32,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <Selection products={data.products} newIds={data.newIds} bestIds={data.bestIds} />
       <BestSellers products={data.products} bestIds={data.bestIds} />
       <HowItWorks />
+      <SiteReviews reviews={siteReviews} />
     </main>
   );
 }

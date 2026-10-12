@@ -24,6 +24,8 @@ const COPY = {
     howto: "Il suffit d'être connecté à votre compte Wá xɔ. Une note et une phrase, c'est déjà beaucoup.",
     cta: "Donner mon avis",
     ctaOne: (name: string) => `Donner mon avis sur ${name}`,
+    shop: "Et la boutique, la livraison, le service : qu'en avez-vous pensé ?",
+    shopCta: "Donner mon avis sur Wá xɔ",
     footer: ["Vous recevez ce message une seule fois, après la livraison de votre commande."],
   },
   en: {
@@ -36,6 +38,8 @@ const COPY = {
     howto: "You just need to be signed in to your Wá xɔ account. A rating and one sentence is already a lot.",
     cta: "Leave a review",
     ctaOne: (name: string) => `Review ${name}`,
+    shop: "And the shop, the delivery, the service: what did you think?",
+    shopCta: "Review Wá xɔ",
     footer: ["You receive this message only once, after your order is delivered."],
   },
 } as const;
@@ -54,6 +58,8 @@ export function renderReviewRequest(d: ReviewRequestData): RenderedEmail | null 
     p(c.hello(first), "strong"),
     p(c.intro(d.orderNumber)),
     ...(products.length === 1 ? [button(link(products[0].slug), c.cta)] : products.map((x) => button(link(x.slug), c.ctaOne(oneLine(x.name))))),
+    p(c.shop),
+    button(`${site}/${d.locale}/avis-boutique`, c.shopCta),
     p(c.howto, "small"),
   );
   const subject = oneLine(c.subject(d.orderNumber));
@@ -71,6 +77,7 @@ export function renderReviewRequest(d: ReviewRequestData): RenderedEmail | null 
     c.hello(first),
     c.intro(d.orderNumber),
     products.map((x) => `${oneLine(x.name)}${d.locale === "fr" ? " :" : ":"} ${link(x.slug)}`).join("\n"),
+    `${c.shop} ${site}/${d.locale}/avis-boutique`,
     c.howto,
   ].join("\n\n");
   return { subject, preheader: c.preheader, html, text };

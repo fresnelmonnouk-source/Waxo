@@ -39,3 +39,11 @@ describe("e-mail « Donnez votre avis »", () => {
     expect(m!.html).not.toContain("<b>x</b>");
   });
 });
+
+describe("e-mail « Donnez votre avis » : avis sur la boutique", () => {
+  it("bouton vers la page d'avis boutique, FR et EN", () => {
+    expect(renderReviewRequest(base)!.html).toContain("https://www.waxo.boutique/fr/avis-boutique");
+    expect(renderReviewRequest(base)!.html).toContain("Donner mon avis sur Wá xɔ");
+    expect(renderReviewRequest({ ...base, locale: "en" })!.text).toContain("https://www.waxo.boutique/en/avis-boutique");
+  });
+});
