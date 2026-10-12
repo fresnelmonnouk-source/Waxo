@@ -9,38 +9,10 @@
 
 begin;
 
-create temporary table _demo_products (id uuid primary key) on commit drop;
-insert into _demo_products values
-  ('5b4e688a-1bb0-4e16-aeb8-a933014cd3ac'),
-  ('463b673c-890e-4f78-a417-64d42558faf1'),
-  ('9b451883-7805-4dca-aed7-09b0f90cc1a7'),
-  ('c3f669a9-f4fb-45d4-a43d-2a99056788f6'),
-  ('bdffaae6-440e-4d69-aa70-c5c50aebeddc'),
-  ('2422be56-c1fa-4e2c-a9d9-d6fb1b9b9948'),
-  ('5fd08878-7b1f-4ade-a648-ad278d34ad45'),
-  ('de599e76-4338-47b0-ad3b-62eeee8ac2fc'),
-  ('91834fbb-dd51-4efa-a5fb-ff363049a097'),
-  ('634af67e-135a-4c59-a383-aa70b3f7e219'),
-  ('c4f9ba2a-3591-422d-a4e2-267ad8c92989'),
-  ('b9f86ee2-dab6-4bb4-acdf-4349557e11a3'),
-  ('607c0035-256a-4e39-acc3-9ac36ec549aa'),
-  ('e94015f7-0a25-4e92-a90a-556044d17e24'),
-  ('5c1b3869-9249-403f-af2f-dc09478334db'),
-  ('da752b90-3199-41ad-a851-57ebb3df31d1'),
-  ('45307a21-6b3b-4780-ae97-d673d79ef871'),
-  ('68c4f655-1ba6-4138-a020-5a318c963fcb'),
-  ('38d96651-58ef-4824-a215-9ca61adce610'),
-  ('16ad1936-420d-4ecd-a307-18780d3a8617'),
-  ('b598e3fe-3497-43ab-a1b5-0d2f9559d092'),
-  ('86819328-d14e-4796-a89d-618c969ba309'),
-  ('03ab357c-6c21-4402-a5ae-6448153cf933'),
-  ('7cf73e1f-709d-4241-a1b5-4df13f3fae37');
+-- Identifiants de la démo écrits DANS chaque instruction, sans table temporaire : l'éditeur SQL de Supabase ne la
+-- conserve pas d'une instruction à l'autre (erreur 42P01 rencontrée le 2026-10-12).
 
-create temporary table _demo_packs (id uuid primary key) on commit drop;
-insert into _demo_packs values
-  ('84625ba6-5cbc-470d-ad5f-2e3d3eaa87f7'),
-  ('57d46e34-7b1b-4ddd-ac59-d3e47be10448'),
-  ('b5e11703-2e20-484d-a3d8-21c94651fc3a');
+
 
 -- 1) Garde-fou : une VRAIE commande (autre que vos 4 tests) qui contient un article de démo bloque tout.
 do $$
@@ -50,7 +22,36 @@ begin
   from public.orders o
   join public.order_items oi on oi.order_id = o.id
   where o.number not in ('WX-10263', 'WX-10264', 'WX-10265', 'WX-10266')
-    and (oi.product_id in (select id from _demo_products) or oi.pack_id in (select id from _demo_packs));
+    and (oi.product_id in (select unnest(array[
+    '5b4e688a-1bb0-4e16-aeb8-a933014cd3ac',
+    '463b673c-890e-4f78-a417-64d42558faf1',
+    '9b451883-7805-4dca-aed7-09b0f90cc1a7',
+    'c3f669a9-f4fb-45d4-a43d-2a99056788f6',
+    'bdffaae6-440e-4d69-aa70-c5c50aebeddc',
+    '2422be56-c1fa-4e2c-a9d9-d6fb1b9b9948',
+    '5fd08878-7b1f-4ade-a648-ad278d34ad45',
+    'de599e76-4338-47b0-ad3b-62eeee8ac2fc',
+    '91834fbb-dd51-4efa-a5fb-ff363049a097',
+    '634af67e-135a-4c59-a383-aa70b3f7e219',
+    'c4f9ba2a-3591-422d-a4e2-267ad8c92989',
+    'b9f86ee2-dab6-4bb4-acdf-4349557e11a3',
+    '607c0035-256a-4e39-acc3-9ac36ec549aa',
+    'e94015f7-0a25-4e92-a90a-556044d17e24',
+    '5c1b3869-9249-403f-af2f-dc09478334db',
+    'da752b90-3199-41ad-a851-57ebb3df31d1',
+    '45307a21-6b3b-4780-ae97-d673d79ef871',
+    '68c4f655-1ba6-4138-a020-5a318c963fcb',
+    '38d96651-58ef-4824-a215-9ca61adce610',
+    '16ad1936-420d-4ecd-a307-18780d3a8617',
+    'b598e3fe-3497-43ab-a1b5-0d2f9559d092',
+    '86819328-d14e-4796-a89d-618c969ba309',
+    '03ab357c-6c21-4402-a5ae-6448153cf933',
+    '7cf73e1f-709d-4241-a1b5-4df13f3fae37'
+  ]::uuid[])) or oi.pack_id in (select unnest(array[
+    '84625ba6-5cbc-470d-ad5f-2e3d3eaa87f7',
+    '57d46e34-7b1b-4ddd-ac59-d3e47be10448',
+    'b5e11703-2e20-484d-a3d8-21c94651fc3a'
+  ]::uuid[])));
   if n > 0 then
     raise exception 'Purge annulée : % commande(s) réelle(s) contiennent des articles de démo. Contactez KODY avant de purger.', n;
   end if;
@@ -60,19 +61,156 @@ end $$;
 delete from public.orders where number in ('WX-10263', 'WX-10264', 'WX-10265', 'WX-10266');
 
 -- 3) Avis : tous les avis de démo, et tout avis posé sur un produit de démo.
-delete from public.reviews where seed or product_id in (select id from _demo_products);
+delete from public.reviews where seed or product_id in (select unnest(array[
+    '5b4e688a-1bb0-4e16-aeb8-a933014cd3ac',
+    '463b673c-890e-4f78-a417-64d42558faf1',
+    '9b451883-7805-4dca-aed7-09b0f90cc1a7',
+    'c3f669a9-f4fb-45d4-a43d-2a99056788f6',
+    'bdffaae6-440e-4d69-aa70-c5c50aebeddc',
+    '2422be56-c1fa-4e2c-a9d9-d6fb1b9b9948',
+    '5fd08878-7b1f-4ade-a648-ad278d34ad45',
+    'de599e76-4338-47b0-ad3b-62eeee8ac2fc',
+    '91834fbb-dd51-4efa-a5fb-ff363049a097',
+    '634af67e-135a-4c59-a383-aa70b3f7e219',
+    'c4f9ba2a-3591-422d-a4e2-267ad8c92989',
+    'b9f86ee2-dab6-4bb4-acdf-4349557e11a3',
+    '607c0035-256a-4e39-acc3-9ac36ec549aa',
+    'e94015f7-0a25-4e92-a90a-556044d17e24',
+    '5c1b3869-9249-403f-af2f-dc09478334db',
+    'da752b90-3199-41ad-a851-57ebb3df31d1',
+    '45307a21-6b3b-4780-ae97-d673d79ef871',
+    '68c4f655-1ba6-4138-a020-5a318c963fcb',
+    '38d96651-58ef-4824-a215-9ca61adce610',
+    '16ad1936-420d-4ecd-a307-18780d3a8617',
+    'b598e3fe-3497-43ab-a1b5-0d2f9559d092',
+    '86819328-d14e-4796-a89d-618c969ba309',
+    '03ab357c-6c21-4402-a5ae-6448153cf933',
+    '7cf73e1f-709d-4241-a1b5-4df13f3fae37'
+  ]::uuid[]));
 
 -- 4) Packs de démo (contenu, traductions, packs).
-delete from public.pack_items where pack_id in (select id from _demo_packs);
-delete from public.pack_translations where pack_id in (select id from _demo_packs);
-delete from public.packs where id in (select id from _demo_packs);
+delete from public.pack_items where pack_id in (select unnest(array[
+    '84625ba6-5cbc-470d-ad5f-2e3d3eaa87f7',
+    '57d46e34-7b1b-4ddd-ac59-d3e47be10448',
+    'b5e11703-2e20-484d-a3d8-21c94651fc3a'
+  ]::uuid[]));
+delete from public.pack_translations where pack_id in (select unnest(array[
+    '84625ba6-5cbc-470d-ad5f-2e3d3eaa87f7',
+    '57d46e34-7b1b-4ddd-ac59-d3e47be10448',
+    'b5e11703-2e20-484d-a3d8-21c94651fc3a'
+  ]::uuid[]));
+delete from public.packs where id in (select unnest(array[
+    '84625ba6-5cbc-470d-ad5f-2e3d3eaa87f7',
+    '57d46e34-7b1b-4ddd-ac59-d3e47be10448',
+    'b5e11703-2e20-484d-a3d8-21c94651fc3a'
+  ]::uuid[]));
 -- Un de VOS packs qui contiendrait un produit de démo perd seulement cette ligne.
-delete from public.pack_items where product_id in (select id from _demo_products);
+delete from public.pack_items where product_id in (select unnest(array[
+    '5b4e688a-1bb0-4e16-aeb8-a933014cd3ac',
+    '463b673c-890e-4f78-a417-64d42558faf1',
+    '9b451883-7805-4dca-aed7-09b0f90cc1a7',
+    'c3f669a9-f4fb-45d4-a43d-2a99056788f6',
+    'bdffaae6-440e-4d69-aa70-c5c50aebeddc',
+    '2422be56-c1fa-4e2c-a9d9-d6fb1b9b9948',
+    '5fd08878-7b1f-4ade-a648-ad278d34ad45',
+    'de599e76-4338-47b0-ad3b-62eeee8ac2fc',
+    '91834fbb-dd51-4efa-a5fb-ff363049a097',
+    '634af67e-135a-4c59-a383-aa70b3f7e219',
+    'c4f9ba2a-3591-422d-a4e2-267ad8c92989',
+    'b9f86ee2-dab6-4bb4-acdf-4349557e11a3',
+    '607c0035-256a-4e39-acc3-9ac36ec549aa',
+    'e94015f7-0a25-4e92-a90a-556044d17e24',
+    '5c1b3869-9249-403f-af2f-dc09478334db',
+    'da752b90-3199-41ad-a851-57ebb3df31d1',
+    '45307a21-6b3b-4780-ae97-d673d79ef871',
+    '68c4f655-1ba6-4138-a020-5a318c963fcb',
+    '38d96651-58ef-4824-a215-9ca61adce610',
+    '16ad1936-420d-4ecd-a307-18780d3a8617',
+    'b598e3fe-3497-43ab-a1b5-0d2f9559d092',
+    '86819328-d14e-4796-a89d-618c969ba309',
+    '03ab357c-6c21-4402-a5ae-6448153cf933',
+    '7cf73e1f-709d-4241-a1b5-4df13f3fae37'
+  ]::uuid[]));
 
 -- 5) Produits de démo (favoris et lignes de campagne partent en cascade).
-delete from public.product_costs where product_id in (select id from _demo_products);
-delete from public.product_translations where product_id in (select id from _demo_products);
-delete from public.products where id in (select id from _demo_products);
+delete from public.product_costs where product_id in (select unnest(array[
+    '5b4e688a-1bb0-4e16-aeb8-a933014cd3ac',
+    '463b673c-890e-4f78-a417-64d42558faf1',
+    '9b451883-7805-4dca-aed7-09b0f90cc1a7',
+    'c3f669a9-f4fb-45d4-a43d-2a99056788f6',
+    'bdffaae6-440e-4d69-aa70-c5c50aebeddc',
+    '2422be56-c1fa-4e2c-a9d9-d6fb1b9b9948',
+    '5fd08878-7b1f-4ade-a648-ad278d34ad45',
+    'de599e76-4338-47b0-ad3b-62eeee8ac2fc',
+    '91834fbb-dd51-4efa-a5fb-ff363049a097',
+    '634af67e-135a-4c59-a383-aa70b3f7e219',
+    'c4f9ba2a-3591-422d-a4e2-267ad8c92989',
+    'b9f86ee2-dab6-4bb4-acdf-4349557e11a3',
+    '607c0035-256a-4e39-acc3-9ac36ec549aa',
+    'e94015f7-0a25-4e92-a90a-556044d17e24',
+    '5c1b3869-9249-403f-af2f-dc09478334db',
+    'da752b90-3199-41ad-a851-57ebb3df31d1',
+    '45307a21-6b3b-4780-ae97-d673d79ef871',
+    '68c4f655-1ba6-4138-a020-5a318c963fcb',
+    '38d96651-58ef-4824-a215-9ca61adce610',
+    '16ad1936-420d-4ecd-a307-18780d3a8617',
+    'b598e3fe-3497-43ab-a1b5-0d2f9559d092',
+    '86819328-d14e-4796-a89d-618c969ba309',
+    '03ab357c-6c21-4402-a5ae-6448153cf933',
+    '7cf73e1f-709d-4241-a1b5-4df13f3fae37'
+  ]::uuid[]));
+delete from public.product_translations where product_id in (select unnest(array[
+    '5b4e688a-1bb0-4e16-aeb8-a933014cd3ac',
+    '463b673c-890e-4f78-a417-64d42558faf1',
+    '9b451883-7805-4dca-aed7-09b0f90cc1a7',
+    'c3f669a9-f4fb-45d4-a43d-2a99056788f6',
+    'bdffaae6-440e-4d69-aa70-c5c50aebeddc',
+    '2422be56-c1fa-4e2c-a9d9-d6fb1b9b9948',
+    '5fd08878-7b1f-4ade-a648-ad278d34ad45',
+    'de599e76-4338-47b0-ad3b-62eeee8ac2fc',
+    '91834fbb-dd51-4efa-a5fb-ff363049a097',
+    '634af67e-135a-4c59-a383-aa70b3f7e219',
+    'c4f9ba2a-3591-422d-a4e2-267ad8c92989',
+    'b9f86ee2-dab6-4bb4-acdf-4349557e11a3',
+    '607c0035-256a-4e39-acc3-9ac36ec549aa',
+    'e94015f7-0a25-4e92-a90a-556044d17e24',
+    '5c1b3869-9249-403f-af2f-dc09478334db',
+    'da752b90-3199-41ad-a851-57ebb3df31d1',
+    '45307a21-6b3b-4780-ae97-d673d79ef871',
+    '68c4f655-1ba6-4138-a020-5a318c963fcb',
+    '38d96651-58ef-4824-a215-9ca61adce610',
+    '16ad1936-420d-4ecd-a307-18780d3a8617',
+    'b598e3fe-3497-43ab-a1b5-0d2f9559d092',
+    '86819328-d14e-4796-a89d-618c969ba309',
+    '03ab357c-6c21-4402-a5ae-6448153cf933',
+    '7cf73e1f-709d-4241-a1b5-4df13f3fae37'
+  ]::uuid[]));
+delete from public.products where id in (select unnest(array[
+    '5b4e688a-1bb0-4e16-aeb8-a933014cd3ac',
+    '463b673c-890e-4f78-a417-64d42558faf1',
+    '9b451883-7805-4dca-aed7-09b0f90cc1a7',
+    'c3f669a9-f4fb-45d4-a43d-2a99056788f6',
+    'bdffaae6-440e-4d69-aa70-c5c50aebeddc',
+    '2422be56-c1fa-4e2c-a9d9-d6fb1b9b9948',
+    '5fd08878-7b1f-4ade-a648-ad278d34ad45',
+    'de599e76-4338-47b0-ad3b-62eeee8ac2fc',
+    '91834fbb-dd51-4efa-a5fb-ff363049a097',
+    '634af67e-135a-4c59-a383-aa70b3f7e219',
+    'c4f9ba2a-3591-422d-a4e2-267ad8c92989',
+    'b9f86ee2-dab6-4bb4-acdf-4349557e11a3',
+    '607c0035-256a-4e39-acc3-9ac36ec549aa',
+    'e94015f7-0a25-4e92-a90a-556044d17e24',
+    '5c1b3869-9249-403f-af2f-dc09478334db',
+    'da752b90-3199-41ad-a851-57ebb3df31d1',
+    '45307a21-6b3b-4780-ae97-d673d79ef871',
+    '68c4f655-1ba6-4138-a020-5a318c963fcb',
+    '38d96651-58ef-4824-a215-9ca61adce610',
+    '16ad1936-420d-4ecd-a307-18780d3a8617',
+    'b598e3fe-3497-43ab-a1b5-0d2f9559d092',
+    '86819328-d14e-4796-a89d-618c969ba309',
+    '03ab357c-6c21-4402-a5ae-6448153cf933',
+    '7cf73e1f-709d-4241-a1b5-4df13f3fae37'
+  ]::uuid[]));
 
 -- 6) Base de connaissances, livreurs et carnet de comptes de démo.
 delete from public.kb where id in (
