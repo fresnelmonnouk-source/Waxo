@@ -37,10 +37,12 @@ function empty(intent: Plan["intent"], text: string, extra: Partial<Plan> = {}):
 function methodsList(input: EngineInput): string {
   const { lang, shop } = input;
   const names: string[] = [];
-  if (shop.pay.momo) names.push(reply(lang, "payMomo"));
-  if (shop.pay.moov) names.push(reply(lang, "payMoov"));
-  if (shop.pay.celtiis) names.push(reply(lang, "payCeltiis"));
-  if (shop.pay.carte) names.push(reply(lang, "payCarte"));
+  // Moyens en ligne seulement s'ils sont réellement proposés (clé FedaPay utilisable) : sinon, livraison seule.
+  const online = shop.online !== false;
+  if (online && shop.pay.momo) names.push(reply(lang, "payMomo"));
+  if (online && shop.pay.moov) names.push(reply(lang, "payMoov"));
+  if (online && shop.pay.celtiis) names.push(reply(lang, "payCeltiis"));
+  if (online && shop.pay.carte) names.push(reply(lang, "payCarte"));
   if (shop.pay.cod) names.push(reply(lang, "payCod"));
   if (names.length <= 1) return names.join("");
   const last = names[names.length - 1];

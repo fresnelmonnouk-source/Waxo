@@ -57,7 +57,7 @@
       "addToCart": "Add to cart · {total}",
       "buyNow": "Order now",
       "stickyAdd": "Add to cart",
-      "payAll": "Pay by Mobile Money, by card or on delivery.",
+      "payAll": "Pay {methods}.",
       "payNoCod": "Pay by Mobile Money or by card.",
       "returns": "Exchange or refund within {days} days.",
       "conditions": "Terms",

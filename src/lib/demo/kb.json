@@ -3,12 +3,12 @@
   "id": "kb1",
   "tag": "Livraison",
   "title": "Délais et frais de livraison",
-  "text": "Cotonou et Calavi (Livraison Express) : le jour même pour toute commande passée avant 20 h, sinon le lendemain, 7 j/7, dimanche compris, 1 000 F, offerte dès 15 000 F d'achat. Avec le paiement à la livraison, le délai démarre à la confirmation de la commande sur WhatsApp. Autres villes du Bénin (Porto-Novo, Parakou, Bohicon, Abomey, Ouidah, Natitingou…) : 48 à 72 h, 2 500 F, par transporteur interurbain. Pas de livraison hors du Bénin pour le moment.",
+  "text": "Cotonou et Calavi (Livraison Express) : le jour même pour toute commande passée avant 20 h, sinon le lendemain, 7 j/7, dimanche compris, 1 000 F, offerte dès 15 000 F d'achat. Avec le paiement à la livraison, l'heure limite s'applique à l'heure de la confirmation de la commande sur WhatsApp. Autres villes du Bénin : 48 à 72 h, 2 500 F. Pas de livraison hors du Bénin pour le moment.",
   "keywords": "livrer livreur délai quand combien jours ville parakou porto-novo bohicon abomey ouidah natitingou lokossa expédition envoi frais",
   "en": {
    "tag": "Delivery",
    "title": "Delivery times and fees",
-   "text": "Cotonou and Calavi (Express Delivery): same day for any order placed before 8 pm, otherwise the next day, 7 days a week including Sundays, 1,000 F, free from 15,000 F. With pay on delivery, the time starts when the order is confirmed on WhatsApp. Other cities in Benin (Porto-Novo, Parakou, Bohicon, Abomey, Ouidah, Natitingou…): 48 to 72 hours, 2,500 F, by intercity carrier. No delivery outside Benin for now.",
+   "text": "Cotonou and Calavi (Express Delivery): same day for any order placed before 8 pm, otherwise the next day, 7 days a week including Sundays, 1,000 F, free from 15,000 F. With pay on delivery, the cut-off time applies to the time the order is confirmed on WhatsApp. Other cities in Benin: 48 to 72 hours, 2,500 F. No delivery outside Benin for now.",
    "keywords": "deliver delivery courier delay when how long days city parakou porto-novo bohicon abomey ouidah natitingou lokossa shipping fees"
   }
  },
@@ -16,12 +16,12 @@
   "id": "kb2",
   "tag": "Livraison",
   "title": "Le jour de la livraison",
-  "text": "Le client reçoit une confirmation WhatsApp avec le créneau. Le livreur appelle avant d'arriver. Si le client est absent, la livraison est reprogrammée le jour ouvré suivant sans frais. Après deux tentatives, la commande est annulée et remboursée.",
+  "text": "Le client reçoit une confirmation WhatsApp avec le créneau de livraison. Le livreur appelle avant d'arriver. En cas d'absence, une nouvelle livraison est proposée ; après deux tentatives sans succès, la commande peut être annulée.",
   "keywords": "absent créneau appel heure reporter reprogrammer tentative",
   "en": {
    "tag": "Delivery",
    "title": "On delivery day",
-   "text": "The customer receives a WhatsApp confirmation with the time slot. The courier calls before arriving. If the customer is absent, the delivery is rescheduled to the next working day at no cost. After two attempts, the order is cancelled and refunded.",
+   "text": "The customer receives a WhatsApp confirmation with the delivery time slot. The courier calls before arriving. If the customer is absent, a new delivery is offered; after two unsuccessful attempts, the order may be cancelled.",
    "keywords": "absent slot call time postpone reschedule attempt"
   }
  },
@@ -29,25 +29,25 @@
   "id": "kb3",
   "tag": "Paiement",
   "title": "Moyens de paiement",
-  "text": "Paiements acceptés : MTN MoMo, Moov Money, Celtiis Cash, carte Visa ou Mastercard, et paiement à la livraison en espèces ou Mobile Money. Aucun membre de l'équipe ne demande jamais de code secret.",
-  "keywords": "payer paiement momo moov celtiis carte visa mastercard espèces cash livraison code",
+  "text": "Les moyens de paiement proposés sont ceux affichés au moment de la commande : Mobile Money en ligne (MTN MoMo, Moov Money, Celtiis Cash) quand il est proposé, et paiement à la livraison en espèces ou par Mobile Money. La carte bancaire n'est pas proposée pour l'instant. Aucun membre de l'équipe ne demande jamais de code secret.",
+  "keywords": "payer paiement momo moov celtiis mobile money carte visa mastercard espèces cash livraison code",
   "en": {
    "tag": "Payment",
    "title": "Payment methods",
-   "text": "Accepted payments: MTN MoMo, Moov Money, Celtiis Cash, Visa or Mastercard card, and cash on delivery in cash or Mobile Money. No member of the team ever asks for a secret code.",
-   "keywords": "pay payment momo moov celtiis card visa mastercard cash delivery code"
+   "text": "The payment methods available are those shown when you order: Mobile Money online (MTN MoMo, Moov Money, Celtiis Cash) when it is offered, and pay on delivery in cash or by Mobile Money. Card payment is not available for now. No member of the team ever asks for a secret code.",
+   "keywords": "pay payment momo moov celtiis mobile money card visa mastercard cash delivery code"
   }
  },
  {
   "id": "kb4",
   "tag": "Retours",
   "title": "Échange et remboursement",
-  "text": "7 jours après réception pour demander un échange ou un remboursement, pour un produit non utilisé, complet et dans son emballage d'origine. Produits d'hygiène descellés exclus sauf défaut. À Cotonou et Calavi le livreur reprend le produit. Remboursement sous 7 jours sur le moyen de paiement utilisé.",
+  "text": "7 jours après réception pour demander un échange ou un remboursement, pour un produit non utilisé, complet et dans son emballage d'origine. Produits d'hygiène descellés exclus sauf défaut. À Cotonou et Calavi le livreur reprend le produit ; ailleurs au Bénin, le renvoi est à la charge du client pour un simple changement d'avis. Remboursement sous 7 jours sur le moyen de paiement utilisé.",
   "keywords": "retour retourner rembourser remboursement échanger échange défaut cassé abîmé",
   "en": {
    "tag": "Returns",
    "title": "Exchange and refund",
-   "text": "7 days after receipt to ask for an exchange or a refund, for an unused, complete product in its original packaging. Unsealed hygiene products are excluded unless defective. In Cotonou and Calavi the courier takes the product back. Refund within 7 days to the payment method used.",
+   "text": "7 days after receipt to ask for an exchange or a refund, for an unused, complete product in its original packaging. Unsealed hygiene products are excluded unless defective. In Cotonou and Calavi the courier takes the product back; elsewhere in Benin, the customer pays for sending it back on a simple change of mind. Refund within 7 days to the payment method used.",
    "keywords": "return refund exchange defect broken damaged"
   }
  },
@@ -68,12 +68,12 @@
   "id": "kb6",
   "tag": "Compte",
   "title": "Commander sans compte",
-  "text": "On peut commander sans compte, tout est confirmé par WhatsApp. Un compte permet de suivre ses commandes et de publier un avis. En créant un compte avec le même numéro, les commandes passées s'y rattachent automatiquement.",
+  "text": "On peut commander sans compte : la commande se suit ensuite avec son numéro WX-… sur la page Suivi de commande. Un compte permet de suivre ses commandes, de retrouver ses informations de livraison et de publier un avis.",
   "keywords": "compte inscription inscrire suivre commande avis connexion mot de passe",
   "en": {
    "tag": "Account",
    "title": "Ordering without an account",
-   "text": "You can order without an account, everything is confirmed on WhatsApp. An account lets you follow your orders and post a review. If you create an account with the same phone number, past orders are attached to it automatically.",
+   "text": "You can order without an account: you then follow the order with its WX-… number on the order tracking page. An account lets you follow your orders, keep your delivery details and post a review.",
    "keywords": "account sign up register follow order review login password"
   }
  },
@@ -81,12 +81,12 @@
   "id": "kb7",
   "tag": "Boutique",
   "title": "Qui sommes-nous",
-  "text": "Wá xɔ (« venez acheter » en fon) est une boutique en ligne basée à Cotonou, sans magasin physique. Tout le stock est chez nous, à Cotonou : le stock affiché est réel. Service client par WhatsApp du lundi au samedi de 8 h à 19 h.",
+  "text": "Wá xɔ (« venez acheter » en fon) est une boutique en ligne basée à Cotonou, sans magasin physique. Tout le stock est chez nous, à Cotonou : le stock affiché est réel. Équipe joignable sur WhatsApp 7 j/7, de 8 h à 20 h ; l'assistant du site répond 24 h/24.",
   "keywords": "boutique magasin adresse passer récupérer retrait horaires contact whatsapp stock",
   "en": {
    "tag": "Shop",
    "title": "Who we are",
-   "text": "Wá xɔ (“come and buy” in Fon) is an online shop based in Cotonou, with no physical store. All the stock is with us, in Cotonou: the stock shown is real. Customer service on WhatsApp from Monday to Saturday, 8 am to 7 pm.",
+   "text": "Wá xɔ (“come and buy” in Fon) is an online shop based in Cotonou, with no physical store. All the stock is with us, in Cotonou: the stock shown is real. Our team is on WhatsApp 7 days a week, 8 am to 8 pm; the site assistant answers 24/7.",
    "keywords": "shop store address pick up collect pickup hours contact whatsapp stock"
   }
  },

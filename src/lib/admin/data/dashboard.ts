@@ -138,7 +138,7 @@ export async function getShellCounts(): Promise<ShellCounts> {
         count(sb.from("reviews").select("id", head)),
         count(sb.from("reviews").select("id", head).eq("hidden", true)),
         count(sb.from("profiles").select("id", head).eq("role", "client")),
-        count(sb.from("messages").select("id", head).eq("done", false)),
+        count(sb.from("conversations").select("id", head).or("status.eq.nouveau,unread_admin.eq.true")),
         count(sb.from("newsletter_subs").select("id", head)),
       ]);
     return { ordersTotal, ordersTodo, ordersShipping, productsTotal, productsLow, reviewsTotal, reviewsHidden, clients, messagesTodo, subscribers };

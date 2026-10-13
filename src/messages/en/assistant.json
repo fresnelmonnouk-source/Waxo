@@ -83,7 +83,7 @@
       "payCarte": "bank card",
       "payCod": "cash on delivery",
       "or": "or",
-      "returns": "You have {days} days after receipt to exchange or get a refund for an unused product in its original packaging.",
+      "returns": "You have {days} days after delivery to ask for an exchange or a refund, for an unused, complete product in its original packaging (opened hygiene products excluded, unless faulty). Outside Cotonou and Calavi, you pay the return cost for a simple change of mind; we pay it if the product is faulty or the mistake is ours.",
       "ask": "Tell me a bit more: is it for you or a gift, and what budget do you have in mind?"
     }
   }

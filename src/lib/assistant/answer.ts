@@ -1,8 +1,9 @@
 import "server-only";
 import { getCategories, getProducts, getSettings } from "@/lib/catalog";
+import { onlinePayAvailable } from "@/lib/payment/ready";
 import type { Product } from "@/lib/catalog/types";
 import { plan } from "./engine";
-import { detectEscalation, type EscalationKind } from "./escalation";
+import { detectEscalation, escalationContactPath, type EscalationKind } from "./escalation";
 import { validateLlmText } from "./guard";
 import { reply } from "./i18n";
 import { loadKb } from "./kb";
@@ -31,7 +32,7 @@ function escalationActions(lang: Lang, kind: EscalationKind, waNumber: string): 
   const digits = waNumber.replace(/\D/g, "").slice(0, 15);
   const actions: AssistantAction[] = [];
   if (digits.length >= 8) actions.push({ kind: "whatsapp", label: reply(lang, "actWhatsapp"), href: `https://wa.me/${digits}` });
-  actions.push({ kind: "page", label: reply(lang, "actContact"), href: "/contact" });
+  actions.push({ kind: "page", label: reply(lang, "actContact"), href: escalationContactPath(kind) });
   if (kind === "legal") actions.push({ kind: "page", label: reply(lang, "actCgv"), href: "/cgv" });
   return actions;
 }
@@ -70,7 +71,7 @@ export async function answer(req: AssistantRequest): Promise<AssistantReply> {
     products,
     categories: categories.map((c) => ({ id: c.id, label: c.label })),
     kb,
-    shop: { shipping: settings.shipping, pay: settings.pay, brand: settings.brand },
+    shop: { shipping: settings.shipping, pay: settings.pay, brand: settings.brand, online: await onlinePayAvailable(settings.pay) },
     currentSlug: req.page?.product,
   });
 

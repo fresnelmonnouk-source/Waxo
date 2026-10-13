@@ -1,0 +1,61 @@
+{
+  "Conversations": {
+    "categories": {
+      "question": "Question",
+      "plainte": "Complaint",
+      "retour": "Return or refund",
+      "commande": "Order",
+      "autre": "Other"
+    },
+    "statuses": {
+      "nouveau": "Received",
+      "en_cours": "In progress",
+      "resolu": "Resolved"
+    },
+    "contact": {
+      "category": "Your request is about",
+      "fromAssistant": "We've carried over your chat with the assistant. Check your message, add details if needed, then send it to the team.",
+      "sentTitle": "Request sent.",
+      "sentText": "We reply 7 days a week, from 8 am to 8 pm. If you left an email address, you'll also receive this link there.",
+      "follow": "Follow my request",
+      "keepLink": "Keep this link: it's personal and lets you read our replies and write to us.",
+      "privacy": "Your contact details are only used to reply to you. Your messages are kept for as long as we need to handle your request. <privacy>Privacy</privacy>"
+    },
+    "page": {
+      "metaTitle": "Your request",
+      "eyebrow": "Your request",
+      "untitled": "Your request",
+      "opened": "Opened on {date}",
+      "order": "Order {number}",
+      "you": "You",
+      "team": "The {shop} team",
+      "replyTitle": "Reply to the team",
+      "replyLabel": "Your message",
+      "send": "Send",
+      "sending": "Sending…",
+      "sent": "Message sent. We'll get back to you as soon as possible.",
+      "resolvedHint": "This request is resolved. You can still write to us: it will be reopened.",
+      "personal": "This link is personal. Don't share it: anyone who has it can read and reply to this conversation.",
+      "privacy": "Your messages are kept for as long as we need to handle your request. <privacy>Privacy</privacy>",
+      "help": "Urgent? Message us on WhatsApp, 7 days a week, from 8 am to 8 pm."
+    },
+    "account": {
+      "tab": "My requests",
+      "intro": "Your conversations with our team, sent from the contact form or the assistant while you were signed in.",
+      "empty": "No requests yet.",
+      "write": "Write to the team",
+      "loadError": "We couldn't load your requests.",
+      "retry": "Try again",
+      "unread": "New reply",
+      "updated": "Last message on {date}",
+      "loading": "Loading…"
+    },
+    "errors": {
+      "categoryRequired": "Choose what your request is about.",
+      "notFound": "This conversation can't be found.",
+      "captcha": "The anti-bot check failed. Please try again.",
+      "textShort": "Your message is too short.",
+      "textLong": "Your message is too long (3,000 characters max)."
+    }
+  }
+}

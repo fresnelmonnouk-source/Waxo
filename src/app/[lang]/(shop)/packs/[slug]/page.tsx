@@ -1,5 +1,6 @@
 import { seoHour } from "@/lib/seo/pages";
 import { onlinePayAvailable } from "@/lib/payment/ready";
+import { payLineText } from "@/lib/payment/methods-label";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -178,7 +179,7 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
           )}
 
           <div className="border-border text-text flex flex-col gap-2 border-t pt-4 text-[14px]">
-            <span>{settings.pay.cod ? (online ? t("payAll") : t("payCodOnly")) : t("payNoCod")}</span>
+            <span>{payLineText(settings.pay, online, lang, { methods: (methods) => t("payAll", { methods }), codOnly: () => t("payCodOnly") })}</span>
             <span>
               {t("returns", { days: returnDays })} <Link href="/livraison-retours">{t("conditions")}</Link>
             </span>

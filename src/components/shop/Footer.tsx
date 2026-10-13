@@ -1,7 +1,8 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import type { BrandSettings } from "@/lib/catalog/types";
+import type { BrandSettings, PaySettings } from "@/lib/catalog/types";
 import { DEFAULT_CUTOFF } from "@/lib/delivery/promise";
+import { onlineBrands } from "@/lib/payment/methods-label";
 import { cutoffParams } from "./ExpressBadge";
 import { LangSwitch } from "./LangSwitch";
 
@@ -10,11 +11,13 @@ const LINK = "text-cream! hover:text-sun! no-underline";
 
 /**
  * Pied de page (maquette lignes 913-956). Coordonnées et paiement à la livraison viennent des réglages.
+ * Moyens de paiement : uniquement ceux réellement proposés (src/lib/payment/methods-label.ts), jamais une liste figée.
  * Baseline de marque sous le logo (spec Livraison Express §9), toujours suivie de sa preuve (règle de l'heure limite).
  */
 export function Footer({
   brand,
   cod,
+  pay,
   online,
   cutoff = DEFAULT_CUTOFF,
   lang,
@@ -22,6 +25,11 @@ export function Footer({
 }: {
   brand: BrandSettings;
   cod: boolean;
+  /**
+   * Moyens cochés dans les réglages (`settings.pay`). Absent : quand le paiement en ligne est proposé, seuls les
+   * opérateurs Mobile Money sont annoncés, jamais la carte (aucun moyen n'est annoncé sans preuve qu'il est actif).
+   */
+  pay?: PaySettings;
   /** Paiement en ligne réellement proposé (réglages + clé FedaPay utilisable). */
   online: boolean;
   cutoff?: number;
@@ -34,6 +42,8 @@ export function Footer({
   const norm = (s: string) => s.replace(/\s+/g, " ").trim();
   const hours = !brand.hours.trim() || (lang === "en" && norm(brand.hours) === norm(defaultHours)) ? t("hours") : brand.hours;
   const year = new Date().getFullYear();
+  const flags: PaySettings = pay ?? { momo: true, moov: true, celtiis: true, carte: false, cod };
+  const brands = onlineBrands(flags, online).join(" · ");
 
   return (
     <footer aria-label={t("label")} className="on-dark bg-ink text-cream">
@@ -116,12 +126,12 @@ export function Footer({
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-x-6 gap-y-[10px] px-5 py-[18px] text-[13px] text-[#B9B1A4]">
           <span>{t("copyright", { year })}</span>
           <span>
-            {online ? (
+            {brands ? (
               <>
-                {t("payments")}
-                {cod ? t("paymentsCod") : ""}
+                {t("payments", { methods: brands })}
+                {flags.cod ? t("paymentsCod") : ""}
               </>
-            ) : cod ? (
+            ) : flags.cod ? (
               t("paymentsCodOnly")
             ) : null}
           </span>

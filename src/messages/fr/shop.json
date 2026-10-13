@@ -24,7 +24,7 @@
     "productCount": "{count, plural, one {# produit} other {# produits}}",
     "topbar": {
       "delivery": "<b>Livraison Express</b> : le jour même avant {hour} à Cotonou & Calavi",
-      "freeShip": "Livraison offerte dès <b>{amount}</b>",
+      "freeShip": "Livraison offerte dès <b>{amount}</b> à Cotonou & Calavi",
       "cod": "Payez à la réception"
     },
     "search": {
@@ -82,7 +82,7 @@
     "heroEyebrow": "Stock à Cotonou · Livré par nous 7 j/7",
     "title": "Les petites choses utiles, livrées le jour même à Cotonou.",
     "lead": "Des objets du quotidien choisis pour leur utilité et leur prix.",
-    "payCod": "Vous payez par Mobile Money, par carte ou à la réception.",
+    "payCod": "Vous payez {methods}.",
     "payNoCod": "Vous payez par Mobile Money ou par carte.",
     "seeProducts": "Voir les {count} produits",
     "seeCatalog": "Voir le catalogue",
@@ -93,9 +93,10 @@
     "g1Title": "Shopper depuis chez vous",
     "g1Sub": "Vous commandez, on emballe, on livre",
     "g2CodTitle": "Payez à la réception",
-    "g2CodSub": "Ou MTN MoMo, Moov Money, Celtiis Cash, carte",
+    "g2CodSub": "Ou {methods}",
     "g2Title": "Paiement Mobile Money",
-    "g2Sub": "MTN MoMo, Moov Money, Celtiis Cash ou carte",
+    "g2Sub": "{methods}",
+    "g2CardTitle": "Paiement par carte",
     "g3Title": "Livraison Express",
     "g3Sub": "Commandé avant {hour}, livré le jour même à Cotonou & Calavi. 7 j/7, dimanche compris. Autres villes : 48 à 72 h.",
     "g4Title": "Assistant en ligne 24 h/24",
@@ -208,7 +209,7 @@
     "whatsapp": "WhatsApp {phone}",
     "hours": "7 j/7, de 8 h à 20 h",
     "copyright": "© {year} Wá xɔ · Cotonou, Bénin",
-    "payments": "MTN MoMo · Moov Money · Celtiis Cash · Visa · Mastercard",
+    "payments": "{methods}",
     "paymentsCod": " · Paiement à la livraison",
     "paymentsCodOnly": "Paiement à la livraison : espèces ou Mobile Money"
   },

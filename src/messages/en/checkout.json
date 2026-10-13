@@ -3,7 +3,7 @@
     "dialogLabel": "Cart",
     "title": "Your cart ({count})",
     "close": "Close the cart",
-    "shipRemaining": "Only {amount} more for free delivery in Cotonou",
+    "shipRemaining": "Only {amount} more for free delivery in Cotonou and Calavi",
     "shipFree": "Free delivery in Cotonou and Calavi",
     "decrease": "Decrease",
     "increase": "Increase",

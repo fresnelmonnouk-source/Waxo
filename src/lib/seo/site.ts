@@ -22,7 +22,7 @@ export const STATIC_PUBLIC_PATHS = [
 ] as const;
 
 /** Préfixes à ne pas indexer (robots + metadata `noindex` côté pages concernées). */
-export const PRIVATE_PATH_PREFIXES = ["/compte", "/connexion", "/inscription", "/commande", "/suivi", "/favoris"] as const;
+export const PRIVATE_PATH_PREFIXES = ["/compte", "/connexion", "/inscription", "/commande", "/suivi", "/favoris", "/discussion"] as const;
 
 /** Origine du site, sans slash final. NEXT_PUBLIC_SITE_URL (https://…) en production ; repli Vercel puis localhost (dev). */
 export function siteUrl(env: Record<string, string | undefined> = process.env): string {

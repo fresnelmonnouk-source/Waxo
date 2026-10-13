@@ -3,7 +3,7 @@
     "dialogLabel": "Panier",
     "title": "Votre panier ({count})",
     "close": "Fermer le panier",
-    "shipRemaining": "Plus que {amount} pour la livraison offerte à Cotonou",
+    "shipRemaining": "Plus que {amount} pour la livraison offerte à Cotonou et Calavi",
     "shipFree": "Livraison offerte à Cotonou et Calavi",
     "decrease": "Diminuer",
     "increase": "Augmenter",

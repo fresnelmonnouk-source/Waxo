@@ -22,7 +22,7 @@
     "comingSoonTitle": "Ce produit revient bientôt.",
     "comingSoonText": "Laissez votre contact dans le formulaire de contact ou demandez une alternative à l'assistant.",
     "suggestAlternative": "Proposer une alternative",
-    "payAll": "Vous payez par Mobile Money, par carte ou à la réception.",
+    "payAll": "Vous payez {methods}.",
     "payNoCod": "Vous payez par Mobile Money ou par carte.",
     "returns": "Échange ou remboursement sous {days} jours.",
     "conditions": "Conditions",

@@ -56,7 +56,8 @@ export type EngineInput = {
   products: Product[];
   categories: { id: string; label: string }[];
   kb: KbEntry[];
-  shop: { shipping: ShippingSettings; pay: PaySettings; brand: BrandSettings };
+  /** `online` : paiement en ligne réellement proposé (onlinePayAvailable) ; absent = considéré proposé (tests, démo). */
+  shop: { shipping: ShippingSettings; pay: PaySettings; brand: BrandSettings; online?: boolean };
   /** Slug de la fiche produit consultée, si le visiteur est sur une fiche. */
   currentSlug?: string;
 };

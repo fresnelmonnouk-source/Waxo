@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import NextLink from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { AccountRequests } from "./AccountRequests";
 import { Link, useRouter } from "@/i18n/navigation";
 import { authModal, ensureMe, toast, useMe } from "@/lib/auth/client";
 import { fmtDate, signOut } from "./actions";
@@ -12,12 +13,13 @@ import { AccountProfile } from "./AccountProfile";
 import { AccountSecurity } from "./AccountSecurity";
 import { BTN_DARK, BTN_OUTLINE, BTN_SUN } from "./ui";
 
-const TABS = ["orders", "profile", "security"] as const;
+const TABS = ["orders", "requests", "profile", "security"] as const;
 type Tab = (typeof TABS)[number];
 
 /** « Mon compte » (maquette 750-881). Connecté : onglets commandes / informations / sécurité. Sinon : invitation à se connecter. */
 export function AccountPage() {
   const t = useTranslations("Account");
+  const tc = useTranslations("Conversations");
   const locale = useLocale();
   const router = useRouter();
   const params = useSearchParams();
@@ -105,7 +107,7 @@ export function AccountPage() {
                 on ? "border-ink bg-ink text-cream" : "border-border-strong bg-transparent text-ink"
               }`}
             >
-              {t(`tabs.${id}`)}
+              {id === "requests" ? tc("account.tab") : t(`tabs.${id}`)}
               {id === "orders" && orderCount !== null ? ` (${orderCount})` : ""}
             </button>
           );
@@ -113,6 +115,7 @@ export function AccountPage() {
       </div>
 
       {tab === "orders" ? <AccountOrders openNumber={params.get("order")} onCount={onCount} /> : null}
+      {tab === "requests" ? <AccountRequests /> : null}
       {tab === "profile" ? <AccountProfile user={user} /> : null}
       {tab === "security" ? <AccountSecurity recovery={recovery} onDone={() => recovery && goTab("security")} /> : null}
     </>

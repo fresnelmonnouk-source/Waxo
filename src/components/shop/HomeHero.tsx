@@ -3,6 +3,7 @@ import { HeroAssistantCard } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
 import type { Product, ShopSettings } from "@/lib/catalog/types";
 import { Price } from "@/lib/currency/client";
+import { joinOr, mobileOperators, onlineBrands, payLineText } from "@/lib/payment/methods-label";
 import { HeroDeliveryProof } from "./DeliveryPromise";
 import { ExpressInline, cutoffParams } from "./ExpressBadge";
 import { TAG_STYLE, cssUrl, fmtRating, heroProducts, productTag, promoLabel, storeRating, type TagKind } from "./logic";
@@ -31,7 +32,17 @@ export function HomeHero({
   const t = useTranslations("Home");
   const tc = useTranslations("Card");
   const locale = useLocale();
-  const cod = settings.pay.cod;
+  const pay = settings.pay;
+  // Moyens de paiement : seulement ceux réellement proposés (réglages + paiement en ligne utilisable).
+  const payLine = payLineText(pay, online, locale, { methods: (methods) => t("payCod", { methods }), codOnly: () => t("payCodOnly") });
+  const brands = onlineBrands(pay, online);
+  const payCard: [string, string, boolean] | null = brands.length
+    ? pay.cod
+      ? [t("g2CodTitle"), t("g2CodSub", { methods: brands.join(", ") }), false]
+      : [mobileOperators(pay, online).length ? t("g2Title") : t("g2CardTitle"), t("g2Sub", { methods: joinOr(brands, locale) }), false]
+    : pay.cod
+      ? [t("g2CodTitle"), t("g2CodOnlySub"), false]
+      : null;
   const cutoff = settings.shipping.cutoff;
   const hourParams = cutoffParams(cutoff, locale);
   const hero = heroProducts(products, bestIds);
@@ -51,7 +62,7 @@ export function HomeHero({
             <span className="text-terracotta text-[13px] font-semibold tracking-[0.08em] uppercase">{t("heroEyebrow")}</span>
             <h1 className="font-display m-0 text-[clamp(34px,4.6vw,60px)] leading-[1.04] font-semibold tracking-[-0.035em] text-balance">{t("title")}</h1>
             <p className="m-0 max-w-[500px] text-[18px] leading-normal text-[#D6CFC0] text-pretty">
-              {t("lead")} {cod ? (online ? t("payCod") : t("payCodOnly")) : t("payNoCod")}
+              {t("lead")} {payLine}
             </p>
             <div className="mb-[6px]">
               <HeroDeliveryProof cutoff={cutoff} />
@@ -140,14 +151,16 @@ export function HomeHero({
           aria-label={t("guarantees")}
           className="grid grid-cols-1 gap-px border-t border-[rgba(244,241,234,0.18)] bg-[rgba(244,241,234,0.18)] min-[420px]:grid-cols-2 min-[760px]:grid-cols-4"
         >
-          {[
-            [t("g1Title"), t("g1Sub")],
-            [cod ? t("g2CodTitle") : t("g2Title"), cod ? (online ? t("g2CodSub") : t("g2CodOnlySub")) : t("g2Sub")],
-            [t("g3Title"), t("g3Sub", hourParams)],
-            [t("g4Title"), t("g4Sub")],
-          ].map(([title, sub], i) => (
+          {(
+            [
+              [t("g1Title"), t("g1Sub"), false],
+              payCard,
+              [t("g3Title"), t("g3Sub", hourParams), true],
+              [t("g4Title"), t("g4Sub"), false],
+            ].filter((c): c is [string, string, boolean] => c !== null)
+          ).map(([title, sub, express]) => (
             <div key={title} className="bg-ink flex flex-col gap-[3px] px-6 py-[18px]">
-              {i === 2 ? (
+              {express ? (
                 // Carte Livraison Express : seul picto du bloc + chiffre-signature « 20 h » à droite, même ligne de base.
                 <div className="flex items-baseline justify-between gap-3">
                   <strong className="text-[15px]">

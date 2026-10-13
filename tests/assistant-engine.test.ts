@@ -136,6 +136,13 @@ describe("assistant — moteur déterministe", () => {
     expect(p.text).not.toMatch(/carte bancaire|livraison/);
   });
 
+  it("paiement en ligne non proposé (clé FedaPay inutilisable) : seulement la livraison", () => {
+    const pay = { ...DEFAULT_SETTINGS.pay, cod: true };
+    const p = plan(input("Comment puis-je payer ?", { shop: { shipping: DEFAULT_SETTINGS.shipping, pay, brand: DEFAULT_SETTINGS.brand, online: false } }));
+    expect(p.text).not.toMatch(/MoMo|Moov|Celtiis|carte bancaire/);
+    expect(p.text).toMatch(/livraison/);
+  });
+
   it("numéro de commande -> page de suivi, aucune consultation", () => {
     const p = plan(input("Où en est ma commande WX-10258 ?"));
     expect(p.intent).toBe("order");

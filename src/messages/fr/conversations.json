@@ -1,0 +1,61 @@
+{
+  "Conversations": {
+    "categories": {
+      "question": "Question",
+      "plainte": "Plainte",
+      "retour": "Retour ou remboursement",
+      "commande": "Commande",
+      "autre": "Autre"
+    },
+    "statuses": {
+      "nouveau": "Reçue",
+      "en_cours": "En cours",
+      "resolu": "Résolue"
+    },
+    "contact": {
+      "category": "Votre demande concerne",
+      "fromAssistant": "Nous avons repris votre échange avec l'assistant. Relisez votre message, complétez-le si besoin, puis envoyez-le à l'équipe.",
+      "sentTitle": "Demande envoyée.",
+      "sentText": "Nous vous répondons 7 j/7, de 8 h à 20 h. Si vous avez laissé un e-mail, vous y recevrez aussi ce lien.",
+      "follow": "Suivre ma demande",
+      "keepLink": "Gardez ce lien : il est personnel et vous permet de lire nos réponses et de nous écrire.",
+      "privacy": "Vos coordonnées servent uniquement à vous répondre. Vos messages sont conservés le temps de traiter votre demande. <privacy>Confidentialité</privacy>"
+    },
+    "page": {
+      "metaTitle": "Votre demande",
+      "eyebrow": "Votre demande",
+      "untitled": "Votre demande",
+      "opened": "Ouverte le {date}",
+      "order": "Commande {number}",
+      "you": "Vous",
+      "team": "L'équipe {shop}",
+      "replyTitle": "Répondre à l'équipe",
+      "replyLabel": "Votre message",
+      "send": "Envoyer",
+      "sending": "Envoi…",
+      "sent": "Message envoyé. Nous vous répondons au plus vite.",
+      "resolvedHint": "Cette demande est résolue. Vous pouvez encore nous écrire : elle sera rouverte.",
+      "personal": "Ce lien est personnel. Ne le partagez pas : toute personne qui l'a peut lire cette discussion et y répondre.",
+      "privacy": "Vos messages sont conservés le temps de traiter votre demande. <privacy>Confidentialité</privacy>",
+      "help": "Une urgence ? Écrivez-nous sur WhatsApp, 7 j/7, de 8 h à 20 h."
+    },
+    "account": {
+      "tab": "Mes demandes",
+      "intro": "Vos échanges avec notre équipe, envoyés depuis le formulaire de contact ou l'assistant lorsque vous étiez connecté.",
+      "empty": "Aucune demande pour le moment.",
+      "write": "Écrire à l'équipe",
+      "loadError": "Impossible de charger vos demandes.",
+      "retry": "Réessayer",
+      "unread": "Nouvelle réponse",
+      "updated": "Dernier message le {date}",
+      "loading": "Chargement…"
+    },
+    "errors": {
+      "categoryRequired": "Choisissez le sujet de votre demande.",
+      "notFound": "Cette discussion est introuvable.",
+      "captcha": "La vérification anti-robot a échoué. Réessayez.",
+      "textShort": "Votre message est trop court.",
+      "textLong": "Votre message est trop long (3 000 caractères au plus)."
+    }
+  }
+}

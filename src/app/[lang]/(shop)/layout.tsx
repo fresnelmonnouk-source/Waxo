@@ -73,6 +73,7 @@ export default async function ShopLayout({
           brand={settings.brand}
           cod={settings.pay.cod}
           online={online}
+          pay={settings.pay}
           cutoff={settings.shipping.cutoff}
           lang={lang}
           defaultHours={DEFAULT_SETTINGS.brand.hours}

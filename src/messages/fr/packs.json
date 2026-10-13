@@ -57,7 +57,7 @@
       "addToCart": "Ajouter au panier · {total}",
       "buyNow": "Commander maintenant",
       "stickyAdd": "Ajouter au panier",
-      "payAll": "Vous payez par Mobile Money, par carte ou à la réception.",
+      "payAll": "Vous payez {methods}.",
       "payNoCod": "Vous payez par Mobile Money ou par carte.",
       "returns": "Échange ou remboursement sous {days} jours.",
       "conditions": "Conditions",

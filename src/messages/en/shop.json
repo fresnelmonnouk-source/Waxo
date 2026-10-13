@@ -24,7 +24,7 @@
     "productCount": "{count, plural, one {# product} other {# products}}",
     "topbar": {
       "delivery": "<b>Express Delivery</b>: same day before {hour} in Cotonou & Calavi",
-      "freeShip": "Free delivery from <b>{amount}</b>",
+      "freeShip": "Free delivery in Cotonou & Calavi on orders of <b>{amount}</b> or more",
       "cod": "Pay on delivery"
     },
     "search": {
@@ -82,7 +82,7 @@
     "heroEyebrow": "Stocked in Cotonou · Delivered by us 7 days a week",
     "title": "Small useful things, delivered the same day in Cotonou.",
     "lead": "Everyday items picked for their usefulness and their price.",
-    "payCod": "Pay by Mobile Money, by card or on delivery.",
+    "payCod": "Pay {methods}.",
     "payNoCod": "Pay by Mobile Money or by card.",
     "seeProducts": "Browse all {count} products",
     "seeCatalog": "Browse the catalogue",
@@ -93,9 +93,10 @@
     "g1Title": "Shop from home",
     "g1Sub": "You order, we pack, we deliver",
     "g2CodTitle": "Pay on delivery",
-    "g2CodSub": "Or MTN MoMo, Moov Money, Celtiis Cash, card",
+    "g2CodSub": "Or {methods}",
     "g2Title": "Mobile Money payment",
-    "g2Sub": "MTN MoMo, Moov Money, Celtiis Cash or card",
+    "g2Sub": "{methods}",
+    "g2CardTitle": "Card payment",
     "g3Title": "Express Delivery",
     "g3Sub": "Ordered before {hour}, delivered the same day in Cotonou & Calavi. 7 days a week, Sundays too. Other cities: 48 to 72 h.",
     "g4Title": "24/7 online assistant",
@@ -208,7 +209,7 @@
     "whatsapp": "WhatsApp {phone}",
     "hours": "7 days a week, 8 am to 8 pm",
     "copyright": "© {year} Wá xɔ · Cotonou, Benin",
-    "payments": "MTN MoMo · Moov Money · Celtiis Cash · Visa · Mastercard",
+    "payments": "{methods}",
     "paymentsCod": " · Pay on delivery",
     "paymentsCodOnly": "Pay on delivery: cash or Mobile Money"
   },

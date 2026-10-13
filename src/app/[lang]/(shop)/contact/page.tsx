@@ -1,12 +1,13 @@
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { ContactForm } from "@/components/account/ContactForm";
 import { EYEBROW } from "@/components/account/styles";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { turnstileSiteKey } from "@/lib/auth/turnstile";
 import { getSettings } from "@/lib/catalog";
 import { seoPageMetadata } from "@/lib/seo/pages";
+import { ConversationContactForm } from "./ConversationContactForm";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -75,7 +76,7 @@ export default async function Page({ params }: Props) {
           </span>
         </div>
         <div className="rounded-[24px] bg-white p-6">
-          <ContactForm />
+          <ConversationContactForm turnstileSiteKey={turnstileSiteKey()} />
         </div>
       </div>
     </main>

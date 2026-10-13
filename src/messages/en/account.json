@@ -274,7 +274,7 @@
     "q2": "How much does delivery cost?",
     "a2": "{cotonou} in Cotonou and Calavi, free from {freeShip} of purchases. {autre} in other cities in Benin.",
     "q3": "How can I pay?",
-    "a3": "By MTN MoMo, Moov Money, Celtiis Cash or bank card (Visa, Mastercard){cod}. We will never ask for your secret code.",
+    "a3": "Depending on the methods shown when you order: online Mobile Money (MTN MoMo, Moov Money, Celtiis Cash) when offered{cod}. We will never ask for your secret code.",
     "cod": ", or on delivery, in cash or by Mobile Money",
     "q4": "Do I need an account to order?",
     "a4": "No. An account lets you track your orders, keep your delivery details and review products. Without an account, you can track your order with its number on the <track>Order tracking</track> page.",
@@ -321,7 +321,7 @@
       },
       "s5": {
         "h": "5. Payment",
-        "p": "Accepted methods: MTN MoMo, Moov Money, Celtiis Cash and Visa or Mastercard bank cards{cod}. Online payments are handled by an approved payment provider; Wá xɔ never has access to secret codes or full card numbers."
+        "p": "The payment methods available are those shown when you place your order: online Mobile Money (MTN MoMo, Moov Money, Celtiis Cash) when offered{cod}. Online payments are handled by an approved payment provider; Wá xɔ never has access to your secret codes."
       },
       "s6": {
         "h": "6. Delivery",

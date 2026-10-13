@@ -101,7 +101,8 @@ describe("assistant — answer() de bout en bout (démo, sans Supabase)", () => 
     const r = await answer({ lang: "fr", messages: [{ role: "user", text: "Je veux être remboursé" }] });
     expect(r.mode).toBe("escalation");
     expect(r.products).toEqual([]);
-    expect(r.actions.map((a) => a.href)).toContain("/contact");
+    // Escalade : formulaire de contact pré-rempli (catégorie déduite, source assistant), voir escalationContactPath.
+    expect(r.actions.some((a) => a.href.startsWith("/contact?depuis=assistant&motif="))).toBe(true);
     expect(r.actions.some((a) => a.href.startsWith("https://wa.me/"))).toBe(true);
     expect(fetchSpy).not.toHaveBeenCalled();
   });

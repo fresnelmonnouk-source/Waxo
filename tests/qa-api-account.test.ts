@@ -52,28 +52,37 @@ beforeEach(() => {
 
 // ───────────────────────── Contact ─────────────────────────
 describe("POST /api/contact", () => {
-  const valid = () => ({ name: "Afi H", contact: "Afi@Exemple.BJ", subject: "order", orderNumber: "wx 10258", body: "Ma commande n'est pas arrivée.", website: "", t: old() });
-  const insert = vi.fn();
+  // Contrat (chantier Discussion) : le formulaire crée une CONVERSATION via la fonction SQL conversation_open (service_role)
+  // et renvoie le lien privé du fil. Seule l'empreinte du jeton part en base.
+  const valid = () => ({ name: "Afi H", contact: "Afi@Exemple.BJ", category: "commande", orderNumber: "wx 10258", body: "Ma commande n'est pas arrivée.", website: "", t: old() });
+  const rpc = vi.fn();
   beforeEach(() => {
-    insert.mockReset();
-    insert.mockResolvedValue({ error: null });
-    admin.create.mockReturnValue({ from: () => ({ insert }) });
+    rpc.mockReset();
+    rpc.mockResolvedValue({ data: "33333333-3333-4333-8333-333333333333", error: null });
+    admin.create.mockReturnValue({ rpc });
   });
   const send = (b: unknown, ip?: string) => call("@/app/api/contact/route", "POST", req("/api/contact", b, "POST", ip));
 
-  it("enregistre un message normalisé : e-mail en minuscules, libellé FR du sujet, numéro WX-… normalisé", async () => {
+  it("ouvre une conversation normalisée : e-mail en minuscules, catégorie, numéro WX-… normalisé, hash du jeton seulement", async () => {
     const r = await send(valid());
     expect(r.status).toBe(200);
-    expect(insert).toHaveBeenCalledWith({ name: "Afi H", contact: "afi@exemple.bj", subject: "Commande", order_number: "WX-10258", body: "Ma commande n'est pas arrivée." });
+    expect(rpc).toHaveBeenCalledTimes(1);
+    const [fn, args] = rpc.mock.calls[0];
+    expect(fn).toBe("conversation_open");
+    expect(args).toMatchObject({ p_name: "Afi H", p_contact: "afi@exemple.bj", p_category: "commande", p_order_number: "WX-10258", p_body: "Ma commande n'est pas arrivée.", p_source: "contact", p_locale: "fr" });
+    expect(args.p_token_hash).toMatch(/^[0-9a-f]{64}$/);
+    expect(r.json?.path).toMatch(/^\/fr\/discussion\/[A-Za-z0-9_-]{43}$/);
   });
-  it("contact téléphone : normalisé sur 10 chiffres", async () => {
-    await send({ ...valid(), contact: "+229 01 97 11 22 33", orderNumber: "" });
-    expect(insert.mock.calls[0][0]).toMatchObject({ contact: "0197112233", order_number: null });
+  it("ancien sujet du formulaire (order) accepté ; contact téléphone normalisé sur 10 chiffres", async () => {
+    const { category: _c, ...rest } = valid();
+    void _c;
+    await send({ ...rest, subject: "order", contact: "+229 01 97 11 22 33", orderNumber: "" });
+    expect(rpc.mock.calls[0][1]).toMatchObject({ p_contact: "0197112233", p_order_number: null, p_category: "commande" });
   });
   it("honeypot : faux succès, rien d'écrit", async () => {
     const r = await send({ ...valid(), website: "http://spam" });
     expect(r).toMatchObject({ status: 200, json: { ok: true } });
-    expect(insert).not.toHaveBeenCalled();
+    expect(rpc).not.toHaveBeenCalled();
   });
   it("envoi trop rapide et horodatage absent → 429", async () => {
     expect((await send({ ...valid(), t: Date.now() })).status).toBe(429);
@@ -84,7 +93,7 @@ describe("POST /api/contact", () => {
   it.each([
     ["message de 9 caractères", { body: "123456789" }],
     ["message de 3001 caractères", { body: "x".repeat(3001) }],
-    ["sujet inconnu", { subject: "hack" }],
+    ["catégorie inconnue", { category: "hack" }],
     ["contact ni e-mail ni téléphone", { contact: "pas valable" }],
     ["numéro de commande farfelu", { orderNumber: "ABC" }],
     ["nom d'une lettre", { name: "A" }],
@@ -92,7 +101,7 @@ describe("POST /api/contact", () => {
     const r = await send({ ...valid(), ...over });
     expect(r.status).toBe(422);
     expect(Object.keys((r.json?.fields as object) ?? {}).length).toBeGreaterThan(0);
-    expect(insert).not.toHaveBeenCalled();
+    expect(rpc).not.toHaveBeenCalled();
   });
   it("corps non-JSON, tableau ou de plus de 12 000 caractères → 400", async () => {
     expect((await send("{oops")).status).toBe(400);
@@ -100,7 +109,7 @@ describe("POST /api/contact", () => {
     expect((await send({ ...valid(), pad: "x".repeat(13_000) })).status).toBe(400);
   });
   it("base en erreur ou Supabase absent → 503 sans détail", async () => {
-    insert.mockResolvedValue({ error: { message: "relation messages secret" } });
+    rpc.mockResolvedValue({ data: null, error: { message: "relation conversations secret" } });
     const r = await send(valid());
     expect(r.status).toBe(503);
     expect(JSON.stringify(r.json)).not.toContain("secret");

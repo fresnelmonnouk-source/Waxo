@@ -274,7 +274,7 @@
     "q2": "Combien coûte la livraison ?",
     "a2": "{cotonou} à Cotonou et Calavi, offerte dès {freeShip} d'achat. {autre} dans les autres villes du Bénin.",
     "q3": "Comment puis-je payer ?",
-    "a3": "Par MTN MoMo, Moov Money, Celtiis Cash ou carte bancaire (Visa, Mastercard){cod}. Nous ne vous demanderons jamais votre code secret.",
+    "a3": "Selon les moyens affichés au moment de la commande : Mobile Money en ligne (MTN MoMo, Moov Money, Celtiis Cash) lorsqu'il est proposé{cod}. Nous ne vous demanderons jamais votre code secret.",
     "cod": ", ou à la livraison, en espèces ou par Mobile Money",
     "q4": "Dois-je créer un compte pour commander ?",
     "a4": "Non. Un compte sert à suivre vos commandes, à retrouver vos informations de livraison et à donner votre avis sur les produits. Sans compte, vous suivez votre commande avec son numéro depuis la page <track>Suivi de commande</track>.",
@@ -321,7 +321,7 @@
       },
       "s5": {
         "h": "5. Paiement",
-        "p": "Moyens acceptés : MTN MoMo, Moov Money, Celtiis Cash et carte bancaire Visa ou Mastercard{cod}. Les paiements en ligne sont traités par un prestataire de paiement agréé ; Wá xɔ n'a jamais accès aux codes secrets ni aux numéros complets de carte."
+        "p": "Les moyens de paiement disponibles sont ceux affichés au moment de votre commande : Mobile Money en ligne (MTN MoMo, Moov Money, Celtiis Cash) lorsqu'il est proposé{cod}. Les paiements en ligne sont traités par un prestataire de paiement agréé ; Wá xɔ n'a jamais accès à vos codes secrets."
       },
       "s6": {
         "h": "6. Livraison",

@@ -54,6 +54,9 @@ export async function saveSettingsAction(input: unknown): Promise<ActionResult> 
 }
 
 // ───────────────────────── Base de connaissances ─────────────────────────
+// Conservées pour compatibilité (anciens écrans, tests) : l'interface gère désormais les fiches dans /admin/assistant-ia
+// (assistant-ia/actions.ts : brouillons, publication, statut). Une fiche créée ici est publiée d'emblée (statut par défaut
+// 'published' de la migration 0022), comme avant.
 const kbSchema = z
   .object({
     id: z.string().regex(UUID_RE).optional(),
