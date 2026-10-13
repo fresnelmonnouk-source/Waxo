@@ -2,10 +2,15 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createSessionClient } from "@/lib/supabase/server";
 import { supabasePublicEnv } from "@/lib/supabase/env";
-import { getPaymentProvider } from "@/lib/payment";
+import { getPaymentProvider, type PaymentProvider } from "@/lib/payment";
 import { sendOrderEmail } from "@/lib/email";
 import { sendShopNewOrderEmail } from "@/lib/email/shop";
+import { runAfterResponse } from "@/lib/email/defer";
+import { maybeSweepStaleOrders } from "@/lib/payment/expire";
+import { reportMoneyError } from "@/lib/payment/observe";
+import { parseReplaceRef, releaseReplacedOrder } from "@/lib/payment/replace";
 import { withTimeout } from "@/lib/auth/timeout";
+import { turnstilePasses, verifyTurnstile } from "@/lib/auth/turnstile";
 import { getPacks, getPacksEnabled } from "@/lib/catalog/packs";
 import { getProductsByIds } from "@/lib/catalog";
 import {
@@ -19,7 +24,7 @@ import { normPhone } from "@/lib/checkout/phone";
 import { clientIp } from "@/lib/checkout/rate-limit";
 import { rateLimitShared } from "@/lib/ratelimit";
 import { checkoutSchema } from "@/lib/checkout/schema";
-import { GUARD_MESSAGES, parseIdemKey, submitTiming, withinQuantityCaps } from "./guard";
+import { GUARD_MESSAGES, GUARD_STATUS, parseIdemKey, providerUsable, submitTiming, withinQuantityCaps, type GuardCode } from "./guard";
 
 /**
  * POST /api/checkout — crée la commande via la fonction SQL place_order (prix, stock et frais recalculés côté base :
@@ -29,12 +34,14 @@ import { GUARD_MESSAGES, parseIdemKey, submitTiming, withinQuantityCaps } from "
  * Idempotence : le navigateur envoie `idem` (UUID stable par tentative de commande). Un second envoi avec la même clé
  * (coupure réseau, double onglet) renvoie la commande existante au lieu d'en créer une autre (colonne orders.idem_key,
  * migration 0007 ; sans elle, la clé est simplement ignorée).
+ *
+ * Audit 2026-10-12 : CAPTCHA Turnstile (inerte sans clés) vérifié avant toute NOUVELLE commande ; paiement en ligne
+ * indisponible (clé d'essai en production, C1) refusé AVANT la création (aucun stock réservé) ; `replaces` libère la
+ * commande dont le paiement a échoué ; e-mails et balayage des commandes expirées APRÈS la réponse (`after()`).
  */
 
 const MAX_BODY_BYTES = 20_000;
 const RATE_LIMIT = { max: 8, windowMs: 10 * 60_000 };
-
-type GuardCode = "too_fast" | "quantity_limit";
 
 /**
  * Prix courants (campagnes comprises) des articles demandés, ou null si l'un d'eux est introuvable (place_order tranchera).
@@ -59,7 +66,7 @@ function fail(lang: ApiLang, code: ApiErrorCode, extra: Record<string, unknown> 
 function failGuard(lang: ApiLang, code: GuardCode) {
   return NextResponse.json(
     { ok: false, code, message: GUARD_MESSAGES[lang][code] },
-    { status: code === "too_fast" ? 400 : 422 },
+    { status: GUARD_STATUS[code] },
   );
 }
 
@@ -158,6 +165,7 @@ export async function POST(request: Request) {
     let placed: Placed | null = null;
     let pay = input.pay;
     let alreadyPaid = false;
+    let provider: PaymentProvider | null = null;
 
     if (idemKey) {
       const existing = await findByIdem(admin, idemKey);
@@ -169,6 +177,20 @@ export async function POST(request: Request) {
     }
 
     if (!placed) {
+      // CAPTCHA seulement pour une NOUVELLE commande : un rejeu idempotent (coupure réseau) ne redemande rien.
+      const captcha = await verifyTurnstile(rawObj.captcha, clientIp(request.headers));
+      if (!turnstilePasses(captcha)) return failGuard(lang, "captcha");
+
+      // Paiement en ligne impossible (clé d'essai en production, aucun prestataire) : refus AVANT de réserver le stock.
+      if (input.pay !== "cod") {
+        provider = await getPaymentProvider();
+        if (!providerUsable(provider.name)) return failGuard(lang, "online_unavailable");
+      }
+
+      // Nouvelle tentative après un paiement échoué : l'ancienne commande (prouvée par son jeton) libère son stock.
+      const replaces = parseReplaceRef(rawObj.replaces);
+      if (replaces) await releaseReplacedOrder(admin, replaces);
+
       // Total attendu par le client (prix affichés). Si un prix a AUGMENTÉ depuis (fin de campagne), on ne crée rien :
       // le client reçoit les prix à jour et valide en connaissance de cause (audit Tariq). Une baisse ne bloque pas.
       const expected = typeof rawObj.expectedSubtotal === "number" && Number.isFinite(rawObj.expectedSubtotal) ? Math.round(rawObj.expectedSubtotal) : null;
@@ -196,7 +218,7 @@ export async function POST(request: Request) {
 
       if (error) {
         const code = mapPlaceOrderError(error.message);
-        if (code === "server_error") console.error("[checkout] place_order a échoué", error.code ?? "");
+        if (code === "server_error") reportMoneyError("checkout", "place_order_failed", { code: error.code ?? undefined });
         return fail(lang, code);
       }
       const row: unknown = Array.isArray(data) ? data[0] : data;
@@ -227,18 +249,20 @@ export async function POST(request: Request) {
     }
 
     const order = { number: placed.number, subtotal: placed.subtotal, shippingFee: placed.shippingFee, total: placed.total };
+    // Commandes en ligne abandonnées : libérées sans attendre le cron quotidien (au plus 1 balayage / 10 min, après la réponse).
+    await runAfterResponse(() => maybeSweepStaleOrders(), { optional: true });
 
     if (pay === "cod") {
-      // Paiement à la livraison : commande confirmée directement. L'e-mail ne bloque jamais la réponse
-      // (et n'est pas renvoyé en cas de rejeu : garde anti-doublon de sendOrderEmail).
-      // + alerte « nouvelle commande » à la boutique, en parallèle.
-      await withTimeout(Promise.allSettled([sendOrderEmail(placed.orderId, "confirmation"), sendShopNewOrderEmail(placed.orderId)]), 3000).catch(() => undefined);
+      // Paiement à la livraison : commande confirmée directement. Confirmation client + alerte « nouvelle commande »
+      // APRÈS la réponse (audit Tariq M7) ; jamais renvoyées en cas de rejeu (garde anti-doublon de sendOrderEmail).
+      const orderId = placed.orderId;
+      await runAfterResponse(() => Promise.allSettled([sendOrderEmail(orderId, "confirmation"), sendShopNewOrderEmail(orderId)]));
       return NextResponse.json({ ok: true, order, payment: { kind: "cod" } });
     }
     if (alreadyPaid) return NextResponse.json({ ok: true, order, payment: { kind: "paid" } });
 
     try {
-      const result = await (await getPaymentProvider()).createCheckout({
+      const result = await (provider ?? (await getPaymentProvider())).createCheckout({
         orderId: placed.orderId,
         number: placed.number,
         total: placed.total,
@@ -252,11 +276,12 @@ export async function POST(request: Request) {
       }
       return NextResponse.json({ ok: true, order, payment: { kind: "pending" } });
     } catch (e) {
-      console.error("[checkout] paiement non lancé", e instanceof Error ? e.message : "inconnu");
+      reportMoneyError("checkout-payment", e, { order: placed.orderId });
       // La commande existe (stock réservé, libéré par expire_stale_orders si jamais payée) : on le dit au client.
       return fail(lang, "payment_unavailable", { order });
     }
-  } catch {
+  } catch (e) {
+    reportMoneyError("checkout", e);
     return fail(lang, "server_error");
   }
 }

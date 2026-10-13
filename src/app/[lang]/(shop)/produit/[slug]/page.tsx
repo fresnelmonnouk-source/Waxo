@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 import {
+  findProductSlug,
   getCategories,
   getProductBySlug,
+  getProductSlugs,
   getProducts,
+  getRealRating,
   getRelatedProducts,
   getReviews,
   getSettings,
@@ -23,7 +26,9 @@ import { RelatedItem } from "@/components/product/RelatedItem";
 import { ReviewsSection, type ReviewView } from "@/components/product/ReviewsSection";
 import { Stars } from "@/components/product/Stars";
 import { DeliveryNote, StockPromise } from "@/components/shop/DeliveryPromise";
-import { withSeo } from "@/lib/seo/metadata";
+import { JsonLd } from "@/lib/seo/JsonLdScript";
+import { productPageJsonLd } from "@/lib/seo/jsonld";
+import { metaDescription, pageMetadata, priceFcfa, seoText } from "@/lib/seo/metadata";
 
 // Page statique (ISR) : aucun cookies()/headers(). Les avis et le stock se rafraîchissent toutes les 2 minutes.
 export const revalidate = 120;
@@ -35,13 +40,29 @@ export async function generateStaticParams() {
   return lists.flatMap(({ lang, list }) => list.map((p) => ({ lang, slug: p.slug })));
 }
 
+/**
+ * Titre `SeoPages.product.title` (nom + prix FCFA), description du produit coupée à 155 caractères (sinon le texte de
+ * repli), photo du produit en aperçu de partage. Hreflang : les deux slugs quand le texte anglais existe ; sinon pas
+ * d'alternate EN et canonique FR, y compris depuis /en (S8).
+ */
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { lang, slug } = await params;
   if (!hasLocale(routing.locales, lang)) return {};
   setRequestLocale(lang);
   const product = await getProductBySlug(lang, slug);
   if (!product) return {};
-  return withSeo({ title: product.name, description: product.description }, lang, `/produit/${encodeURIComponent(slug)}`, { canonicalOnly: true });
+  const [t, slugs] = await Promise.all([getTranslations({ locale: lang, namespace: "SeoPages" }), getProductSlugs()]);
+  const vars = { name: product.name, price: priceFcfa(product.price, lang) };
+  const s = slugs.get(product.id) ?? { fr: product.slug };
+  return pageMetadata({
+    lang,
+    path: `/produit/${encodeURIComponent(slug)}`,
+    title: t("product.title", vars),
+    brand: t("brand"),
+    description: metaDescription(product.description) ?? seoText(t("product.descriptionFallback", vars)),
+    image: product.imageUrl,
+    languagePaths: { fr: `/produit/${encodeURIComponent(s.fr)}`, ...(s.en ? { en: `/produit/${encodeURIComponent(s.en)}` } : {}) },
+  });
 }
 
 const DAY = 864e5;
@@ -73,15 +94,21 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   setRequestLocale(lang);
 
   const product = await getProductBySlug(lang, slug);
-  if (!product) notFound();
+  if (!product) {
+    // Slug de l'autre langue (sélecteur de langue, panier, ancien lien partagé) : 308 vers le bon slug (S2, décision D4).
+    const target = await findProductSlug(lang, slug);
+    if (target) permanentRedirect(`/${lang}/produit/${encodeURIComponent(target)}`);
+    notFound();
+  }
 
-  const [t, all, categories, related, reviewRows, settings] = await Promise.all([
+  const [t, all, categories, related, reviewRows, settings, realRating] = await Promise.all([
     getTranslations({ locale: lang, namespace: "Product" }),
     getProducts(lang),
     getCategories(lang),
     getRelatedProducts(lang, product, 8),
     getReviews(product.id),
     getSettings(),
+    getRealRating(product.id),
   ]);
 
   const category = categories.find((c) => c.id === product.categoryId);
@@ -114,19 +141,30 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
     verified: r.verified,
   }));
   const question = t("assistantQuestion", { name: product.name });
+  const tc = await getTranslations({ locale: lang, namespace: "Catalog" });
+  // JSON-LD Product (productID = sku = UUID, offre XOF, disponibilité) + fil d'Ariane ; note = vrais avis seulement.
+  const ld = productPageJsonLd(
+    { ...product, rating: realRating },
+    category,
+    { home: t("home"), catalogue: tc("title"), packs: "" },
+    lang,
+  );
 
   return (
     <main className="mx-auto min-h-[70vh] max-w-[1180px] px-5 pt-6 pb-20">
+      <JsonLd data={ld} />
       <nav aria-label={t("breadcrumbLabel")} className="mb-4 flex flex-wrap gap-2 text-[13px] text-muted">
         <Link href="/" className="text-muted">
           {t("home")}
         </Link>
         <span aria-hidden="true">/</span>
-        <Link href={category ? `/catalogue?category=${category.id}` : "/catalogue"} className="text-muted">
-          {category?.label ?? ""}
+        <Link href={category ? `/catalogue?cat=${encodeURIComponent(category.id)}` : "/catalogue"} className="text-muted">
+          {category?.label ?? tc("title")}
         </Link>
         <span aria-hidden="true">/</span>
-        <span className="text-ink">{product.name}</span>
+        <span className="text-ink" aria-current="page">
+          {product.name}
+        </span>
       </nav>
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-start gap-9">

@@ -139,7 +139,7 @@ async function AboutView({ title, blocks, lang }: { title: string; blocks: Block
         </section>
       ) : null}
 
-      <section className="bg-ink text-cream">
+      <section className="on-dark bg-ink text-cream">
         <div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-6 px-5 py-14">
           <h2 className="font-display m-0 text-[clamp(24px,3vw,34px)] leading-[1.1] font-semibold tracking-[-0.03em]">{t("aboutCtaTitle")}</h2>
           <div className="flex flex-wrap gap-[10px]">

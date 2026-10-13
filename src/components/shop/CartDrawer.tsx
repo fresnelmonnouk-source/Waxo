@@ -57,6 +57,8 @@ function DrawerContent() {
   const fmt = usePrice();
   const t = useTranslations("Cart");
   const tc = useTranslations("Shell.currency");
+  // Libellés des boutons de ligne avec le nom de l'article : « Retirer » répété N fois ne dit pas lequel (audit Mia §5, WCAG 2.4.6).
+  const ta = useTranslations("A11y.cart");
   const currency = useCurrency();
   const locale = useLocale();
   const router = useRouter();
@@ -204,21 +206,21 @@ function DrawerContent() {
                       <div className="flex items-center rounded-full border border-border-strong bg-card">
                         <button
                           type="button"
-                          aria-label={t("decrease")}
+                          aria-label={ta("decrease", { name: l.name })}
                           onClick={() => {
                             setMaxFor(null);
                             cart.setQty(l.kind, l.id, l.qty - 1);
                           }}
-                          className="h-10 w-10 cursor-pointer border-0 bg-transparent text-[16px]"
+                          className="h-11 w-11 cursor-pointer border-0 bg-transparent text-[16px]"
                         >
                           −
                         </button>
                         <span className="min-w-[18px] text-center text-[14px]">{l.qty}</span>
                         <button
                           type="button"
-                          aria-label={t("increase")}
+                          aria-label={ta("increase", { name: l.name })}
                           onClick={() => inc(l)}
-                          className="h-10 w-10 cursor-pointer border-0 bg-transparent text-[16px]"
+                          className="h-11 w-11 cursor-pointer border-0 bg-transparent text-[16px]"
                         >
                           +
                         </button>
@@ -226,7 +228,8 @@ function DrawerContent() {
                       <button
                         type="button"
                         onClick={() => cart.remove(l.kind, l.id)}
-                        className="min-h-10 cursor-pointer border-0 bg-transparent text-[13px] text-text underline underline-offset-[3px]"
+                        aria-label={ta("remove", { name: l.name })}
+                        className="min-h-11 cursor-pointer border-0 bg-transparent text-[13px] text-text underline underline-offset-[3px]"
                       >
                         {t("remove")}
                       </button>

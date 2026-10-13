@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { fetchTransaction } from "@/lib/payment/fedapay";
 import { loadFedapayConfig, loadWebhookSecret } from "@/lib/payment/credentials";
 import { settleApprovedTransaction } from "@/lib/payment/settle";
+import { reportMoneyError } from "@/lib/payment/observe";
 import { verifyFedapaySignature } from "@/lib/payment/signature";
 import { isApproved, parseTransaction } from "@/lib/payment/transaction";
 
@@ -52,6 +53,7 @@ export async function POST(request: Request) {
   try {
     let tx = claimed;
     const cfg = await loadFedapayConfig();
+    // Sans clé API, la transaction n'est pas relue : mode inconnu, refusé en production par settle (audit C1).
     if (cfg) {
       const verified = await fetchTransaction(claimed.id, cfg);
       if (!verified) return json({ ok: true, ignored: "unverifiable" });
@@ -59,9 +61,10 @@ export async function POST(request: Request) {
     }
     if (!isApproved(tx)) return json({ ok: true, ignored: "not_approved" });
 
-    const result = await settleApprovedTransaction(tx, `${name}:${tx.id}`);
+    const result = await settleApprovedTransaction(tx, `${name}:${tx.id}`, cfg?.env ?? null);
     return json({ ok: true, result });
-  } catch {
+  } catch (e) {
+    reportMoneyError("webhook", e);
     // Prestataire ou base momentanément injoignable : 503 → nouvel essai de FedaPay (mark_paid est idempotent).
     return json({ ok: false, code: "temporarily_unavailable" }, 503);
   }

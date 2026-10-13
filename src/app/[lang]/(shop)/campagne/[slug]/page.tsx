@@ -13,7 +13,7 @@ import { routing } from "@/i18n/routing";
 import { getProducts } from "@/lib/catalog";
 import { campaignName, campaignTagline } from "@/lib/campaigns/logic";
 import { getLiveCampaigns } from "@/lib/campaigns/data";
-import { withSeo } from "@/lib/seo/metadata";
+import { pageMetadata, seoText } from "@/lib/seo/metadata";
 
 // Page ISR rendue à la demande (pas de generateStaticParams : piège next-intl SSG + notFound()). Aucun cookies()/headers().
 // Statut, prix et produits se rafraîchissent toutes les 2 minutes.
@@ -31,16 +31,23 @@ export async function generateMetadata({
   setRequestLocale(lang);
   const found = campaignPage(await getLiveCampaigns(), slug);
   if (!found) return {};
-  const t = await getTranslations({ locale: lang, namespace: "Campaign" });
+  const [t, ts] = await Promise.all([
+    getTranslations({ locale: lang, namespace: "Campaign" }),
+    getTranslations({ locale: lang, namespace: "SeoPages" }),
+  ]);
   const name = campaignName(found.campaign, lang);
   const description =
-    campaignTagline(found.campaign, lang) || t("metaDescription", { name });
-  // Même slug en FR et en EN : canonique + hreflang.
-  return withSeo(
-    { title: name, description },
+    seoText(campaignTagline(found.campaign, lang)) ??
+    seoText(ts("campaign.descriptionFallback", { name })) ??
+    t("metaDescription", { name });
+  // Même slug en FR et en EN : canonique + hreflang ; Open Graph propre à la campagne.
+  return pageMetadata({
     lang,
-    `/campagne/${encodeURIComponent(slug)}`,
-  );
+    path: `/campagne/${encodeURIComponent(slug)}`,
+    title: ts("campaign.title", { name }),
+    brand: ts("brand"),
+    description,
+  });
 }
 
 export default async function CampaignPage({

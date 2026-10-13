@@ -28,6 +28,7 @@ function refresh() {
   revalidatePath("/admin/produits");
   revalidatePath("/admin/packs");
   revalidatePath("/[lang]", "layout"); // boutique : catalogue, fiches, accueil
+  revalidatePath("/sitemap.xml");
 }
 
 type Prepared = { sb: SupabaseClient } | { error: Fail };

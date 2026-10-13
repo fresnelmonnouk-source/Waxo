@@ -1,29 +1,36 @@
 import type { MetadataRoute } from "next";
-import { getProducts } from "@/lib/catalog";
-import { getPacks, getPacksEnabled } from "@/lib/catalog/packs";
+import { getLiveCampaigns } from "@/lib/campaigns/data";
+import { getProducts, getProductSlugs, getProductsUpdatedAt } from "@/lib/catalog";
+import { getPackSlugs, getPacks, getPacksEnabled } from "@/lib/catalog/packs";
 import { buildSitemap, type SitemapProduct } from "@/lib/seo/sitemap-build";
 import { siteUrl } from "@/lib/seo/site";
 
 export const revalidate = 3600;
 
-/** Toutes les langues + fiches produits avec hreflang. Si le catalogue est indisponible, on publie quand même les pages statiques. */
+/**
+ * Pages publiques dans les deux langues, fiches produit et pack actives (hreflang par langue traduite, `lastmod` dès que
+ * la migration 0019 est appliquée), campagnes en cours ou à venir. Catalogue vide : `/catalogue` retiré.
+ * Base en panne : erreur, le sitemap précédent reste servi par l'ISR (décision D6) ; pendant le build, listes vides.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  let products: SitemapProduct[] = [];
-  try {
-    const [fr, en] = await Promise.all([getProducts("fr"), getProducts("en")]);
-    const enById = new Map(en.map((p) => [p.id, p]));
-    products = fr.map((p) => ({ id: p.id, slugs: { fr: p.slug, en: enById.get(p.id)?.slug ?? p.slug } }));
-  } catch {
-    products = [];
-  }
+  const [fr, slugs, updated, packsEnabled, campaigns] = await Promise.all([
+    getProducts("fr"),
+    getProductSlugs(),
+    getProductsUpdatedAt(),
+    getPacksEnabled(),
+    getLiveCampaigns(),
+  ]);
+  const products: SitemapProduct[] = fr.map((p) => ({ id: p.id, slugs: slugs.get(p.id) ?? { fr: p.slug }, updatedAt: updated.get(p.id) }));
+
   let packs: SitemapProduct[] = [];
-  const packsEnabled = await getPacksEnabled().catch(() => true);
-  try {
-    const [fr, en] = await Promise.all([getPacks("fr"), getPacks("en")]);
-    const enById = new Map(en.map((k) => [k.id, k]));
-    packs = fr.map((k) => ({ id: k.id, slugs: { fr: k.slug, en: enById.get(k.id)?.slug ?? k.slug } }));
-  } catch {
-    packs = [];
+  if (packsEnabled) {
+    const [list, packSlugs] = await Promise.all([getPacks("fr"), getPackSlugs()]);
+    packs = list.map((k) => ({ id: k.id, slugs: packSlugs.get(k.id) ?? { fr: k.slug } }));
   }
-  return buildSitemap(products, siteUrl(), packs, { packsEnabled });
+
+  return buildSitemap(products, siteUrl(), packs, {
+    packsEnabled,
+    catalogEmpty: fr.length === 0,
+    campaigns: campaigns.map((c) => ({ slug: c.slug })),
+  });
 }

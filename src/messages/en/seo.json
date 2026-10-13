@@ -1,20 +1,20 @@
 {
   "SeoPages": {
     "brand": "Waxo",
-    "home": { "title": "Waxo · Online shop in Cotonou, same-day delivery", "description": "Small useful everyday things at small prices. Express Delivery 7 days a week in Cotonou & Calavi. Pay by Mobile Money or card." },
-    "catalogue": { "title": "Catalogue", "description": "TODO Marcus" },
-    "faq": { "title": "Questions fréquentes", "description": "TODO Marcus" },
-    "contact": { "title": "Contact", "description": "TODO Marcus" },
-    "aPropos": { "title": "À propos", "description": "TODO Marcus" },
-    "livraisonRetours": { "title": "Livraison et retours", "description": "TODO Marcus" },
-    "packs": { "title": "Packs", "description": "TODO Marcus" },
-    "cgv": { "title": "Conditions générales de vente", "description": "TODO Marcus" },
-    "cgu": { "title": "Conditions générales d'utilisation", "description": "TODO Marcus" },
-    "confidentialite": { "title": "Politique de confidentialité", "description": "TODO Marcus" },
-    "mentionsLegales": { "title": "Mentions légales", "description": "TODO Marcus" },
-    "product": { "title": "{name} · {price}", "descriptionFallback": "{name} à {price}. Livraison Express à Cotonou & Calavi, paiement Mobile Money ou à la livraison." },
-    "pack": { "title": "{name} · Pack", "descriptionFallback": "TODO Marcus" },
-    "campaign": { "title": "{name}", "descriptionFallback": "TODO Marcus" },
-    "notFound": { "title": "Page introuvable" }
+    "home": { "title": "Online shopping in Cotonou, same-day delivery | Waxo", "description": "Online shop in Cotonou. Order before 8 pm for same-day delivery in Cotonou and Calavi, 7 days a week. Low prices, pay by Mobile Money or on delivery." },
+    "catalogue": { "title": "Catalogue: everyday essentials delivered in Cotonou", "description": "Shop online in Cotonou: home, kitchen, beauty, tech, office and travel. Order before 8 pm for same-day delivery. Pay by Mobile Money or on delivery." },
+    "faq": { "title": "FAQ: delivery, payment and returns in Cotonou", "description": "Delivery times and fees, paying by Mobile Money, card or on delivery, returns: clear answers. Same day in Cotonou and Calavi for orders before 8 pm." },
+    "contact": { "title": "Contact us: WhatsApp customer service in Cotonou", "description": "Customer service in Cotonou: our team replies on WhatsApp 7 days a week, 8 am to 8 pm, and our site assistant answers 24/7. Got a question? Message us." },
+    "aPropos": { "title": "About us: an online shop based in Cotonou", "description": "Wá xɔ means “come and buy” in Fon. We pick useful everyday items, keep them in stock in Cotonou and deliver them to your door, often the same day." },
+    "livraisonRetours": { "title": "Same-day delivery in Cotonou and Calavi", "description": "Same-day delivery in Cotonou and Calavi for orders before 8 pm, otherwise the next day, 7 days a week. Rest of Benin: 48 to 72 h. Fees and returns policy." },
+    "packs": { "title": "Packs: product bundles delivered in Cotonou", "description": "Product bundles picked to go together, cheaper than buying each item separately. Order before 8 pm for same-day delivery in Cotonou and Calavi." },
+    "cgv": { "title": "Terms of sale", "description": "Terms of sale for our online shop in Cotonou: ordering, prices, payment, delivery, exchanges and refunds. Worth reading before your first order." },
+    "cgu": { "title": "Terms of use", "description": "Terms of use for our online shop: access, customer accounts, reviews, the online shopping assistant, intellectual property, liability and changes." },
+    "confidentialite": { "title": "Privacy policy", "description": "Our privacy policy: which personal data we collect and why, how long we keep it, who we share it with, how we protect it and how to exercise your rights." },
+    "mentionsLegales": { "title": "Legal notice", "description": "Legal notice: website publisher, publication director, hosting provider, personal data and intellectual property for the Wá xɔ online shop in Cotonou." },
+    "product": { "title": "Buy {name} in Cotonou", "descriptionFallback": "{name} for {price}. Order before 8 pm for same-day delivery in Cotonou and Calavi, 7 days a week. Pay by Mobile Money or on delivery." },
+    "pack": { "title": "{name}, pack delivered in Cotonou", "descriptionFallback": "{name}: products picked to go together, in a single parcel. Order before 8 pm for same-day delivery in Cotonou and Calavi." },
+    "campaign": { "title": "{name} deals in Cotonou", "descriptionFallback": "{name} deals, for a limited time. Order before 8 pm for same-day delivery in Cotonou and Calavi. Pay by Mobile Money or on delivery." },
+    "notFound": { "title": "Page not found" }
   }
 }

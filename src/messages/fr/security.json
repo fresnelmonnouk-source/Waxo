@@ -1,1 +1,46 @@
-{}
+{
+  "Security": {
+    "checkout": {
+      "resumed": "Votre panier et vos coordonnées sont restaurés. Vérifiez le moyen de paiement puis validez."
+    },
+    "retry": {
+      "retry": "Réessayer le paiement",
+      "payCod": "Payer à la livraison",
+      "whatsapp": "Écrire sur WhatsApp",
+      "whatsappText": "Bonjour, commande {number} : le paiement n'a pas abouti.",
+      "cartKept": "Votre panier est conservé, vous n'avez rien à ressaisir."
+    },
+    "auth": {
+      "captcha": "La vérification anti-robot n'a pas abouti. Patientez un instant puis réessayez."
+    },
+    "confirm": {
+      "brand": "Wá xɔ",
+      "warning": "Ce lien ouvre une session sur le compte qui l'a demandé. Si vous n'avez rien demandé, ou si quelqu'un vous l'a envoyé, fermez simplement cette page.",
+      "email": {
+        "title": "Confirmer votre adresse e-mail",
+        "text": "Un dernier geste pour activer votre compte.",
+        "button": "Confirmer mon adresse"
+      },
+      "recovery": {
+        "title": "Choisir un nouveau mot de passe",
+        "text": "Vous allez être connecté(e) pour définir votre nouveau mot de passe.",
+        "button": "Continuer"
+      },
+      "invite": {
+        "title": "Activer votre accès",
+        "text": "Vous allez être connecté(e) pour choisir votre mot de passe.",
+        "button": "Activer mon accès"
+      },
+      "email_change": {
+        "title": "Confirmer la nouvelle adresse",
+        "text": "Votre compte utilisera cette adresse pour la connexion et les e-mails.",
+        "button": "Confirmer la nouvelle adresse"
+      },
+      "magiclink": {
+        "title": "Se connecter",
+        "text": "Vous allez être connecté(e) à votre compte.",
+        "button": "Me connecter"
+      }
+    }
+  }
+}

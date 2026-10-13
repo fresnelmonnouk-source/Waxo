@@ -141,3 +141,72 @@ export function cartAdditions(prev: CartSnap[], next: CartSnap[]): TrackItem[] {
   }
   return out;
 }
+
+/** Slug d'une fiche pack à partir du chemin, ou null. */
+export function packSlugFromPath(pathname: string): string | null {
+  const m = /^\/packs\/([^/]+)\/?$/.exec(stripLocale(pathname));
+  if (!m) return null;
+  try {
+    return decodeURIComponent(m[1]);
+  } catch {
+    return m[1];
+  }
+}
+
+/** Dernier segment (décodé) et section d'une URL absolue ou relative : `https://x/fr/produit/savon` → ["produit", "savon"]. */
+function urlTail(url: string): [string, string] | null {
+  try {
+    const parts = new URL(url, "https://x.invalid").pathname.split("/").filter(Boolean);
+    if (parts.length < 2) return null;
+    let last = parts[parts.length - 1];
+    try {
+      last = decodeURIComponent(last);
+    } catch {
+      /* segment déjà brut */
+    }
+    return [parts[parts.length - 2], last];
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Contrat JSON-LD ↔ suivi (docs/AUDIT-SEO-BRIEF.md) : lit le `Product` posé par l'équipe SEO sur la fiche.
+ * Identifiant = `productID` (UUID, `sku` identique en repli), prix = `offers.price` (XOF entier) : c'est le même
+ * identifiant que `add_to_cart` (ligne de panier) et le prix de la fiche. Les packs sont préfixés `pack:` comme au panier.
+ * Renvoie null si l'identifiant ou le prix manque, ou si le JSON-LD décrit une autre page (navigation en cours) :
+ * dans ce cas aucun `view_item` n'est envoyé (jamais d'événement au slug ni sans valeur).
+ */
+export function productItemFromJsonLd(data: unknown, page: { section: "produit" | "packs"; slug: string }): TrackItem | null {
+  const roots = Array.isArray(data) ? data : [data];
+  const nodes: unknown[] = [];
+  for (const r of roots) {
+    nodes.push(r);
+    const graph = r && typeof r === "object" ? (r as { "@graph"?: unknown })["@graph"] : undefined;
+    if (Array.isArray(graph)) nodes.push(...graph);
+  }
+  for (const n of nodes) {
+    if (!n || typeof n !== "object") continue;
+    const o = n as Record<string, unknown>;
+    const type = o["@type"];
+    if (!(type === "Product" || (Array.isArray(type) && type.includes("Product")))) continue;
+    const rawId = typeof o.productID === "string" && o.productID.trim() ? o.productID : typeof o.sku === "string" ? o.sku : "";
+    const id = rawId.trim();
+    if (!id) continue;
+    const offer = (Array.isArray(o.offers) ? o.offers[0] : o.offers) as Record<string, unknown> | undefined;
+    const price = typeof offer?.price === "number" ? offer.price : typeof offer?.price === "string" && offer.price.trim() ? Number(offer.price) : NaN;
+    if (!Number.isFinite(price) || price < 0) continue;
+    const url = typeof o.url === "string" ? o.url : typeof offer?.url === "string" ? offer.url : null;
+    if (url) {
+      const tail = urlTail(url);
+      if (!tail || tail[0] !== page.section || tail[1] !== page.slug) continue;
+    }
+    return {
+      id: page.section === "packs" ? `pack:${id}` : id,
+      name: typeof o.name === "string" ? o.name.slice(0, 120) : undefined,
+      price: Math.round(price),
+      quantity: 1,
+    };
+  }
+  return null;
+}

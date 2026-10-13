@@ -37,6 +37,9 @@ export function Selection({ products, newIds, bestIds }: { products: Product[]; 
     best: () => tc("tagBest"),
   };
 
+  // Rien à proposer (boutique vide) : pas de bandeau sans carte ni zone défilante vide focalisable.
+  if (picks.length === 0) return null;
+
   return (
     <section className="mt-16 bg-[#FBEFC9]">
       <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-7 px-5 py-12">

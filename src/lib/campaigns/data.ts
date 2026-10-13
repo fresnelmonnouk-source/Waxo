@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { createPublicClient } from "@/lib/supabase/public";
 import type { Campaign } from "./logic";
@@ -45,12 +46,21 @@ export function campaignFromRow(r: Row): Campaign {
 export const CAMPAIGN_SELECT =
   "id,slug,name_fr,name_en,tagline_fr,tagline_en,starts_at,ends_at,active,show_menu,show_banner,show_countdown,campaign_items(product_id,sale_price)";
 
-/** Campagnes actives pas encore terminées (en cours ou à venir). Jamais d'exception : [] en cas de souci. */
-export async function getLiveCampaigns(): Promise<Campaign[]> {
+/** Instant de la requête arrondi à la minute : une URL stable d'un appel à l'autre (déduplication possible), au lieu d'une
+ *  URL unique à la milliseconde. Une campagne finie depuis moins d'une minute est écartée ensuite par `applyCampaigns`. */
+export function campaignsCutoff(now: number = Date.now()): string {
+  return new Date(Math.floor(now / 60_000) * 60_000).toISOString();
+}
+
+/**
+ * Campagnes actives pas encore terminées (en cours ou à venir). Jamais d'exception : [] en cas de souci.
+ * `cache` : une seule lecture par rendu (coque, catalogue et page de campagne la demandent chacun).
+ */
+export const getLiveCampaigns = cache(async (): Promise<Campaign[]> => {
   if (!supabasePublicEnv()) return [];
   try {
     const sb = createPublicClient();
-    const work = sb.from("campaigns").select(CAMPAIGN_SELECT).eq("active", true).gt("ends_at", new Date().toISOString());
+    const work = sb.from("campaigns").select(CAMPAIGN_SELECT).eq("active", true).gt("ends_at", campaignsCutoff());
     const res = await Promise.race([
       Promise.resolve(work),
       new Promise<null>((resolve) => setTimeout(() => resolve(null), TIMEOUT_MS)),
@@ -61,4 +71,4 @@ export async function getLiveCampaigns(): Promise<Campaign[]> {
   } catch {
     return [];
   }
-}
+});

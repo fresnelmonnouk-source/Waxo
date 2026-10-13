@@ -20,7 +20,7 @@ export function TopBar({ freeFrom, cod, cutoff = DEFAULT_CUTOFF }: { freeFrom: n
   const price = usePrice();
   const currency = useCurrency();
   return (
-    <div className="bg-ink text-cream flex flex-wrap items-center justify-center gap-x-7 gap-y-[6px] px-4 py-[9px] text-center text-[13px]">
+    <div className="on-dark bg-ink text-cream flex flex-wrap items-center justify-center gap-x-7 gap-y-[6px] px-4 py-[9px] text-center text-[13px]">
       <span className="min-[640px]:hidden">
         <DeliveryPromise surface="topbarShort" cutoff={cutoff} />
       </span>

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
+import { AssistantCta } from "@/components/assistant/entries";
 import { useCartLines } from "@/lib/cart/store";
 import type { Product } from "@/lib/catalog/types";
 import {
@@ -19,14 +20,46 @@ import {
   type CatalogSort,
   type ShellCategory,
 } from "./logic";
+import { ArrivalNotice } from "./HomeSections";
 import { ProductCard } from "./ProductCard";
 import { useViewedIds } from "./viewed";
+
+/** Boutique vide : même rendu que la version serveur (fil d'Ariane, titre, bloc « Arrivage en cours »), sans filtres inutiles. */
+function EmptyCatalog() {
+  const t = useTranslations("Catalog");
+  return (
+    <>
+      <nav aria-label={t("crumb")} className="text-muted mb-[14px] flex gap-2 text-[13px]">
+        <Link href="/" className="text-muted! hover:text-muted! underline">
+          {t("home")}
+        </Link>
+        <span aria-hidden="true">/</span>
+        <span>{t("title")}</span>
+      </nav>
+      <div className="mb-5 flex flex-col gap-[6px]">
+        <h1 className="font-display m-0 text-[clamp(28px,3.6vw,44px)] leading-[1.05] font-semibold tracking-[-0.035em] text-balance">{t("titleAll")}</h1>
+      </div>
+      <ArrivalNotice compact />
+    </>
+  );
+}
 
 /**
  * Page catalogue (maquette lignes 319-380). L'état (rayon, collection, tri, recherche, budget) vit dans l'URL
  * (?cat=&col=&sort=&q=&budget=) ; le filtrage se fait ici, côté navigateur, sur la liste complète : la page reste statique.
  */
-export function CatalogView({
+export function CatalogView(props: {
+  products: Product[];
+  categories: ShellCategory[];
+  newIds: string[];
+  bestIds: string[];
+}) {
+  // Deux états vides distincts : boutique vide (ici) et filtres sans résultat (plus bas).
+  if (props.products.length === 0) return <EmptyCatalog />;
+  return <CatalogBrowser {...props} />;
+}
+
+function CatalogBrowser({
   products,
   categories,
   newIds,
@@ -38,6 +71,7 @@ export function CatalogView({
   bestIds: string[];
 }) {
   const t = useTranslations("Catalog");
+  const te = useTranslations("EmptyStates");
   const router = useRouter();
   const sp = useSearchParams();
   const viewed = useViewedIds();
@@ -98,7 +132,7 @@ export function CatalogView({
       </div>
       <div className="mb-7 flex flex-col gap-3">
         <div role="group" aria-label={t("categories")} className="flex flex-wrap gap-2">
-          {[{ id: "all", label: t("allCats"), count: products.length }, ...categories].map((c) => (
+          {[{ id: "all", label: t("allCats"), count: products.length }, ...categories.filter((c) => c.count > 0)].map((c) => (
             <button
               key={c.id}
               type="button"
@@ -142,15 +176,20 @@ export function CatalogView({
       </div>
       {list.length === 0 ? (
         <div className="border-border-strong mb-6 flex flex-col items-center gap-[14px] rounded-[20px] border border-dashed px-6 py-10 text-center">
-          <strong className="text-[18px]">{t("emptyTitle")}</strong>
-          <span className="text-text text-[15px]">{t("emptyText")}</span>
-          <button
-            type="button"
-            onClick={() => router.replace("/catalogue", { scroll: false })}
-            className="border-border-strong min-h-[46px] cursor-pointer rounded-full border bg-transparent px-5"
-          >
-            {t("clear")}
-          </button>
+          <strong className="text-[18px]">{q ? t("emptyTitle") : te("filtersTitle")}</strong>
+          <span className="text-text text-[15px]">{te("filtersText")}</span>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <AssistantCta />
+            {hasActiveFilters(filters) ? (
+              <button
+                type="button"
+                onClick={() => router.replace("/catalogue", { scroll: false })}
+                className="border-border-strong min-h-[46px] cursor-pointer rounded-full border bg-transparent px-5"
+              >
+                {t("clear")}
+              </button>
+            ) : null}
+          </div>
         </div>
       ) : null}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,220px),1fr))] gap-x-5 gap-y-7">

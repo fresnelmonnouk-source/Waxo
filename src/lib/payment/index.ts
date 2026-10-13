@@ -1,6 +1,7 @@
 import "server-only";
 import { loadFedapayConfig } from "./credentials";
 import { FedaPayProvider } from "./fedapay";
+import { paymentModeBlocked } from "./mode";
 import type { CheckoutResult, PayableOrder, PaymentProvider } from "./types";
 
 export type { CheckoutResult, PayableOrder, PaymentProvider } from "./types";
@@ -20,12 +21,30 @@ export class MockPaymentProvider implements PaymentProvider {
   }
 }
 
+/** Config FedaPay en mode essai alors que nous sommes en production (audit C1) : aucun paiement ne part. */
+export class UnavailablePaymentProvider implements PaymentProvider {
+  readonly name = "unavailable";
+  async createCheckout(): Promise<CheckoutResult> {
+    throw new Error("payment_unavailable");
+  }
+}
+
 let mock: PaymentProvider | null = null;
 
-/** FedaPay si une clé est configurée (espace admin ou FEDAPAY_SECRET_KEY) ; sinon le mock (dev/test uniquement — voir MockPaymentProvider). */
+/**
+ * FedaPay si une clé est configurée (espace admin ou FEDAPAY_SECRET_KEY) ; sinon le mock (dev/test uniquement — voir MockPaymentProvider).
+ * En production, une clé sandbox est refusée (sauf ALLOW_SANDBOX_PAYMENTS=1) : le provider renvoyé lève `payment_unavailable`.
+ */
 export async function getPaymentProvider(): Promise<PaymentProvider> {
   const cfg = await loadFedapayConfig();
-  if (cfg) return new FedaPayProvider(cfg);
+  if (cfg) {
+    if (paymentModeBlocked(cfg.env)) {
+      console.error("[payment] clé FedaPay en mode essai refusée en production (ALLOW_SANDBOX_PAYMENTS absent)");
+      return new UnavailablePaymentProvider();
+    }
+    return new FedaPayProvider(cfg);
+  }
   if (!mock) mock = new MockPaymentProvider();
   return mock;
 }
+

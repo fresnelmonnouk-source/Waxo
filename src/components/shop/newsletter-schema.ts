@@ -1,16 +1,14 @@
 import { z } from "zod";
-import { digits, normPhone, validPhone } from "@/lib/checkout/phone";
+import { MIN_FILL_MS, normPhone, validEmail, validPhone } from "./newsletter-validate";
 
 /**
- * Validation de l'inscription à la newsletter (partagée : formulaire client + route API).
+ * Validation de l'inscription à la newsletter côté route API (zod).
  * Règles de la maquette : e-mail valide, ou numéro WhatsApp béninois de 10 chiffres commençant par 01
  * (après retrait du préfixe 229 éventuel).
  */
-export const MIN_FILL_MS = 2500; // délai minimal entre l'affichage du formulaire et l'envoi (anti-robot)
-
-// Téléphone : implémentation unique partagée avec la commande et le compte (src/lib/checkout/phone.ts).
-export { digits, normPhone, validPhone };
-export const validEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s.trim()) && s.trim().length <= 200;
+// Règles pures (sans zod) dans newsletter-validate.ts, importé par le formulaire client ; réexportées ici pour la route et les tests.
+// Ce module (zod) ne doit être importé que côté serveur.
+export { digits, MIN_FILL_MS, normPhone, validEmail, validPhone } from "./newsletter-validate";
 
 export const newsletterSchema = z
   .object({

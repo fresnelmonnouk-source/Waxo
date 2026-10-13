@@ -67,6 +67,20 @@ describe("GET /api/cron/expire-orders", () => {
     expect(rpc).toHaveBeenCalledTimes(2);
   });
 
+  it("audit Tariq E4 : la partie argent (expiration) passe AVANT les taux de change", async () => {
+    const order: string[] = [];
+    rpc.mockImplementation(async () => {
+      order.push("expire");
+      return { data: 0, error: null };
+    });
+    refreshFxRates.mockImplementation(async () => {
+      order.push("fx");
+      return { ok: true };
+    });
+    await call("Bearer cron-secret");
+    expect(order).toEqual(["expire", "fx"]);
+  });
+
   it("erreur SQL : 500 générique sans détail", async () => {
     rpc.mockResolvedValue({ data: null, error: { message: "relation secret_table" } });
     const res = await call("Bearer cron-secret");

@@ -3,7 +3,7 @@
 import { useRef, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { validEmail, validPhone } from "./newsletter-schema";
+import { validEmail, validPhone } from "./newsletter-validate"; // sans zod : le schéma reste côté serveur
 
 type Channel = "email" | "whatsapp";
 type Status = "idle" | "sending" | "ok";

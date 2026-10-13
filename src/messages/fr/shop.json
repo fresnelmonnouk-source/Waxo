@@ -80,7 +80,7 @@
   },
   "Home": {
     "heroEyebrow": "Stock à Cotonou · Livré par nous 7 j/7",
-    "title": "Les petites choses utiles, livrées vite chez vous.",
+    "title": "Les petites choses utiles, livrées le jour même à Cotonou.",
     "lead": "Des objets du quotidien choisis pour leur utilité et leur prix.",
     "payCod": "Vous payez par Mobile Money, par carte ou à la réception.",
     "payNoCod": "Vous payez par Mobile Money ou par carte.",
@@ -99,7 +99,7 @@
     "g3Title": "Livraison Express",
     "g3Sub": "Commandé avant {hour}, livré le jour même à Cotonou & Calavi. 7 j/7, dimanche compris. Autres villes : 48 à 72 h.",
     "g4Title": "Assistant en ligne 24 h/24",
-    "g4Sub": "L'assistant du site répond à toute heure, 7 j/7. Notre équipe vous répond aussi sur WhatsApp.",
+    "g4Sub": "L'assistant du site répond à toute heure. Notre équipe vous répond sur WhatsApp, 7 j/7, de 8 h à 20 h.",
     "browse": "Parcourir par rayon",
     "categories": "Catégories",
     "catalogTitle": "Catalogue",
@@ -119,7 +119,7 @@
     "step1Title": "Vous choisissez",
     "step1Text": "Seul ou avec l'assistant. Sans compte si vous préférez.",
     "step2Title": "On vous confirme",
-    "step2Text": "Un message WhatsApp dans l'heure avec le créneau de livraison.",
+    "step2Text": "Un message WhatsApp vous confirme le créneau de livraison.",
     "step3Title": "Vous recevez",
     "step3Text": "Le livreur vous appelle à l'arrivée. Vous payez si ce n'est pas déjà fait.",
     "g3Hour": "{hour}"
@@ -204,7 +204,7 @@
     "privacy": "Politique de confidentialité",
     "reach": "Nous joindre",
     "whatsapp": "WhatsApp {phone}",
-    "hours": "Du lundi au samedi, de 8 h à 19 h",
+    "hours": "7 j/7, de 8 h à 20 h",
     "copyright": "© {year} Wá xɔ · Cotonou, Bénin",
     "payments": "MTN MoMo · Moov Money · Celtiis Cash · Visa · Mastercard",
     "paymentsCod": " · Paiement à la livraison"

@@ -90,6 +90,30 @@
     outline: 2px solid var(--ink);
     outline-offset: 2px;
   }
+  /* Fonds encre (pied de page, héro, bloc assistant du méga-menu) : le contour encre y est invisible (1:1, audit Mia 3.1).
+     Contour soleil : #FFC93C sur #141210 = (0,6336+0,05)/(0,0062+0,05) = 12,2:1 (seuil 3:1, WCAG 2.4.7 / 1.4.11).
+     Le décalage de 2 px laisse une bande encre entre un bouton jaune et son contour : il reste lisible sur les CTA soleil. */
+  .on-dark :focus-visible,
+  .on-dark :is(input, select, textarea):focus {
+    outline-color: var(--sun);
+  }
+  /* En-tête collant (≈ 130 px en mobile, recherche sur 2e ligne ; ≈ 110 px au-delà de 980 px) : un élément atteint au clavier
+     ou par une ancre ne doit pas passer dessous (WCAG 2.4.11). Boutique seulement (#contenu), pas l'admin. */
+  html:has(#contenu) {
+    scroll-padding-top: 140px;
+  }
+  @media (min-width: 980px) {
+    html:has(#contenu) {
+      scroll-padding-top: 120px;
+    }
+  }
+  /* Barre d'achat collante de la fiche (mobile, ≈ 75 px) : elle ne doit pas recouvrir la dernière ligne du pied de page
+     (copyright, langue). Classe posée par ProductBuy tant que la barre est visible (audit Mia 4.5). */
+  @media (max-width: 979px) {
+    body.has-sticky-buy {
+      padding-bottom: 80px;
+    }
+  }
   ::placeholder {
     color: var(--placeholder);
   }

@@ -2,15 +2,18 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ContactForm } from "@/components/account/ContactForm";
-import { pageTitle } from "@/components/account/page-meta";
 import { EYEBROW } from "@/components/account/styles";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getSettings } from "@/lib/catalog";
+import { seoPageMetadata } from "@/lib/seo/pages";
 
 type Props = { params: Promise<{ lang: string }> };
 
-export const generateMetadata = ({ params }: Props) => pageTitle(params, "Info.meta", "contact");
+export async function generateMetadata({ params }: Props) {
+  const { lang } = await params;
+  return seoPageMetadata(lang, "contact", "/contact");
+}
 
 const ROW_CARD =
   "flex items-center justify-between gap-3 rounded-[22px] bg-white px-[22px] py-5 text-ink no-underline transition-colors hover:bg-[#FAF8F3] hover:text-ink";
@@ -21,6 +24,8 @@ export default async function Page({ params }: Props) {
   setRequestLocale(lang);
   const { brand } = await getSettings();
   const t = await getTranslations("Contact");
+  // Coordonnées non renseignées dans les réglages : la carte correspondante est masquée (jamais de lien vide ni de numéro factice).
+  const wa = brand.waNumber.replace(/\D/g, "");
 
   return (
     <main className="mx-auto min-h-[70vh] max-w-[1100px] px-5 pt-10 pb-[72px]">
@@ -31,30 +36,36 @@ export default async function Page({ params }: Props) {
       </div>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,340px),1fr))] items-start gap-6">
         <div className="flex flex-col gap-3">
-          <a
-            href={`https://wa.me/${brand.waNumber}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex flex-col gap-[6px] rounded-[22px] bg-leaf p-[22px] text-white no-underline transition-colors hover:bg-[#185A3E] hover:text-white"
-          >
-            <strong className="text-[18px]">{t("whatsapp")}</strong>
-            <span className="text-[15px]">{brand.whatsapp}</span>
-            <span className="mt-[6px] text-[14px] font-semibold">{t("writeWa")}</span>
-          </a>
-          <a href={`tel:+${brand.waNumber}`} className={ROW_CARD}>
-            <span className="flex flex-col gap-1">
-              <strong>{t("phone")}</strong>
-              <span className="text-[15px] text-text">{brand.whatsapp}</span>
-            </span>
-            <span className="text-[14px] font-semibold">{t("call")}</span>
-          </a>
-          <a href={`mailto:${brand.email}`} className={ROW_CARD}>
-            <span className="flex flex-col gap-1">
-              <strong>{t("email")}</strong>
-              <span className="text-[15px] text-text">{brand.email}</span>
-            </span>
-            <span className="text-[14px] font-semibold">{t("write")}</span>
-          </a>
+          {wa ? (
+            <a
+              href={`https://wa.me/${wa}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col gap-[6px] rounded-[22px] bg-leaf p-[22px] text-white no-underline transition-colors hover:bg-[#185A3E] hover:text-white"
+            >
+              <strong className="text-[18px]">{t("whatsapp")}</strong>
+              <span className="text-[15px]">{brand.whatsapp}</span>
+              <span className="mt-[6px] text-[14px] font-semibold">{t("writeWa")}</span>
+            </a>
+          ) : null}
+          {wa ? (
+            <a href={`tel:+${wa}`} className={ROW_CARD}>
+              <span className="flex flex-col gap-1">
+                <strong>{t("phone")}</strong>
+                <span className="text-[15px] text-text">{brand.whatsapp}</span>
+              </span>
+              <span className="text-[14px] font-semibold">{t("call")}</span>
+            </a>
+          ) : null}
+          {brand.email ? (
+            <a href={`mailto:${brand.email}`} className={ROW_CARD}>
+              <span className="flex flex-col gap-1">
+                <strong>{t("email")}</strong>
+                <span className="text-[15px] text-text">{brand.email}</span>
+              </span>
+              <span className="text-[14px] font-semibold">{t("write")}</span>
+            </a>
+          ) : null}
           <div className="flex flex-col gap-[6px] rounded-[22px] border border-border px-[22px] py-5">
             <strong>{t("noShopTitle")}</strong>
             <span className="text-[15px] leading-[1.5] text-text">{t("noShopText")}</span>

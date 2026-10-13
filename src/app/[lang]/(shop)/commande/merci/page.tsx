@@ -23,5 +23,5 @@ export default async function ThanksPage({ params }: { params: Promise<Params> }
   if (!hasLocale(routing.locales, lang)) notFound();
   setRequestLocale(lang);
   const settings = await getSettings();
-  return <OrderConfirmation cutoff={settings.shipping.cutoff} />;
+  return <OrderConfirmation cutoff={settings.shipping.cutoff} codEnabled={settings.pay.cod} waNumber={settings.brand.waNumber} />;
 }

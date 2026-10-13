@@ -88,26 +88,38 @@ export function PasswordField({
   );
 }
 
-/** Case à cocher 24 px de la maquette (rôle checkbox, opérable au clavier car c'est un vrai bouton). */
+/**
+ * Case à cocher 24 px de la maquette (rôle checkbox, opérable au clavier car c'est un vrai bouton : Espace et Entrée).
+ * Nom accessible = le libellé visible (aria-labelledby, audit Mia 3.3) : sans lui, « case à cocher, non cochée » sans dire quoi.
+ * `describedBy` : id du message d'erreur associé (ex. CGU non acceptées).
+ */
 export function Checkbox({
   checked,
   onChange,
   children,
   align = "center",
   small = false,
+  describedBy,
+  invalid = false,
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
   children: ReactNode;
   align?: "center" | "start";
   small?: boolean;
+  describedBy?: string;
+  invalid?: boolean;
 }) {
+  const labelId = useId();
   return (
     <div className={`flex gap-3 ${align === "start" ? "items-start" : "items-center"} ${small ? "text-[14px]" : "text-[15px]"} min-h-11`}>
       <button
         type="button"
         role="checkbox"
         aria-checked={checked}
+        aria-labelledby={labelId}
+        aria-describedby={describedBy}
+        aria-invalid={invalid || undefined}
         onClick={() => onChange(!checked)}
         className={`flex h-11 w-11 flex-none cursor-pointer items-center justify-center border-0 bg-transparent p-0 ${align === "start" ? "-mt-[10px]" : ""} -mr-[10px] -ml-[10px]`}
       >
@@ -119,6 +131,7 @@ export function Checkbox({
         </span>
       </button>
       <span
+        id={labelId}
         className={`${small ? "leading-[1.45]" : ""} min-w-0 cursor-pointer`}
         onClick={(e) => {
           if ((e.target as HTMLElement).closest("a")) return; // un clic sur un lien ne coche pas la case

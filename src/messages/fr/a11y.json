@@ -1,1 +1,12 @@
-{}
+{
+  "A11y": {
+    "reviews": {
+      "invite": "Soyez le premier à partager votre expérience avec ce produit."
+    },
+    "cart": {
+      "decrease": "Diminuer la quantité de {name}",
+      "increase": "Augmenter la quantité de {name}",
+      "remove": "Retirer {name} du panier"
+    }
+  }
+}

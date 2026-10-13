@@ -12,6 +12,8 @@ import { CheckoutShell } from "./CheckoutShell";
 import { confirmationEta, formatRange } from "./eta";
 import { cutoffParams, ExpressBadge } from "@/components/shop/ExpressBadge";
 import { parseReturnParams, type ReturnPayState } from "./return-params";
+import { cart } from "@/lib/cart/store";
+import { readCheckoutSnapshot, saveResume, whatsappHref } from "./retry";
 
 const noopSubscribe = () => () => {};
 // Chaîne brute du sessionStorage : instantané stable pour useSyncExternalStore ; null côté serveur.
@@ -28,14 +30,17 @@ const linkSun =
   "inline-flex min-h-[52px] items-center rounded-full bg-sun px-6 text-[16px] font-semibold no-underline hover:bg-sun-hover hover:text-ink";
 const linkInk =
   "inline-flex min-h-[52px] items-center rounded-full bg-ink px-6 text-[16px] font-semibold text-cream no-underline hover:text-cream";
+const linkOutline =
+  "inline-flex min-h-[52px] items-center rounded-full border-[1.5px] border-ink px-6 text-[16px] font-semibold text-ink no-underline hover:text-ink";
 
 /**
  * Étape 3 de la commande : remerciement, numéro WX-…, prochaines étapes.
  * Gère aussi le RETOUR de paiement en ligne (`?n=WX-…&k=…&id=…`) : l'état est relu côté serveur (webhook ou vérification
  * directe chez le prestataire), jamais déduit de l'URL — payé / en attente de confirmation / échec.
  */
-export function OrderConfirmation({ cutoff }: { cutoff: number }) {
+export function OrderConfirmation({ cutoff, codEnabled = false, waNumber = "" }: { cutoff: number; codEnabled?: boolean; waNumber?: string }) {
   const t = useTranslations("Thanks");
+  const ts = useTranslations("Security.retry");
   const tp = useTranslations("Checkout");
   const router = useRouter();
   const locale = useLocale();
@@ -123,6 +128,16 @@ export function OrderConfirmation({ cutoff }: { cutoff: number }) {
 
   if (payState === "failed" || payState === "unavailable") {
     const failed = payState === "failed";
+    // Panier de la tentative échouée (audit Mia 9) : restauré pour réessayer, ou basculer en paiement à la livraison.
+    const snap = readCheckoutSnapshot(number);
+    const resume = (payOverride?: "cod") => {
+      if (!snap) return;
+      cart.clear();
+      for (const { qty, ...line } of snap.lines) cart.add(line, qty);
+      saveResume(snap, { pay: payOverride, token: ret.token });
+      router.push("/commande");
+    };
+    const wa = whatsappHref(waNumber, ts("whatsappText", { number }));
     return (
       <CheckoutShell step={3} onExit={exit}>
         <div className="mx-auto flex max-w-[620px] animate-[wxup_.35s_ease_both] flex-col items-center gap-5 px-5 py-14 text-center">
@@ -142,13 +157,32 @@ export function OrderConfirmation({ cutoff }: { cutoff: number }) {
             })}
           </p>
           <div className="flex flex-wrap justify-center gap-2.5">
-            <Link href="/contact" className={linkSun}>
-              {t("contactUs")}
-            </Link>
-            <Link href="/catalogue" className={linkInk}>
-              {t("continueShopping")}
-            </Link>
+            {snap ? (
+              <button type="button" onClick={() => resume()} className={`${linkSun} cursor-pointer border-0`}>
+                {ts("retry")}
+              </button>
+            ) : null}
+            {snap && codEnabled && snap.pay !== "cod" ? (
+              <button type="button" onClick={() => resume("cod")} className={`${linkInk} cursor-pointer border-0`}>
+                {ts("payCod")}
+              </button>
+            ) : null}
+            {wa ? (
+              <a href={wa} target="_blank" rel="noopener noreferrer" className={snap ? linkOutline : linkSun}>
+                {ts("whatsapp")}
+              </a>
+            ) : (
+              <Link href="/contact" className={snap ? linkOutline : linkSun}>
+                {t("contactUs")}
+              </Link>
+            )}
+            {snap ? null : (
+              <Link href="/catalogue" className={linkInk}>
+                {t("continueShopping")}
+              </Link>
+            )}
           </div>
+          {snap ? <p className="m-0 text-[14px] leading-normal text-muted">{ts("cartKept")}</p> : null}
         </div>
       </CheckoutShell>
     );

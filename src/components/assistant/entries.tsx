@@ -103,7 +103,7 @@ export function HeaderAssistantButton({ onBefore }: { onBefore?: () => void }) {
 export function MegaAssistantBlock({ onNavigate }: { onNavigate: () => void }) {
   const t = useTranslations("Assistant.entry");
   return (
-    <div className="bg-ink text-cream flex flex-col gap-3 rounded-[20px] p-5">
+    <div className="on-dark bg-ink text-cream flex flex-col gap-3 rounded-[20px] p-5">
       <span aria-hidden="true" className={`${MARK} bg-cream text-terracotta h-[38px] w-[38px] text-[18px]`}>
         ɔ
       </span>

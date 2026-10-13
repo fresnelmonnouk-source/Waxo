@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cart, useCartLines, useCartSubtotal } from "@/lib/cart/store";
@@ -23,8 +23,16 @@ import { CheckoutShell } from "./CheckoutShell";
 import { checkoutEta, formatRange, type Eta } from "./eta";
 import { cutoffParams, ExpressBadge, ExpressPicto } from "@/components/shop/ExpressBadge";
 import { clearIdempotencyKey, idempotencyKeyFor, orderSignature } from "./idempotency";
+import { saveCheckoutSnapshot, takeResume } from "./retry";
+import { TurnstileWidget, type TurnstileHandle } from "./TurnstileWidget";
 
-type Props = { shipping: ShippingConfig; pay: PayConfig };
+type Props = {
+  shipping: ShippingConfig;
+  pay: PayConfig;
+  /** Clé de site Turnstile : donnée par le serveur seulement si la vérification est configurée (sinon aucun widget). */
+  turnstileSiteKey?: string | null;
+};
+type Field = "name" | "phone" | "email" | "address" | "momo";
 type Errors = Partial<Record<"name" | "phone" | "email" | "address" | "momo", string>>;
 
 const CHIP: Record<PayMethod, string> = {
@@ -98,8 +106,9 @@ function RadioCard({
 
 const inputClass = "rounded-[14px] border bg-card p-3.5 text-[16px] font-normal";
 
-export function CheckoutFlow({ shipping, pay }: Props) {
+export function CheckoutFlow({ shipping, pay, turnstileSiteKey = null }: Props) {
   const t = useTranslations("Checkout");
+  const ts = useTranslations("Security.checkout");
   const tc = useTranslations("Shell.currency");
   const approx = useApproxPrice();
   const locale = useLocale();
@@ -121,14 +130,51 @@ export function CheckoutFlow({ shipping, pay }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
   const shownAt = useRef(0);
   const honeypot = useRef<HTMLInputElement>(null);
+  const turnstile = useRef<TurnstileHandle>(null);
+  const submitErrorRef = useRef<HTMLSpanElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const addressRef = useRef<HTMLInputElement>(null);
+  const momoRef = useRef<HTMLInputElement>(null);
+  const errId = useId();
+  /** Ancienne commande dont le paiement a échoué (reprise depuis l'écran d'échec) : le serveur libère son stock. */
+  const replaces = useRef<{ n: string; k: string } | null>(null);
+  const [resumed, setResumed] = useState(false);
 
   const methods = enabledPayMethods(pay);
   const fee = shippingFee(subtotal, zone, shipping);
   const total = subtotal + fee;
   const mm = isMobileMoney(method);
 
+  // Erreur d'envoi : annoncée (role=alert) ET focalisée, pour qu'elle soit visible sur mobile (audit Mia 4.9).
+  useEffect(() => {
+    if (submitError) submitErrorRef.current?.focus();
+  }, [submitError]);
+
+  /** Focus sur le premier champ en erreur, dans l'ordre du formulaire. */
+  function focusFirstError(e: Errors) {
+    const refs = { name: nameRef, phone: phoneRef, email: emailRef, address: addressRef, momo: momoRef };
+    const first = (["name", "phone", "email", "address", "momo"] as const).find((k) => e[k]);
+    if (first) requestAnimationFrame(() => refs[first].current?.focus());
+  }
+  const describedBy = (key: Field) => (errors[key] ? `${errId}-${key}` : undefined);
+
   useEffect(() => {
     shownAt.current = Date.now();
+    // Reprise après un paiement en ligne échoué : coordonnées, zone et moyen de paiement préremplis (audit Mia 9).
+    const resume = takeResume();
+    if (resume) {
+      replaces.current = resume.replaces;
+      // Lecture unique du sessionStorage à l'ouverture (navigateur seulement) : pas de source externe à suivre.
+      /* eslint-disable react-hooks/set-state-in-effect */
+      setForm((f) => ({ ...f, ...resume.form, momo: resume.form.phone }));
+      setZone(resume.zone);
+      if (methods.includes(resume.pay)) setMethod(resume.pay);
+      setResumed(true);
+      if (resume.form.name.trim().length >= 3 && validPhone(resume.form.phone) && resume.form.address.trim().length >= 5) setStep(2);
+      /* eslint-enable react-hooks/set-state-in-effect */
+    }
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const ctrl = new AbortController();
@@ -147,6 +193,7 @@ export function CheckoutFlow({ shipping, pay }: Props) {
       ctrl.abort();
       document.body.style.overflow = overflow;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- lecture unique à l'ouverture du tunnel
   }, []);
 
   const set = (key: keyof typeof form) => (e: { target: { value: string } }) => {
@@ -165,7 +212,11 @@ export function CheckoutFlow({ shipping, pay }: Props) {
     if (!validPhone(form.phone)) e.phone = t("errPhone");
     if (form.email.trim() && !validEmail(form.email)) e.email = t("errEmail");
     if (form.address.trim().length < 5) e.address = t("errAddress");
-    if (Object.keys(e).length) return setErrors(e);
+    if (Object.keys(e).length) {
+      setErrors(e);
+      focusFirstError(e);
+      return;
+    }
     setErrors({});
     setForm((f) => ({ ...f, momo: f.momo || f.phone }));
     setMethod((m) => (methods.includes(m) ? m : (methods[0] ?? "cod")));
@@ -174,7 +225,11 @@ export function CheckoutFlow({ shipping, pay }: Props) {
 
   async function placeOrder(attempt = 0) {
     if ((paying && attempt === 0) || lines.length === 0) return;
-    if (mm && !validPhone(form.momo)) return setErrors({ momo: t("errMomo") });
+    if (mm && !validPhone(form.momo)) {
+      setErrors({ momo: t("errMomo") });
+      focusFirstError({ momo: "x" });
+      return;
+    }
     setPaying(true);
     setSubmitError("");
     setErrors({});
@@ -183,6 +238,8 @@ export function CheckoutFlow({ shipping, pay }: Props) {
     const idem = idempotencyKeyFor(
       orderSignature({ items, zone, pay: method, phone: normPhone(form.phone), name: form.name.trim(), address: form.address.trim() }),
     );
+    // Jeton anti-robot (Turnstile, inerte sans clés) : attendu avant l'envoi, à usage unique.
+    const captcha = (await turnstile.current?.token()) ?? undefined;
     const ctrl = new AbortController();
     const timeout = setTimeout(() => ctrl.abort(), 30_000);
     try {
@@ -209,8 +266,11 @@ export function CheckoutFlow({ shipping, pay }: Props) {
           elapsed: Date.now() - shownAt.current,
           // Sous-total affiché : le serveur refuse si un prix a augmenté depuis (fin de campagne), sans rien créer.
           expectedSubtotal: subtotal,
+          captcha,
+          replaces: replaces.current ?? undefined,
         }),
       });
+      turnstile.current?.reset(); // jeton consommé : le prochain envoi en demandera un neuf
       const json = (await res.json().catch(() => null)) as {
         ok?: boolean;
         code?: string;
@@ -233,6 +293,17 @@ export function CheckoutFlow({ shipping, pay }: Props) {
       const created = json?.order && (json.ok || json.code === "payment_unavailable") ? json.order : null;
       if (created) {
         clearIdempotencyKey();
+        replaces.current = null;
+        if (method !== "cod") {
+          // Paiement en ligne : instantané du panier, restauré par l'écran d'échec (« Réessayer », « Payer à la livraison »).
+          saveCheckoutSnapshot({
+            number: created.number,
+            lines,
+            zone,
+            pay: method,
+            form: { name: form.name.trim(), phone: form.phone, email: form.email.trim(), address: form.address.trim() },
+          });
+        }
         saveLastOrder({
           number: created.number,
           total: created.total,
@@ -242,6 +313,7 @@ export function CheckoutFlow({ shipping, pay }: Props) {
           phone: normPhone(form.phone),
           pending: method !== "cod",
           placedAt: Date.now(),
+          items: lines.map((l) => ({ id: l.kind === "pack" ? `pack:${l.id}` : l.id, price: l.price, quantity: l.qty })),
         });
         cart.clear();
         setFinished(true);
@@ -272,8 +344,10 @@ export function CheckoutFlow({ shipping, pay }: Props) {
         if (fields.includes("address")) e.address = t("errAddress");
         setErrors(e);
         goStep(1);
+        focusFirstError(e);
       } else if (fields.includes("payerPhone")) {
         setErrors({ momo: t("errMomo") });
+        focusFirstError({ momo: "x" });
       } else {
         setSubmitError(json?.message || t("errGeneric"));
       }
@@ -360,10 +434,12 @@ export function CheckoutFlow({ shipping, pay }: Props) {
                 autoComplete="name"
                 placeholder={t("namePlaceholder")}
                 aria-invalid={!!errors.name}
+                aria-describedby={describedBy("name")}
+                ref={nameRef}
                 className={inputClass}
                 style={{ borderColor: errBorder(errors.name) }}
               />
-              <span className="text-[13px] font-normal text-terracotta-deep">{errors.name}</span>
+              <span id={`${errId}-name`} className="text-[13px] font-normal text-terracotta-deep">{errors.name}</span>
             </label>
             <label className="flex flex-col gap-1.5 text-[14px] font-medium">
               {t("phone")}
@@ -379,10 +455,12 @@ export function CheckoutFlow({ shipping, pay }: Props) {
                   autoComplete="tel-national"
                   placeholder={t("phonePlaceholder")}
                   aria-invalid={!!errors.phone}
+                  aria-describedby={describedBy("phone")}
+                  ref={phoneRef}
                   className="min-w-0 flex-1 border-0 p-3.5 text-[16px] font-normal focus:outline-none"
                 />
               </div>
-              <span className="text-[13px] font-normal text-terracotta-deep">{errors.phone}</span>
+              <span id={`${errId}-phone`} className="text-[13px] font-normal text-terracotta-deep">{errors.phone}</span>
             </label>
             <label className="flex flex-col gap-1.5 text-[14px] font-medium">
               {t("email")}
@@ -394,11 +472,13 @@ export function CheckoutFlow({ shipping, pay }: Props) {
                 autoComplete="email"
                 placeholder={t("emailPlaceholder")}
                 aria-invalid={!!errors.email}
+                aria-describedby={describedBy("email")}
+                ref={emailRef}
                 className={inputClass}
                 style={{ borderColor: errBorder(errors.email) }}
               />
               <span className="text-[13px] font-normal text-text">{t("emailHelp")}</span>
-              <span className="text-[13px] font-normal text-terracotta-deep">{errors.email}</span>
+              <span id={`${errId}-email`} className="text-[13px] font-normal text-terracotta-deep">{errors.email}</span>
             </label>
             <div role="radiogroup" aria-label={t("zoneGroup")} className="@container flex flex-col gap-2.5">
               <span className="text-[14px] font-medium">{t("zoneLabel")}</span>
@@ -445,10 +525,12 @@ export function CheckoutFlow({ shipping, pay }: Props) {
                 autoComplete="street-address"
                 placeholder={t("addressPlaceholder")}
                 aria-invalid={!!errors.address}
+                aria-describedby={describedBy("address")}
+                ref={addressRef}
                 className={inputClass}
                 style={{ borderColor: errBorder(errors.address) }}
               />
-              <span className="text-[13px] font-normal text-terracotta-deep">{errors.address}</span>
+              <span id={`${errId}-address`} className="text-[13px] font-normal text-terracotta-deep">{errors.address}</span>
             </label>
             <button
               type="button"
@@ -491,11 +573,13 @@ export function CheckoutFlow({ shipping, pay }: Props) {
                   inputMode="tel"
                   placeholder={t("phonePlaceholder")}
                   aria-invalid={!!errors.momo}
+                  aria-describedby={describedBy("momo")}
+                  ref={momoRef}
                   className={inputClass}
                   style={{ borderColor: errBorder(errors.momo) }}
                 />
                 <span className="text-[13px] font-normal text-text">{t("momoHelp")}</span>
-                <span role="alert" className="text-[13px] font-normal text-terracotta-deep">
+                <span id={`${errId}-momo`} role="alert" className="text-[13px] font-normal text-terracotta-deep">
                   {errors.momo}
                 </span>
               </label>
@@ -508,8 +592,19 @@ export function CheckoutFlow({ shipping, pay }: Props) {
             {method === "cod" ? (
               <span className="rounded-xl bg-leaf-bg px-3.5 py-3 text-[14px] leading-normal text-ink">{t("codNote")}</span>
             ) : null}
+            {resumed ? (
+              <span role="status" className="rounded-[14px] bg-card px-3.5 py-3 text-[14px] leading-normal text-ink">
+                {ts("resumed")}
+              </span>
+            ) : null}
+            <TurnstileWidget ref={turnstile} siteKey={turnstileSiteKey} lang={locale === "en" ? "en" : "fr"} />
             {submitError ? (
-              <span role="alert" className="rounded-[14px] bg-card px-3.5 py-3 text-[14px] leading-normal text-terracotta-deep">
+              <span
+                ref={submitErrorRef}
+                tabIndex={-1}
+                role="alert"
+                className="rounded-[14px] bg-card px-3.5 py-3 text-[14px] leading-normal text-terracotta-deep focus:outline-none"
+              >
                 {submitError}
               </span>
             ) : null}

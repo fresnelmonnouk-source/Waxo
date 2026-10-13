@@ -5,6 +5,7 @@ import { rateLimitShared } from "@/lib/ratelimit";
 import { fetchTransaction } from "@/lib/payment/fedapay";
 import { loadFedapayConfig, loadStatusTokenSource } from "@/lib/payment/credentials";
 import { settleApprovedTransaction } from "@/lib/payment/settle";
+import { reportMoneyError } from "@/lib/payment/observe";
 import { paymentStateFor, transactionMatchesOrder, type PaymentState } from "@/lib/payment/state";
 import { verifyOrderStatusToken } from "@/lib/payment/token";
 import { isApproved } from "@/lib/payment/transaction";
@@ -59,12 +60,13 @@ export async function GET(request: Request) {
         if (fetched && transactionMatchesOrder(fetched, order)) {
           tx = fetched;
           if (isApproved(fetched)) {
-            await settleApprovedTransaction(fetched, `return:${fetched.id}`);
+            await settleApprovedTransaction(fetched, `return:${fetched.id}`, cfg.env);
             const again = await admin.from("orders").select("id,number,total,pay,paid,status").eq("id", order.id).maybeSingle();
             if (again.data) order = again.data as OrderRow;
           }
         }
-      } catch {
+      } catch (e) {
+        reportMoneyError("checkout-status", e, { order: order.id });
         /* FedaPay ou base momentanément injoignable : on répond « en attente », le client réessaiera */
       }
     }

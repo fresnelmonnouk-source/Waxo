@@ -52,13 +52,34 @@ export function parseIdemKey(v: unknown): string | null {
   return typeof v === "string" && UUID.test(v) ? v.toLowerCase() : null;
 }
 
+/** Codes des garde-fous de POST /api/checkout (hors erreurs de commande de lib/checkout/errors.ts). */
+export type GuardCode = "too_fast" | "quantity_limit" | "captcha" | "online_unavailable";
+
+export const GUARD_STATUS: Record<GuardCode, number> = { too_fast: 400, quantity_limit: 422, captcha: 403, online_unavailable: 503 };
+
+/**
+ * Le prestataire renvoyé par getPaymentProvider peut-il lancer un paiement ? Non pour le provider « unavailable »
+ * (clé d'essai refusée en production, audit C1) et pour le mock en production. Vérifié AVANT de créer la commande.
+ */
+export function providerUsable(name: string, nodeEnv: string | undefined = process.env.NODE_ENV): boolean {
+  if (name === "unavailable") return false;
+  if (name === "mock" && nodeEnv === "production") return false;
+  return true;
+}
+
 export const GUARD_MESSAGES = {
   fr: {
+    captcha: "La vérification anti-robot n'a pas abouti. Cochez à nouveau la case puis validez.",
+    online_unavailable:
+      "Le paiement en ligne est momentanément indisponible. Choisissez le paiement à la livraison ou écrivez-nous sur WhatsApp. Aucune commande n'a été créée.",
     too_fast: "Un instant, nous vérifions votre envoi. Réessayez dans quelques secondes.",
     quantity_limit:
       "Pour que chacun puisse commander, une commande est limitée à 10 exemplaires par article et 20 articles au total. Pour une commande plus importante, écrivez-nous sur WhatsApp.",
   },
   en: {
+    captcha: "The anti-robot check did not go through. Tick the box again, then confirm.",
+    online_unavailable:
+      "Online payment is temporarily unavailable. Choose cash on delivery or message us on WhatsApp. No order was created.",
     too_fast: "One moment, we are checking your submission. Please try again in a few seconds.",
     quantity_limit:
       "So that everyone can order, an order is limited to 10 units per item and 20 items in total. For a larger order, message us on WhatsApp.",

@@ -21,6 +21,8 @@ type Props = {
   average: number;
   avgTxt: string;
   countTxt: string;
+  /** Nombre d'avis publiés ; absent = déduit de la moyenne (une note réelle vaut au moins 1). */
+  count?: number;
   reviews: ReviewView[];
 };
 
@@ -43,8 +45,12 @@ function markReviewed(id: string) {
 }
 
 /** Avis clients : synthèse, liste, formulaire (réservé aux clients inscrits, comme dans la maquette). */
-export function ReviewsSection({ productId, productName, average, avgTxt, countTxt, reviews }: Props) {
+export function ReviewsSection({ productId, productName, average, avgTxt, countTxt, count, reviews }: Props) {
   const t = useTranslations("Reviews");
+  const tp = useTranslations("Product");
+  const ta = useTranslations("A11y.reviews");
+  // Aucun avis : pas de « 0,0 » en 52 px ni d'étoiles grises, qui se lisent comme une mauvaise note (audit Mia 4.8).
+  const noReviews = (count ?? (average > 0 ? 1 : 0)) === 0;
   const locale = useLocale();
   const [me, setMe] = useState<MeUser | null>(null);
   const [reviewed, setReviewed] = useState(false);
@@ -146,14 +152,23 @@ export function ReviewsSection({ productId, productName, average, avgTxt, countT
       className="mt-14 grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] items-start gap-9 border-t border-border pt-10"
     >
       <div className="flex flex-col gap-3.5">
-        <h2 className="font-display m-0 text-[26px] font-semibold tracking-[-0.03em]">{t("title")}</h2>
-        <div className="flex items-center gap-3.5">
-          <strong className="font-display text-[52px] leading-none font-semibold tracking-[-0.04em]">{avgTxt}</strong>
+        <h2 id="avis-titre" tabIndex={-1} className="font-display m-0 text-[26px] font-semibold tracking-[-0.03em] outline-none">
+          {t("title")}
+        </h2>
+        {noReviews ? (
           <div className="flex flex-col gap-1">
-            <Stars value={average} size={20} gap={2} />
-            <span className="text-[14px] text-text">{countTxt}</span>
+            <strong className="text-[18px]">{tp("noRating")}</strong>
+            <span className="text-[15px] leading-normal text-text">{ta("invite")}</span>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-3.5">
+            <strong className="font-display text-[52px] leading-none font-semibold tracking-[-0.04em]">{avgTxt}</strong>
+            <div className="flex flex-col gap-1">
+              <Stars value={average} size={20} gap={2} />
+              <span className="text-[14px] text-text">{countTxt}</span>
+            </div>
+          </div>
+        )}
         <span className="text-[14px] leading-normal text-text">{t("policy")}</span>
         {reviewed ? (
           <span className="self-start rounded-full bg-leaf-bg px-[18px] py-3 text-[14px] font-semibold text-leaf">

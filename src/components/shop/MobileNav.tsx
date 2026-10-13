@@ -11,8 +11,13 @@ import { COLLECTIONS, type ShellCategory } from "./logic";
 const SECTION =
   "text-muted text-[12px] font-semibold tracking-[0.08em] uppercase";
 const PLAIN = "text-ink! hover:text-ink! no-underline";
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
 
-/** Tiroir de navigation mobile (maquette lignes 958-987), ouvert par le bouton ☰ sous 980 px. */
+/**
+ * Tiroir de navigation mobile (maquette lignes 958-987), ouvert par le bouton ☰ sous 980 px.
+ * Fenêtre modale : focus piégé dans le tiroir et rendu au bouton ☰ à la fermeture (audit Mia 4.2, même modèle que CartDrawer).
+ */
 export function MobileNav({
   categories,
   onClose,
@@ -26,7 +31,35 @@ export function MobileNav({
 }) {
   const t = useTranslations();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const navRef = useRef<HTMLElement>(null);
   const [logged, setLogged] = useState(false);
+
+  // Tab / Maj+Tab bouclent dans le tiroir ; à la fermeture, le focus revient là où il était (le bouton ☰).
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Tab" || !navRef.current) return;
+      const items = Array.from(
+        navRef.current.querySelectorAll<HTMLElement>(FOCUSABLE),
+      );
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const inside = navRef.current.contains(document.activeElement);
+      if (e.shiftKey && (document.activeElement === first || !inside)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (document.activeElement === last || !inside)) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      if (previous && previous.isConnected) previous.focus?.();
+    };
+  }, []);
 
   useEffect(() => {
     closeRef.current?.focus();
@@ -47,6 +80,7 @@ export function MobileNav({
       onClick={onClose}
     >
       <nav
+        ref={navRef}
         aria-label={t("Shell.mobile.menu")}
         onClick={(e) => e.stopPropagation()}
         className="bg-cream flex h-full w-[min(340px,88vw)] flex-col overflow-y-auto"
@@ -94,22 +128,29 @@ export function MobileNav({
               {campaign.name}
             </Link>
           ) : null}
-          <span className={`${SECTION} pt-[14px] pb-2`}>
-            {t("Shell.mobile.categories")}
-          </span>
-          <div className="grid grid-cols-2 gap-2">
-            {categories.map((c) => (
-              <Link
-                key={c.id}
-                href={`/catalogue?cat=${encodeURIComponent(c.id)}`}
-                onClick={onClose}
-                className={`${PLAIN} min-h-11 rounded-[14px] px-[14px] py-3 text-[14px] font-semibold`}
-                style={{ background: c.bg }}
-              >
-                {c.label}
-              </Link>
-            ))}
-          </div>
+          {/* Rayons vides masqués (audit Mia 3.4). */}
+          {categories.some((c) => c.count > 0) ? (
+            <>
+              <span className={`${SECTION} pt-[14px] pb-2`}>
+                {t("Shell.mobile.categories")}
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                {categories
+                  .filter((c) => c.count > 0)
+                  .map((c) => (
+                    <Link
+                      key={c.id}
+                      href={`/catalogue?cat=${encodeURIComponent(c.id)}`}
+                      onClick={onClose}
+                      className={`${PLAIN} min-h-11 rounded-[14px] px-[14px] py-3 text-[14px] font-semibold`}
+                      style={{ background: c.bg }}
+                    >
+                      {c.label}
+                    </Link>
+                  ))}
+              </div>
+            </>
+          ) : null}
           <span className={`${SECTION} pt-[18px] pb-1`}>
             {t("Shell.mobile.collections")}
           </span>

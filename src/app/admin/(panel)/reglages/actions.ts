@@ -6,6 +6,8 @@ import { z } from "zod";
 import { assertAdmin } from "@/lib/admin/guard";
 import { loadFedapayConfig, fedapayStatus, saveFedapaySecrets, type FedapayStatus } from "@/lib/payment/credentials";
 import { pingFedapay } from "@/lib/payment/fedapay";
+import { runAfterResponse } from "@/lib/email/defer";
+import { adminEmails, sendPaymentKeysAlert } from "@/lib/email/payment-alert";
 import { createSharedLimiter } from "@/lib/ratelimit";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { createSessionClient } from "@/lib/supabase/server";
@@ -152,6 +154,17 @@ const fedapaySchema = z
 
 export type FedapayActionData = { status: FedapayStatus };
 
+/** Audit Raphaël F2 : tout changement des clés de paiement prévient l'équipe entière (après la réponse, jamais bloquant). */
+async function alertPaymentKeys(actorEmail: string, what: string[], status: FedapayStatus): Promise<void> {
+  await runAfterResponse(async () => {
+    const sb = tryAdminClient();
+    if (!sb) return;
+    const to = await adminEmails(sb);
+    if (to.length === 0) return;
+    await sendPaymentKeysAlert(to, { actorEmail, what, secretMasked: status.secretMasked, webhookMasked: status.webhookMasked, mode: status.mode });
+  });
+}
+
 export async function saveFedapayAction(input: unknown): Promise<ActionResult<FedapayActionData>> {
   const admin = await assertAdmin();
   if (!admin) return fail("unauthorized");
@@ -185,7 +198,13 @@ export async function saveFedapayAction(input: unknown): Promise<ActionResult<Fe
     return fail("error");
   }
   revalidatePath("/admin/reglages");
-  return { ok: true, status: await fedapayStatus() };
+  const status = await fedapayStatus();
+  const what = [
+    ...(secretKey ? [`a enregistré une nouvelle clé API FedaPay (mode ${secretKey.startsWith("sk_live_") ? "réel" : "essai"})`] : []),
+    ...(webhookSecret ? [`a enregistré un nouveau secret de webhook (mode ${webhookSecret.startsWith("wh_live_") ? "réel" : "essai"})`] : []),
+  ];
+  await alertPaymentKeys(admin.email, what, status);
+  return { ok: true, status };
 }
 
 export async function clearFedapayAction(which: unknown): Promise<ActionResult<FedapayActionData>> {
@@ -199,7 +218,10 @@ export async function clearFedapayAction(which: unknown): Promise<ActionResult<F
   });
   if (!res.ok) return fail(res.code === "unavailable" ? "unavailable" : "error");
   revalidatePath("/admin/reglages");
-  return { ok: true, status: await fedapayStatus() };
+  const status = await fedapayStatus();
+  const label = which === "secret" ? "la clé API FedaPay" : which === "webhook" ? "le secret de webhook FedaPay" : "la clé API et le secret de webhook FedaPay";
+  await alertPaymentKeys(admin.email, [`a effacé de l'espace admin ${label}`], status);
+  return { ok: true, status };
 }
 
 export async function testFedapayAction(): Promise<ActionResult<{ mode: "sandbox" | "live" }>> {

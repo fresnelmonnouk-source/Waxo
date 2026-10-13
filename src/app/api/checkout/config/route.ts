@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { getProducts, getSettings } from "@/lib/catalog";
 import { getPacks } from "@/lib/catalog/packs";
+import { onlinePaymentReady } from "@/lib/payment/ready";
 import type { Locale } from "@/i18n/routing";
 
 /**
  * GET /api/checkout/config?lang=fr&ids=a,b — données publiques dont le tiroir panier a besoin sans que les pages
  * (statiques) ne les embarquent : réglages de livraison/paiement, stock des articles du panier, 2 produits « à petit prix ».
  * Lecture seule, aucune donnée privée. Ne renvoie jamais d'erreur 5xx : repli sur les réglages par défaut.
+ * Paiement en ligne impossible (clé d'essai refusée en production, audit C1) : Mobile Money et carte sont masqués.
  */
 
 const SAFE_ID = /^[A-Za-z0-9_-]{1,64}$/;
@@ -24,11 +26,13 @@ export async function GET(request: Request) {
   );
 
   try {
-    const [settings, products, packs] = await Promise.all([
+    const [settings, products, packs, online] = await Promise.all([
       getSettings(),
       getProducts(lang, { sort: "popular" }),
       getPacks(lang).catch(() => []),
+      onlinePaymentReady(),
     ]);
+    const pay = online ? settings.pay : { ...settings.pay, momo: false, moov: false, celtiis: false, carte: false };
     const packsEnabled = settings.features?.packs !== false;
     const stock: Record<string, number> = {};
     const prices: Record<string, number> = {};
@@ -53,7 +57,7 @@ export async function GET(request: Request) {
       .map((p) => ({ id: p.id, slug: p.slug, name: p.name, price: p.price, bg: p.bg, imageUrl: p.imageUrl }));
 
     return NextResponse.json(
-      { ok: true, shipping: settings.shipping, pay: settings.pay, stock, prices, upsell, stale, packsEnabled },
+      { ok: true, shipping: settings.shipping, pay, stock, prices, upsell, stale, packsEnabled },
       { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } },
     );
   } catch {

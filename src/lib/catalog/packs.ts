@@ -5,23 +5,26 @@ import type { Locale } from "@/i18n/routing";
 import { buildPack, type Pack, type PackItem } from "@/components/packs/logic";
 import { createPublicClient } from "@/lib/supabase/public";
 import { supabasePublicEnv } from "@/lib/supabase/env";
-import { getProducts, getSettings, type Product } from "./index";
+import { getProducts, getSettings, isBuildPhase, slugForLocale, type LocaleSlugs, type Product } from "./index";
 
 export type { Pack, PackItem };
 
 /**
  * Lecture des packs de la boutique (serveur, sans cookies → pages statiques/ISR possibles).
- * Source : Supabase (`packs` + `pack_translations` + `pack_items`) si configuré ET non vide ; sinon repli sur 3 packs de
+ * Source : Supabase (`packs` + `pack_translations` + `pack_items`) si configuré ; sans Supabase seulement, 3 packs de
  * démonstration calculés en code à partir du catalogue (mêmes packs et mêmes identifiants que `0006_packs_demo.sql`).
- * Prix, économie et stock sont toujours recalculés ici à partir du catalogue courant. Jamais d'exception vers les pages.
+ * Prix, économie et stock sont toujours recalculés ici à partir du catalogue courant. Base en panne : exception (D6).
  */
 
 const TIMEOUT_MS = 4000;
 function withTimeout<T>(p: PromiseLike<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
   return Promise.race([
     Promise.resolve(p),
-    new Promise<T>((_, reject) => setTimeout(() => reject(new Error("supabase_timeout")), TIMEOUT_MS)),
-  ]);
+    new Promise<T>((_, reject) => {
+      timer = setTimeout(() => reject(new Error("supabase_timeout")), TIMEOUT_MS);
+    }),
+  ]).finally(() => clearTimeout(timer));
 }
 
 // ───────────────────────── Démo (repli) ─────────────────────────
@@ -153,7 +156,11 @@ type DbPackRow = {
   pack_items: { product_id: string; qty: number }[];
 };
 
-async function fetchDbPacks(locale: Locale, products: Product[]): Promise<Pack[] | null> {
+/**
+ * Packs actifs, lecture brute commune aux deux langues. `null` sans Supabase (démo). Base lente ou en erreur = exception
+ * (la page ISR garde sa version en cache, décision D6), sauf pendant le build (aucun pack). `cache` : une lecture par rendu.
+ */
+const readPackRows = cache(async (): Promise<DbPackRow[] | null> => {
   if (!supabasePublicEnv()) return null;
   try {
     const { data, error } = await withTimeout(
@@ -163,48 +170,64 @@ async function fetchDbPacks(locale: Locale, products: Product[]): Promise<Pack[]
         .eq("active", true)
         .order("created_at", { ascending: true }),
     );
-    if (error) return null;
-    if (!data?.length) return [];
-    const byId = new Map(products.map((p) => [p.id, p]));
-    const packs = (data as unknown as DbPackRow[]).flatMap((row) => {
-      const tr = row.pack_translations.find((t) => t.locale === locale) ?? row.pack_translations.find((t) => t.locale === "fr");
-      if (!tr || !tr.slug) return [];
-      const items = row.pack_items.flatMap((it) => {
-        const p = byId.get(it.product_id);
-        return p ? [toItem(p, it.qty)] : [];
-      });
-      return [
-        buildPack(
-          { id: row.id, slug: tr.slug, name: tr.name, description: tr.description, price: row.price, imageUrl: row.image_url },
-          items,
-          row.pack_items.length,
-        ),
-      ];
-    });
-    return packs;
-  } catch {
-    return null;
-  }
-}
-
-// ───────────────────────── API publique ─────────────────────────
-/** Tous les packs actifs, localisés (base d'abord, démo si la base est absente ou vide). */
-export const getPacks = cache(async (locale: Locale): Promise<Pack[]> => {
-  try {
-    const products = await getProducts(locale);
-    // Packs de démo seulement sans base (développement) : jamais de packs fictifs en production.
-    if (!supabasePublicEnv()) return buildDemoPacks(locale, products);
-    return (await fetchDbPacks(locale, products)) ?? [];
-  } catch {
-    return [];
+    if (error) throw new Error("packs_unavailable");
+    return (data ?? []) as unknown as DbPackRow[];
+  } catch (e) {
+    if (isBuildPhase()) return [];
+    throw e;
   }
 });
 
-/** Les packs sont-ils activés (bouton Admin → Packs) ? Vrai par défaut, y compris si la lecture échoue. */
+function dbPacks(rows: DbPackRow[], locale: Locale, products: Product[]): Pack[] {
+  const byId = new Map(products.map((p) => [p.id, p]));
+  return rows.flatMap((row) => {
+    const tr = row.pack_translations.find((t) => t.locale === locale) ?? row.pack_translations.find((t) => t.locale === "fr");
+    if (!tr || !tr.slug) return [];
+    const items = row.pack_items.flatMap((it) => {
+      const p = byId.get(it.product_id);
+      return p ? [toItem(p, it.qty)] : [];
+    });
+    return [
+      buildPack(
+        { id: row.id, slug: tr.slug, name: tr.name, description: tr.description, price: row.price, imageUrl: row.image_url },
+        items,
+        row.pack_items.length,
+      ),
+    ];
+  });
+}
+
+// ───────────────────────── API publique ─────────────────────────
+/** Tous les packs actifs, localisés. Démo seulement sans base (développement) : jamais de packs fictifs en production. */
+export const getPacks = cache(async (locale: Locale): Promise<Pack[]> => {
+  const products = await getProducts(locale);
+  if (!supabasePublicEnv()) return buildDemoPacks(locale, products);
+  return dbPacks((await readPackRows()) ?? [], locale, products);
+});
+
+/** Les packs sont-ils activés (bouton Admin → Packs) ? Vrai par défaut ; base en panne = exception (comme `getSettings`). */
 export async function getPacksEnabled(): Promise<boolean> {
   return (await getSettings()).features?.packs !== false;
 }
 
 export async function getPackBySlug(locale: Locale, slug: string): Promise<Pack | null> {
   return (await getPacks(locale)).find((p) => p.slug === slug) ?? null;
+}
+
+/** Slugs FR/EN de chaque pack actif. `en` absent = pas de texte anglais (pas d'alternate EN, canonique FR). */
+export const getPackSlugs = cache(async (): Promise<Map<string, LocaleSlugs>> => {
+  const rows = await readPackRows();
+  if (!rows) return new Map(DEMO_PACKS.map((d) => [demoPackId(d.key), { fr: d.fr.slug, en: d.en.slug }]));
+  return new Map(
+    rows.map((row): [string, LocaleSlugs] => {
+      const fr = row.pack_translations.find((t) => t.locale === "fr" && t.slug);
+      const en = row.pack_translations.find((t) => t.locale === "en" && t.slug);
+      return [row.id, { fr: fr?.slug || en?.slug || row.id, ...(en ? { en: en.slug } : {}) }];
+    }),
+  );
+});
+
+/** Bon slug de pack dans `locale` quand `slug` vient de l'autre langue (308, S2). `null` si inconnu ou déjà correct. */
+export async function findPackSlug(locale: Locale, slug: string): Promise<string | null> {
+  return slugForLocale(await getPackSlugs(), locale, slug);
 }

@@ -21,6 +21,7 @@ const MAX_ITEMS = 200;
 function refresh() {
   revalidatePath("/admin/campagnes");
   revalidatePath("/[lang]", "layout");
+  revalidatePath("/sitemap.xml");
 }
 
 type Prepared = { sb: SupabaseClient } | { error: Fail };

@@ -11,12 +11,14 @@ import { COLLECTIONS, type ShellCategory } from "./logic";
  * Le bloc sombre « Vous ne savez pas quoi choisir ? » ouvre l'assistant (J3).
  */
 export function MegaMenu({
+  id,
   categories,
   total,
   onNavigate,
   packsEnabled = true,
   campaign = null,
 }: {
+  id?: string;
   categories: ShellCategory[];
   total: number;
   onNavigate: () => void;
@@ -24,35 +26,42 @@ export function MegaMenu({
   campaign?: HeaderCampaign | null;
 }) {
   const t = useTranslations();
+  // Rayons vides masqués, jamais de « 0 produit » ni de « (0) » (audit Mia 3.4 : boutique qui paraît abandonnée).
+  const shown = categories.filter((c) => c.count > 0);
   return (
     <div
+      id={id}
       className="bg-cream border-border absolute top-full right-0 left-0 border-b shadow-[0_24px_40px_-24px_rgba(20,18,16,0.35)] max-[979px]:hidden"
       style={{ animation: "wxup .2s ease both" }}
     >
-      <div className="mx-auto grid max-w-[1280px] grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)] gap-8 px-5 pt-6 pb-7">
-        <div className="flex flex-col gap-3">
-          <span className="text-muted text-[12px] font-semibold tracking-[0.08em] uppercase">
-            {t("Shell.mega.categories")}
-          </span>
-          <div className="grid grid-cols-3 gap-[10px]">
-            {categories.map((c) => (
-              <Link
-                key={c.id}
-                href={`/catalogue?cat=${encodeURIComponent(c.id)}`}
-                onClick={onNavigate}
-                className="text-ink! hover:text-ink! flex flex-col gap-[2px] rounded-[16px] px-4 py-[14px] no-underline transition-transform duration-150 hover:-translate-y-0.5"
-                style={{ background: c.bg }}
-              >
-                <strong className="font-display text-[15px] font-semibold">
-                  {c.label}
-                </strong>
-                <span className="text-text text-[13px]">
-                  {t("Shell.productCount", { count: c.count })}
-                </span>
-              </Link>
-            ))}
+      <div
+        className={`mx-auto grid max-w-[1280px] gap-8 px-5 pt-6 pb-7 ${shown.length ? "grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]" : "grid-cols-[minmax(0,1fr)_minmax(0,1fr)]"}`}
+      >
+        {shown.length ? (
+          <div className="flex flex-col gap-3">
+            <span className="text-muted text-[12px] font-semibold tracking-[0.08em] uppercase">
+              {t("Shell.mega.categories")}
+            </span>
+            <div className="grid grid-cols-3 gap-[10px]">
+              {shown.map((c) => (
+                <Link
+                  key={c.id}
+                  href={`/catalogue?cat=${encodeURIComponent(c.id)}`}
+                  onClick={onNavigate}
+                  className="text-ink! hover:text-ink! flex flex-col gap-[2px] rounded-[16px] px-4 py-[14px] no-underline transition-transform duration-150 hover:-translate-y-0.5"
+                  style={{ background: c.bg }}
+                >
+                  <strong className="font-display text-[15px] font-semibold">
+                    {c.label}
+                  </strong>
+                  <span className="text-text text-[13px]">
+                    {t("Shell.productCount", { count: c.count })}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
         <div className="flex flex-col">
           <span className="text-muted mb-[6px] text-[12px] font-semibold tracking-[0.08em] uppercase">
             {t("Shell.mega.collections")}
@@ -94,7 +103,9 @@ export function MegaMenu({
             onClick={onNavigate}
             className="pt-3 text-[15px] font-semibold"
           >
-            {t("Shell.mega.all", { count: total })}
+            {total > 0
+              ? t("Shell.mega.all", { count: total })
+              : t("Shell.mobile.all")}
           </Link>
         </div>
         <MegaAssistantBlock onNavigate={onNavigate} />

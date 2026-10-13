@@ -1,1 +1,46 @@
-{}
+{
+  "Security": {
+    "checkout": {
+      "resumed": "Your cart and details have been restored. Check the payment method, then confirm."
+    },
+    "retry": {
+      "retry": "Try the payment again",
+      "payCod": "Pay on delivery",
+      "whatsapp": "Message us on WhatsApp",
+      "whatsappText": "Hello, order {number}: the payment did not go through.",
+      "cartKept": "Your cart has been kept, there is nothing to type again."
+    },
+    "auth": {
+      "captcha": "The anti-robot check did not go through. Wait a moment, then try again."
+    },
+    "confirm": {
+      "brand": "Wá xɔ",
+      "warning": "This link signs in to the account that requested it. If you did not request anything, or if someone sent you this link, simply close this page.",
+      "email": {
+        "title": "Confirm your email address",
+        "text": "One last step to activate your account.",
+        "button": "Confirm my address"
+      },
+      "recovery": {
+        "title": "Choose a new password",
+        "text": "You will be signed in to set your new password.",
+        "button": "Continue"
+      },
+      "invite": {
+        "title": "Activate your access",
+        "text": "You will be signed in to choose your password.",
+        "button": "Activate my access"
+      },
+      "email_change": {
+        "title": "Confirm the new address",
+        "text": "Your account will use this address to sign in and for emails.",
+        "button": "Confirm the new address"
+      },
+      "magiclink": {
+        "title": "Sign in",
+        "text": "You will be signed in to your account.",
+        "button": "Sign me in"
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
+import { AssistantCta } from "@/components/assistant/entries";
 import { Link } from "@/i18n/navigation";
 import type { Product } from "@/lib/catalog/types";
 import { mixOrder, type ShellCategory } from "./logic";
@@ -19,15 +20,47 @@ function SectionHead({ title, sub, link }: { title: string; sub: string; link: R
   );
 }
 
-/** « Parcourir par rayon » : une tuile pastel par rayon (maquette lignes 208-218). */
+/**
+ * Boutique vide (avant la saisie des vrais produits) : un bloc unique « Arrivage en cours » à la place des sections vides
+ * (accueil) ou de la grille (catalogue). Jamais de « 0 produit ». `compact` : dans une page qui a déjà ses marges.
+ */
+export function ArrivalNotice({ compact = false }: { compact?: boolean }) {
+  const t = useTranslations("EmptyStates");
+  const box = (
+    <div className="rounded-block flex flex-col items-start gap-3 bg-white p-6 min-[640px]:p-8">
+      <span className="text-terracotta-deep text-[13px] font-semibold tracking-[0.04em] uppercase">{t("arrivalEyebrow")}</span>
+      <h2 className="font-display m-0 text-[clamp(24px,2.8vw,34px)] leading-[1.05] font-semibold tracking-[-0.035em]">{t("arrivalTitle")}</h2>
+      <p className="text-text m-0 max-w-[560px] text-[16px] leading-[1.6] text-pretty">{t("arrivalText")}</p>
+      <div className="mt-1 flex flex-wrap items-center gap-3">
+        <AssistantCta />
+        <Link
+          href="/contact"
+          className="border-border-strong text-ink! hover:text-ink! flex min-h-[46px] items-center rounded-full border px-5 font-medium no-underline hover:bg-[#FAF8F3]"
+        >
+          {t("arrivalCta")}
+        </Link>
+      </div>
+    </div>
+  );
+  if (compact) return box;
+  return (
+    <section aria-label={t("arrivalTitle")} className="mx-auto max-w-[1280px] px-5 pt-12">
+      {box}
+    </section>
+  );
+}
+
+/** « Parcourir par rayon » : une tuile pastel par rayon (maquette lignes 208-218). Rayons vides masqués ; aucun rayon garni = pas de section. */
 export function CategoryTiles({ categories }: { categories: ShellCategory[] }) {
   const t = useTranslations("Home");
   const ts = useTranslations("Shell");
+  const filled = categories.filter((c) => c.count > 0);
+  if (filled.length === 0) return null;
   return (
     <section aria-label={t("categories")} className="mx-auto max-w-[1280px] px-5 pt-12">
       <strong className="text-muted mb-[14px] block text-[13px] tracking-[0.08em] uppercase">{t("browse")}</strong>
       <div className="grid grid-cols-2 gap-3 min-[560px]:grid-cols-3 min-[980px]:grid-cols-6">
-        {categories.map((c) => (
+        {filled.map((c) => (
           <Link
             key={c.id}
             href={`/catalogue?cat=${encodeURIComponent(c.id)}`}
@@ -43,11 +76,12 @@ export function CategoryTiles({ categories }: { categories: ShellCategory[] }) {
   );
 }
 
-/** Aperçu du catalogue : 8 produits dans un ordre « mélangé » stable (4 sous 760 px). Maquette lignes 220-248. */
+/** Aperçu du catalogue : 8 produits dans un ordre « mélangé » stable (4 sous 760 px). Maquette lignes 220-248. Rien sans produit. */
 export function HomeCatalog({ products, total }: { products: Product[]; total: number }) {
   const t = useTranslations("Home");
   const ts = useTranslations("Shell");
   const mix = mixOrder(products).slice(0, 8);
+  if (mix.length === 0) return null;
   return (
     <section className="mx-auto max-w-[1280px] px-5 pt-14">
       <SectionHead
@@ -78,11 +112,12 @@ export function HomeCatalog({ products, total }: { products: Product[]; total: n
   );
 }
 
-/** « Nos produits les plus vendus » : les 4 meilleures ventes en stock, numérotées (maquette lignes 278-304). */
+/** « Nos produits les plus vendus » : les 4 meilleures ventes en stock, numérotées (maquette lignes 278-304). Rien sans produit. */
 export function BestSellers({ products, bestIds }: { products: Product[]; bestIds: string[] }) {
   const t = useTranslations("Home");
   const byId = new Map(products.map((p) => [p.id, p]));
   const best = bestIds.map((id) => byId.get(id)).filter((p): p is Product => !!p);
+  if (best.length === 0) return null;
   return (
     <section className="mx-auto max-w-[1280px] px-5 pt-16 pb-[72px]">
       <SectionHead

@@ -2,6 +2,7 @@ import { fail, isLocale, json, clientIp, readJson, siteOrigin } from "@/lib/auth
 import { checkBot } from "@/lib/auth/bot-guard";
 import { createSharedLimiter } from "@/lib/ratelimit";
 import { withTimeout } from "@/lib/auth/timeout";
+import { turnstilePasses, verifyTurnstile } from "@/lib/auth/turnstile";
 import { fieldErrors, signupSchema } from "@/lib/auth/validation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { supabasePublicEnv } from "@/lib/supabase/env";
@@ -25,6 +26,8 @@ export async function POST(req: Request) {
   if (!parsed.success) return fail("invalid", 422, { fields: fieldErrors(parsed.error) });
   const v = parsed.data;
   if (!supabasePublicEnv()) return fail("unavailable", 503);
+  // CAPTCHA Turnstile (audit M1) : inerte sans les deux clés ; jeton absent ou refusé → 403, rien n'est créé.
+  if (!turnstilePasses(await verifyTurnstile(body.captcha, clientIp(req)))) return fail("captcha", 403);
 
   const lang = isLocale(body.lang) ? body.lang : "fr";
   try {

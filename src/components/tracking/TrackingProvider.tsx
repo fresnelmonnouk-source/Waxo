@@ -10,7 +10,10 @@ import {
   isCatalogPath,
   isCheckoutPath,
   isThanksPath,
+  packSlugFromPath,
+  productItemFromJsonLd,
   productSlugFromPath,
+  sanitizePayload,
   type CartSnap,
   type TrackItem,
 } from "@/lib/tracking/events";
@@ -43,22 +46,15 @@ function readCartSnap(): CartSnap[] {
 const toItems = (lines: CartSnap[]): TrackItem[] =>
   lines.map((l) => ({ id: l.kind === "pack" ? `pack:${l.id}` : l.id, name: l.name, price: l.price, quantity: l.qty }));
 
-/** Cherche le JSON-LD `Product` de la page (posé par `productJsonLd`), pour connaître id, nom et prix de la fiche. */
-function readProductFromJsonLd(): TrackItem | null {
-  try {
-    for (const s of Array.from(document.querySelectorAll('script[type="application/ld+json"]'))) {
-      const data: unknown = JSON.parse(s.textContent ?? "null");
-      const list = Array.isArray(data) ? data : [data];
-      for (const d of list) {
-        const o = d as { "@type"?: string; sku?: string; name?: string; offers?: { price?: number | string } } | null;
-        if (o && o["@type"] === "Product" && o.sku) {
-          const price = Number(o.offers?.price);
-          return { id: String(o.sku), name: o.name, price: Number.isFinite(price) ? price : undefined, quantity: 1 };
-        }
-      }
+/** Lit le JSON-LD `Product` de la fiche (contrat du brief : `productID` + `offers.price`), ou null s'il n'est pas (encore) là. */
+function readProductFromJsonLd(page: { section: "produit" | "packs"; slug: string }): TrackItem | null {
+  for (const s of Array.from(document.querySelectorAll('script[type="application/ld+json"]'))) {
+    try {
+      const item = productItemFromJsonLd(JSON.parse(s.textContent ?? "null"), page);
+      if (item) return item;
+    } catch {
+      /* bloc illisible : on passe au suivant */
     }
-  } catch {
-    /* JSON-LD absent ou illisible */
   }
   return null;
 }
@@ -98,19 +94,23 @@ function RouteTracker() {
     return () => window.clearTimeout(id);
   }, [active, pathname]);
 
-  // view_item : fiche produit.
+  // view_item : fiche produit ou pack. Même identifiant (UUID) et même prix que add_to_cart, lus dans le JSON-LD ;
+  // sans données fiables après ~1,3 s, aucun événement (jamais de repli sur le slug, jamais sans valeur).
   useEffect(() => {
     if (!active) return;
-    const slug = productSlugFromPath(pathname);
-    if (!slug) return;
+    const productSlug = productSlugFromPath(pathname);
+    const packSlug = productSlug ? null : packSlugFromPath(pathname);
+    const page = productSlug ? { section: "produit" as const, slug: productSlug } : packSlug ? { section: "packs" as const, slug: packSlug } : null;
+    if (!page) return;
     let tries = 0;
     let timer = 0;
     const attempt = () => {
-      const item = readProductFromJsonLd();
-      if (item || tries >= 8) {
-        track({ name: "view_item", items: [item ?? { id: slug, name: document.title.split(" · ")[0], quantity: 1 }] });
+      const item = readProductFromJsonLd(page);
+      if (item) {
+        track({ name: "view_item", items: [item] });
         return;
       }
+      if (tries >= 8) return;
       tries += 1;
       timer = window.setTimeout(attempt, 150);
     };
@@ -129,11 +129,13 @@ function RouteTracker() {
   useEffect(() => {
     if (!active || !isThanksPath(pathname)) return;
     try {
-      const o = JSON.parse(sessionStorage.getItem(LAST_ORDER_KEY) ?? "null") as { number?: unknown; total?: unknown; pending?: unknown } | null;
+      const o = JSON.parse(sessionStorage.getItem(LAST_ORDER_KEY) ?? "null") as { number?: unknown; total?: unknown; pending?: unknown; items?: unknown } | null;
       if (!o || typeof o.number !== "string" || !/^WX-\d+$/.test(o.number) || typeof o.total !== "number" || o.pending) return;
       if (wasOrderTracked(o.number)) return;
       markOrderTracked(o.number);
-      track({ name: "purchase", transactionId: o.number, value: o.total });
+      // Lignes optionnelles `{ id, price, quantity }` (UUID, `pack:<UUID>` pour un pack) : mêmes identifiants que view_item / add_to_cart.
+      const items = sanitizePayload({ items: o.items }).items;
+      track({ name: "purchase", transactionId: o.number, value: o.total, ...(items?.length ? { items } : {}) });
     } catch {
       /* pas de commande en mémoire */
     }

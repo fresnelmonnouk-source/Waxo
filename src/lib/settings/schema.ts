@@ -62,7 +62,7 @@ export const DEFAULT_FORM: SettingsForm = {
   shopName: "Wá xɔ",
   whatsapp: "+229 01 00 00 00 00",
   email: "contact@waxo.bj",
-  hours: "Du lundi au samedi, de 8 h à 19 h",
+  hours: "7 j/7, de 8 h à 20 h",
   shipCotonou: "1000",
   shipOther: "2500",
   freeFrom: "15000",

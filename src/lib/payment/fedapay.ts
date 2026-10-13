@@ -118,7 +118,7 @@ function buildTransactionBody(order: PayableOrder, callbackUrl: string, withCont
 }
 
 /** Trace « pending » pour l'audit et la réconciliation du cron. Jamais bloquant. */
-async function recordPending(order: PayableOrder, transactionId: string): Promise<void> {
+async function recordPending(order: PayableOrder, transactionId: string, mode: FedapayConfig["env"]): Promise<void> {
   try {
     const admin = createAdminClient();
     await admin.from("payments").insert({
@@ -127,7 +127,7 @@ async function recordPending(order: PayableOrder, transactionId: string): Promis
       provider_ref: transactionId,
       status: "pending",
       amount: order.total,
-      raw: { id: transactionId, method: order.method },
+      raw: { id: transactionId, method: order.method, mode },
     });
   } catch {
     /* l'absence de trace n'empêche pas le paiement */
@@ -165,7 +165,7 @@ export class FedaPayProvider implements PaymentProvider {
     const url = typeof tokenRes?.url === "string" ? tokenRes.url : "";
     if (!/^https:\/\//i.test(url)) throw new FedapayError("fedapay_bad_token", 0);
 
-    await recordPending(order, tx.id);
+    await recordPending(order, tx.id, this.cfg.env);
     return { redirectUrl: url };
   }
 }

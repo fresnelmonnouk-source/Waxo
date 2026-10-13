@@ -5,7 +5,7 @@ import { deleteSubscriberAction } from "@/app/admin/(panel)/newsletter/actions";
 import type { Subscriber } from "@/lib/admin/data/newsletter";
 import { fmtDateLong } from "@/lib/settings/format";
 import { prettyPhone } from "@/lib/settings/phone";
-import { btnDark, btnLink, DemoBanner, EmptyBox, useToast } from "../settings/ui";
+import { btnLink, DemoBanner, EmptyBox, useToast } from "../settings/ui";
 
 export function NewsletterBoard({
   rows,
@@ -47,11 +47,7 @@ export function NewsletterBoard({
   return (
     <div className="flex flex-col gap-5">
       <DemoBanner connected={connected} />
-      <div className="flex justify-end">
-        <a href="/admin/newsletter/export" download className={`${btnDark} px-5 min-h-[46px]`}>
-          Exporter en CSV
-        </a>
-      </div>
+      {/* « Exporter en CSV » : dans l'en-tête de page (PageHeading), comme dans la maquette (ligne 79). */}
       <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))" }}>
         <div className="bg-white rounded-[20px] px-5 py-[18px] flex flex-col gap-1.5">
           <span className="text-[13px] text-text">Par e-mail</span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AccountMenu } from "@/components/account/AccountMenu";
 import { HeaderAssistantButton } from "@/components/assistant/entries";
@@ -13,6 +13,14 @@ import type { HeaderCampaign } from "./campaign-logic";
 import type { SearchEntry, ShellCategory } from "./logic";
 import { MegaMenu } from "./MegaMenu";
 import { MobileNav } from "./MobileNav";
+
+/** Panneau « Catalogue » : cible de `aria-controls` du bouton. */
+const MEGA_ID = "menu-catalogue";
+
+/** Nom accessible du bouton panier : le nombre d'articles, visible dans la pastille, doit aussi être annoncé (audit Mia 4.12). */
+export function cartButtonLabel(openCart: string, count: number): string {
+  return `${openCart} (${count})`;
+}
 
 const NAV_LINK =
   "text-ink! hover:text-terracotta-deep! flex items-center px-3 no-underline";
@@ -46,6 +54,7 @@ export function Header({
   const [megaAt, setMegaAt] = useState<string | null>(null);
   const mobileOpen = mobileAt === pathname;
   const megaOpen = megaAt === pathname;
+  const megaBtnRef = useRef<HTMLButtonElement>(null);
   const closeAll = () => {
     setMobileAt(null);
     setMegaAt(null);
@@ -55,6 +64,12 @@ export function Header({
     if (!mobileOpen && !megaOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        // Échap dans le panneau Catalogue : le focus revient au bouton (sinon il tombe sur le corps de la page).
+        if (megaOpen && megaBtnRef.current) {
+          const panel = document.getElementById(MEGA_ID);
+          if (panel?.contains(document.activeElement))
+            megaBtnRef.current.focus();
+        }
         setMobileAt(null);
         setMegaAt(null);
       }
@@ -153,7 +168,7 @@ export function Header({
                 closeAll();
                 cartDrawer.open();
               }}
-              aria-label={t("openCart")}
+              aria-label={cartButtonLabel(t("openCart"), cartCount)}
               className="bg-ink text-cream flex h-11 cursor-pointer items-center gap-[10px] rounded-full border-0 px-[14px] text-[14px] font-semibold hover:bg-[#2C2823]"
             >
               <span className="max-[979px]:hidden">{t("cart")}</span>
@@ -174,9 +189,11 @@ export function Header({
             {t("nav.home")}
           </Link>
           <button
+            ref={megaBtnRef}
             type="button"
             onClick={() => setMegaAt(megaOpen ? null : pathname)}
             aria-expanded={megaOpen}
+            aria-controls={megaOpen ? MEGA_ID : undefined}
             className={`flex cursor-pointer items-center gap-[6px] bg-transparent px-3 text-[15px] font-semibold ${underline(onCatalog)} border-x-0 border-t-0`}
           >
             {t("nav.catalog")}
@@ -196,6 +213,18 @@ export function Header({
               <path d="M6 9l6 6 6-6" />
             </svg>
           </button>
+          {/* Panneau rendu juste après son bouton (audit Mia 4.3) : Tab y entre aussitôt, au lieu de traverser toute la
+              navigation. Position absolue : il reste calé sous l'en-tête collant (premier ancêtre positionné). */}
+          {megaOpen ? (
+            <MegaMenu
+              id={MEGA_ID}
+              categories={categories}
+              total={total}
+              onNavigate={closeAll}
+              packsEnabled={packsEnabled}
+              campaign={menuCampaign}
+            />
+          ) : null}
           {menuCampaign && campaignHref ? (
             <Link
               href={campaignHref}
@@ -262,15 +291,6 @@ export function Header({
             {t("nav.track")}
           </Link>
         </nav>
-        {megaOpen ? (
-          <MegaMenu
-            categories={categories}
-            total={total}
-            onNavigate={closeAll}
-            packsEnabled={packsEnabled}
-            campaign={menuCampaign}
-          />
-        ) : null}
       </header>
       {megaOpen ? (
         <div

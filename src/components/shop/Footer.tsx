@@ -27,11 +27,13 @@ export function Footer({
 }) {
   const t = useTranslations("Footer");
   // Les horaires des réglages sont saisis en français : en anglais, on ne remplace que le texte par défaut.
-  const hours = lang === "en" && brand.hours === defaultHours ? t("hours") : brand.hours;
+  // Comparaison sans tenir compte des espaces (insécables comprises) ; réglage vide = texte par défaut traduit.
+  const norm = (s: string) => s.replace(/\s+/g, " ").trim();
+  const hours = !brand.hours.trim() || (lang === "en" && norm(brand.hours) === norm(defaultHours)) ? t("hours") : brand.hours;
   const year = new Date().getFullYear();
 
   return (
-    <footer aria-label={t("label")} className="bg-ink text-cream">
+    <footer aria-label={t("label")} className="on-dark bg-ink text-cream">
       <div className="mx-auto grid max-w-[1280px] grid-cols-[repeat(auto-fit,minmax(min(100%,180px),1fr))] gap-8 px-5 pt-14 pb-8">
         <div className="flex flex-col gap-[10px]">
           <span className="font-display text-[28px] font-bold tracking-[-0.03em]">
@@ -93,12 +95,17 @@ export function Footer({
         </div>
         <div className="flex flex-col gap-[10px] text-[14px]">
           <strong className={COL_TITLE}>{t("reach")}</strong>
-          <a href={`https://wa.me/${brand.waNumber.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className={LINK}>
-            {t("whatsapp", { phone: brand.whatsapp })}
-          </a>
-          <a href={`mailto:${brand.email}`} className={LINK}>
-            {brand.email}
-          </a>
+          {/* Coordonnées vides (réglages pas encore saisis) : lien masqué plutôt qu'un lien mort. */}
+          {brand.waNumber.replace(/\D/g, "") ? (
+            <a href={`https://wa.me/${brand.waNumber.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className={LINK}>
+              {t("whatsapp", { phone: brand.whatsapp })}
+            </a>
+          ) : null}
+          {brand.email ? (
+            <a href={`mailto:${brand.email}`} className={LINK}>
+              {brand.email}
+            </a>
+          ) : null}
           <span className="leading-normal text-[#B9B1A4]">{hours}</span>
         </div>
       </div>

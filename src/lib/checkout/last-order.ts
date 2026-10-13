@@ -13,6 +13,8 @@ export type LastOrder = {
   /** Paiement en ligne non encore confirmé (webhook à venir). */
   pending: boolean;
   placedAt: number;
+  /** Lignes pour l'événement `purchase` (mêmes identifiants que `add_to_cart` : UUID, `pack:<UUID>` pour un pack). */
+  items?: { id: string; price: number; quantity: number }[];
 };
 
 const KEY = "waxo:last-order:v1";
@@ -50,6 +52,11 @@ export function parseLastOrder(raw: string | null): LastOrder | null {
       phone: typeof o.phone === "string" ? o.phone : "",
       pending: !!o.pending,
       placedAt: typeof o.placedAt === "number" ? o.placedAt : 0,
+      items: Array.isArray(o.items)
+        ? o.items
+            .filter((i) => i && typeof i.id === "string" && Number.isFinite(i.price) && Number.isInteger(i.quantity) && i.quantity > 0)
+            .map((i) => ({ id: i.id, price: i.price, quantity: i.quantity }))
+        : undefined,
     };
   } catch {
     return null;

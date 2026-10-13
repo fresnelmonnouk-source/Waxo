@@ -5,7 +5,10 @@ import { AssistantCta } from "@/components/assistant/entries";
 
 export type FaqItem = { id: string; question: string; answer: ReactNode };
 
-/** Accordéon FAQ (maquette 609-618) : une réponse ouverte à la fois, la première par défaut. Le bouton « Demander à l'assistant » (J3) suit la liste. */
+/**
+ * Accordéon FAQ (maquette 609-618) : une réponse ouverte à la fois, la première par défaut. Le bouton « Demander à l'assistant » (J3) suit la liste.
+ * Toutes les réponses sont dans le HTML (moteurs de recherche et moteurs à réponse IA) ; fermées, elles sont masquées par `hidden`.
+ */
 export function FaqList({ items }: { items: FaqItem[] }) {
   const [open, setOpen] = useState(0);
   const base = useId();
@@ -29,11 +32,9 @@ export function FaqList({ items }: { items: FaqItem[] }) {
                 </span>
               </button>
             </h2>
-            {on ? (
-              <p id={`${base}-${i}`} className="m-0 mb-5 leading-[1.6] text-text">
-                {it.answer}
-              </p>
-            ) : null}
+            <p id={`${base}-${i}`} hidden={!on} className="m-0 mb-5 leading-[1.6] text-text">
+              {it.answer}
+            </p>
           </div>
         );
       })}

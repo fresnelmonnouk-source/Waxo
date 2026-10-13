@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { NEW_PRODUCT_HREF } from "../shell/PageHeading";
 import { adjustStock, setProductActive, setProductStock } from "@/app/admin/(panel)/produits/actions";
 import { fmtXof } from "@/lib/money";
 import { ProductDrawer } from "./ProductDrawer";
@@ -19,9 +21,14 @@ const norm = (s: string) =>
 
 const plural = (n: number, one: string, many: string) => `${n.toLocaleString("fr-FR")} ${n > 1 ? many : one}`;
 
-/** Liste des produits (maquette 156-178) : recherche, rayon, stock rapide, visibilité, tiroir d'édition. */
+/**
+ * Liste des produits (maquette 156-178) : recherche, rayon, stock rapide, visibilité, tiroir d'édition.
+ * Création : « + Ajouter un produit » est dans l'en-tête de page (PageHeading) et pointe vers `?nouveau=1`, qui ouvre le tiroir ;
+ * le paramètre est retiré à la fermeture (lien partageable, retour arrière cohérent).
+ */
 export function ProductsView({ data }: { data: ProductsData }) {
   const router = useRouter();
+  const creating = useSearchParams()?.get("nouveau") === "1";
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("all");
   const [editing, setEditing] = useState<{ product: AdminProduct | null } | null>(null);
@@ -106,16 +113,6 @@ export function ProductsView({ data }: { data: ProductsData }) {
       <SourceNotice source={data.source} truncated={data.truncated} noun="produits" />
 
       {/* Le compteur « N produits · M en stock faible » est déjà dans le sous-titre de la page (shell/meta.ts), comme dans la maquette. */}
-      <div className="flex flex-wrap items-center justify-end gap-3">
-        <button
-          type="button"
-          onClick={() => setEditing({ product: null })}
-          className="min-h-[46px] cursor-pointer rounded-full border-0 bg-[#141210] px-5 font-semibold text-[#F4F1EA] hover:bg-[#2C2823]"
-        >
-          + Ajouter un produit
-        </button>
-      </div>
-
       <div className="flex flex-wrap items-center gap-2.5">
         <input
           type="search"
@@ -141,11 +138,23 @@ export function ProductsView({ data }: { data: ProductsData }) {
       </div>
 
       <div className="flex flex-col gap-2" role="list">
-        {list.length === 0 && (
-          <p className="m-0 rounded-2xl border border-[#E2DCCF] bg-white p-5 text-sm text-[#4A443C]">
-            {data.products.length === 0 ? "Aucun produit pour l'instant." : "Aucun produit ne correspond à votre recherche."}
-          </p>
-        )}
+        {list.length === 0 &&
+          (data.products.length === 0 ? (
+            <div className="flex flex-col items-start gap-3 rounded-2xl border border-[#E2DCCF] bg-white p-5 text-sm text-[#4A443C]">
+              <p className="m-0">Aucun produit pour l&apos;instant.</p>
+              <Link
+                href={NEW_PRODUCT_HREF}
+                scroll={false}
+                className="inline-flex min-h-[46px] items-center rounded-full bg-[#141210] px-5 font-semibold text-[#F4F1EA] no-underline hover:bg-[#2C2823] hover:text-[#F4F1EA]"
+              >
+                Ajouter votre premier produit
+              </Link>
+            </div>
+          ) : (
+            <p className="m-0 rounded-2xl border border-[#E2DCCF] bg-white p-5 text-sm text-[#4A443C]">
+              Aucun produit ne correspond à votre recherche.
+            </p>
+          ))}
         {list.map((p) => {
           const { stock, active } = view(p);
           const tone = stockTone(stock);
@@ -231,16 +240,20 @@ export function ProductsView({ data }: { data: ProductsData }) {
         })}
       </div>
 
-      {editing && (
+      {(editing || creating) && (
         <ProductDrawer
-          key={editing.product?.id ?? "new"}
-          product={editing.product}
+          key={editing?.product?.id ?? "new"}
+          product={editing?.product ?? null}
           categories={data.categories}
-          onClose={() => setEditing(null)}
+          onClose={() => {
+            setEditing(null);
+            if (creating) router.replace("/admin/produits", { scroll: false });
+          }}
           onSaved={(message, id) => {
             if (id) patch(id, null);
             setEditing(null);
             show(message);
+            if (creating) router.replace("/admin/produits", { scroll: false });
             router.refresh();
           }}
         />

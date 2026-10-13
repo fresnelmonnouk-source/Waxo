@@ -42,7 +42,7 @@ export function HomeHero({
 
   return (
     <section className="mx-auto max-w-[1280px] px-5 pt-5">
-      <div className="bg-ink text-cream overflow-hidden rounded-[32px]">
+      <div className="on-dark bg-ink text-cream overflow-hidden rounded-[32px]">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-center gap-10 p-[clamp(28px,4vw,56px)]">
           <div className="flex min-w-0 flex-col gap-[22px]">
             <span className="text-terracotta text-[13px] font-semibold tracking-[0.08em] uppercase">{t("heroEyebrow")}</span>

@@ -1,1 +1,28 @@
-{}
+{
+  "NotFound": {
+    "eyebrow": "Error 404",
+    "title": "This page doesn't exist, or no longer does.",
+    "text": "The link may be old, or the product is no longer on sale. The rest of the shop is right here.",
+    "home": "Back to the home page",
+    "catalogue": "See the catalogue",
+    "contact": "Message us",
+    "label": "Useful links",
+    "whatsapp": "Message us on WhatsApp"
+  },
+  "ErrorPage": {
+    "eyebrow": "Small hiccup",
+    "title": "This page couldn't be displayed.",
+    "text": "A technical issue on our side, not yours. Try again in a moment, and if it keeps happening, message us.",
+    "retry": "Try again",
+    "home": "Back to the home page",
+    "contact": "Message us"
+  },
+  "EmptyStates": {
+    "arrivalEyebrow": "Coming soon",
+    "arrivalTitle": "New stock on its way",
+    "arrivalText": "Our first products are arriving very soon. In the meantime, tell us what you're looking for and we'll take care of it.",
+    "arrivalCta": "Message us",
+    "filtersTitle": "No product matches these filters.",
+    "filtersText": "The assistant can suggest something similar from our stock."
+  }
+}

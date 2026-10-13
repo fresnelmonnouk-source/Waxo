@@ -243,11 +243,27 @@ describe("POST /api/auth/login", () => {
     env.get.mockReturnValue(null);
     expect((await send({ id: "a@b.co", password: "x" })).status).toBe(503);
   });
-  it("verrou par identifiant : la 9e tentative sur le même e-mail → 429 (même depuis une autre IP)", async () => {
+  // Audit Raphaël M2 : verrou identifiant|IP (8 / 10 min) + plafond par identifiant toutes IP (40 / h) + plafond par IP.
+  const sendFrom = (b: unknown, ip: string) => call("@/app/api/auth/login/route", "POST", req("/api/auth/login", b, "POST", ip));
+  it("verrou identifiant|IP : la 9e tentative sur le même e-mail depuis la même IP → 429", async () => {
     identify.resolveEmail.mockResolvedValue("v@exemple.bj");
     signIn.mockResolvedValue({ error: { code: "invalid_credentials", status: 400 } });
     let last = 0;
-    for (let i = 0; i < 9; i++) last = (await send({ id: "v@exemple.bj", password: "x" + i })).status;
+    for (let i = 0; i < 9; i++) last = (await sendFrom({ id: "v@exemple.bj", password: "x" + i }, "10.9.0.1")).status;
+    expect(last).toBe(429);
+  });
+  it("M2 : 8 échecs d'un tiers ne bloquent plus la victime qui se connecte depuis sa propre IP", async () => {
+    identify.resolveEmail.mockResolvedValue("v@exemple.bj");
+    signIn.mockResolvedValue({ error: { code: "invalid_credentials", status: 400 } });
+    for (let i = 0; i < 9; i++) await sendFrom({ id: "v@exemple.bj", password: "x" + i }, "10.9.1.1");
+    signIn.mockResolvedValue({ error: null });
+    expect((await sendFrom({ id: "v@exemple.bj", password: "motdepasse1" }, "10.9.1.2")).json).toEqual({ ok: true });
+  });
+  it("M2 : force brute distribuée, au-delà de 40 essais / h sur un identifiant (toutes IP) → 429", async () => {
+    identify.resolveEmail.mockResolvedValue("v@exemple.bj");
+    signIn.mockResolvedValue({ error: { code: "invalid_credentials", status: 400 } });
+    let last = 0;
+    for (let i = 0; i < 41; i++) last = (await sendFrom({ id: "v@exemple.bj", password: "x" + i }, `10.9.2.${i}`)).status;
     expect(last).toBe(429);
   });
   // Risque QA-10 (faible) : la clé du verrou est `id.toLowerCase()` BRUTE. Pour un téléphone, « 0197000000 », « 01 97 00 00 00 »
@@ -257,7 +273,7 @@ describe("POST /api/auth/login", () => {
     signIn.mockResolvedValue({ error: { code: "invalid_credentials", status: 400 } });
     const formats = ["0197000000", "01 97 00 00 00", "+229 0197000000", "01-97-00-00-00", "01.97.00.00.00", "229 0197000000", "0197000000 ", "+229 01 97 00 00 00", " 01 97000000"];
     let last = 0;
-    for (const id of formats) last = (await send({ id, password: "x" })).status;
+    for (const id of formats) last = (await sendFrom({ id, password: "x" }, "10.9.3.1")).status;
     expect(last).toBe(429);
   });
 });
@@ -356,49 +372,106 @@ describe("GET /api/auth/callback/[lang]/[kind]", () => {
   });
 });
 
-describe("GET /api/auth/confirm (liens des e-mails de compte, token_hash)", () => {
+describe("/api/auth/confirm (liens des e-mails de compte, token_hash)", () => {
   const verify = vi.fn();
+  const getUser = vi.fn();
+  const signOut = vi.fn();
   beforeEach(() => {
     verify.mockReset();
-    session.create.mockResolvedValue({ auth: { verifyOtp: verify } });
+    getUser.mockReset();
+    signOut.mockReset();
+    getUser.mockResolvedValue({ data: { user: null } });
+    signOut.mockResolvedValue({ error: null });
+    session.create.mockResolvedValue({ auth: { verifyOtp: verify, getUser, signOut } });
     vi.stubEnv("RECOVERY_COOKIE_SECRET", "test-recovery-secret");
   });
   afterEach(() => vi.unstubAllEnvs());
-  const go = async (qs: string) => {
+  const get = async (qs: string) => {
     const m = await import("@/app/api/auth/confirm/route");
     const res = await m.GET(new Request(`http://localhost/api/auth/confirm${qs}`));
+    return { status: res.status, location: res.headers.get("location"), html: await res.text(), headers: res.headers };
+  };
+  const post = async (fields: Record<string, string>, headers: Record<string, string> = { "sec-fetch-site": "same-origin", origin: "http://localhost" }) => {
+    const m = await import("@/app/api/auth/confirm/route");
+    const res = await m.POST(
+      new Request("http://localhost/api/auth/confirm", {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded", ...headers },
+        body: new URLSearchParams(fields).toString(),
+      }),
+    );
     return { status: res.status, location: res.headers.get("location") };
   };
 
   it("paramètres manquants ou type inconnu → connexion avec erreur, sans appel à Supabase", async () => {
     for (const qs of ["", "?type=email&lang=en", "?token_hash=h&lang=en", "?token_hash=h&type=sms&lang=en"]) {
-      expect((await go(qs)).location, qs).toMatch(/\/connexion\?error=link$/);
+      expect((await get(qs)).location, qs).toMatch(/\/connexion\?error=link$/);
     }
+    expect((await post({ token_hash: "h", type: "sms", lang: "fr" })).location).toBe("http://localhost/fr/connexion?error=link");
     expect(verify).not.toHaveBeenCalled();
   });
-  it("confirmation d'inscription → verifyOtp(type, token_hash) puis /compte dans la langue du lien", async () => {
+  it("F1 : le GET n'ouvre AUCUNE session, il affiche un bouton qui POSTe le jeton (lien des e-mails inchangé)", async () => {
+    const r = await get("?token_hash=pkce_abc&type=recovery&lang=en");
+    expect(r.status).toBe(200);
+    expect(verify).not.toHaveBeenCalled();
+    expect(cookieStore.set).not.toHaveBeenCalled();
+    expect(r.html).toContain('<form method="post" action="/api/auth/confirm"');
+    expect(r.html).toContain('name="token_hash" value="pkce_abc"');
+    expect(r.html).toContain('name="type" value="recovery"');
+    expect(r.html).toContain("Choose a new password");
+    expect(r.headers.get("referrer-policy")).toBe("no-referrer");
+    expect(r.headers.get("cache-control")).toBe("no-store");
+  });
+  it("F1 : textes FR par défaut, jeton échappé (aucune injection HTML)", async () => {
+    const r = await get(`?token_hash=${encodeURIComponent('"><script>x</script>')}&type=email&lang=xx`);
+    expect(r.html).toContain('lang="fr"');
+    expect(r.html).toContain("Confirmer votre adresse e-mail");
+    expect(r.html).not.toContain("<script>x");
+  });
+  it("confirmation d'inscription (POST) → verifyOtp(type, token_hash) puis /compte dans la langue du lien", async () => {
     verify.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
-    expect(await go("?token_hash=pkce_abc&type=email&lang=en")).toEqual({ status: 303, location: "http://localhost/en/compte" });
+    expect(await post({ token_hash: "pkce_abc", type: "email", lang: "en" })).toEqual({ status: 303, location: "http://localhost/en/compte" });
     expect(verify).toHaveBeenCalledWith({ type: "email", token_hash: "pkce_abc" });
     expect(cookieStore.set).not.toHaveBeenCalled();
   });
   it("réinitialisation (et invitation) → cookie de récupération signé + onglet sécurité", async () => {
     verify.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
     for (const type of ["recovery", "invite"]) {
-      expect((await go(`?token_hash=h&type=${type}&lang=fr`)).location).toBe("http://localhost/fr/compte?tab=security&recovery=1");
+      expect((await post({ token_hash: "h", type, lang: "fr" })).location).toBe("http://localhost/fr/compte?tab=security&recovery=1");
     }
     expect(cookieStore.set.mock.calls[0][1]).toMatch(/^u1\.\d+\.[0-9a-f]{64}$/);
   });
+  it("F1 : POST depuis un autre site (formulaire piégé) → refusé sans appel à Supabase", async () => {
+    verify.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+    const attempts: Record<string, string>[] = [{ "sec-fetch-site": "cross-site" }, { origin: "https://evil.example" }, { "sec-fetch-site": "same-site", origin: "http://localhost" }];
+    for (const headers of attempts) {
+      expect((await post({ token_hash: "h", type: "recovery", lang: "fr" }, headers)).location).toBe("http://localhost/fr/connexion?error=link");
+    }
+    expect(verify).not.toHaveBeenCalled();
+  });
+  it("F1 : lien d'un AUTRE compte que celui déjà connecté → la session du lien est refermée, pas de bascule", async () => {
+    getUser.mockResolvedValue({ data: { user: { id: "victime" } } });
+    verify.mockResolvedValue({ data: { user: { id: "attaquant" } }, error: null });
+    expect((await post({ token_hash: "h", type: "recovery", lang: "fr" })).location).toBe("http://localhost/fr/connexion?error=link");
+    expect(signOut).toHaveBeenCalledWith({ scope: "local" });
+    expect(cookieStore.set).not.toHaveBeenCalled();
+  });
+  it("changement d'e-mail du compte déjà connecté : même utilisateur → accepté", async () => {
+    getUser.mockResolvedValue({ data: { user: { id: "u1" } } });
+    verify.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
+    expect((await post({ token_hash: "h", type: "email_change", lang: "fr" })).location).toBe("http://localhost/fr/compte");
+    expect(signOut).not.toHaveBeenCalled();
+  });
   it("lien expiré ou Supabase qui plante → connexion avec erreur (jamais de 500)", async () => {
     verify.mockResolvedValueOnce({ data: { user: null }, error: { message: "expired" } });
-    expect((await go("?token_hash=h&type=email&lang=fr")).location).toBe("http://localhost/fr/connexion?error=link");
+    expect((await post({ token_hash: "h", type: "email", lang: "fr" })).location).toBe("http://localhost/fr/connexion?error=link");
     verify.mockRejectedValueOnce(new Error("timeout"));
-    expect((await go("?token_hash=h&type=email&lang=en")).location).toBe("http://localhost/en/connexion?error=link");
+    expect((await post({ token_hash: "h", type: "email", lang: "en" })).location).toBe("http://localhost/en/connexion?error=link");
   });
   it("OPEN REDIRECT : langue piégée → toujours sur le site, en français", async () => {
     verify.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
     for (const lang of ["evil.com", "//evil.com", "https%3A%2F%2Fevil.com", "FR"]) {
-      expect((await go(`?token_hash=h&type=email&lang=${lang}`)).location, lang).toBe("http://localhost/fr/compte");
+      expect((await post({ token_hash: "h", type: "email", lang })).location, lang).toBe("http://localhost/fr/compte");
     }
   });
 });

@@ -80,7 +80,7 @@
   },
   "Home": {
     "heroEyebrow": "Stocked in Cotonou · Delivered by us 7 days a week",
-    "title": "Small useful things, delivered fast to your door.",
+    "title": "Small useful things, delivered the same day in Cotonou.",
     "lead": "Everyday items picked for their usefulness and their price.",
     "payCod": "Pay by Mobile Money, by card or on delivery.",
     "payNoCod": "Pay by Mobile Money or by card.",
@@ -99,7 +99,7 @@
     "g3Title": "Express Delivery",
     "g3Sub": "Ordered before {hour}, delivered the same day in Cotonou & Calavi. 7 days a week, Sundays too. Other cities: 48 to 72 h.",
     "g4Title": "24/7 online assistant",
-    "g4Sub": "Our site assistant answers any time, 7 days a week. Our team also replies on WhatsApp.",
+    "g4Sub": "Our site assistant answers any time. Our team replies on WhatsApp, 7 days a week, 8 am to 8 pm.",
     "browse": "Browse by aisle",
     "categories": "Categories",
     "catalogTitle": "Catalogue",
@@ -119,7 +119,7 @@
     "step1Title": "You choose",
     "step1Text": "On your own or with the assistant. No account needed if you prefer.",
     "step2Title": "We confirm",
-    "step2Text": "A WhatsApp message within the hour with your delivery slot.",
+    "step2Text": "A WhatsApp message confirms your delivery slot.",
     "step3Title": "You receive",
     "step3Text": "The courier calls you on arrival. You pay then if you have not already.",
     "g3Hour": "{hour}"
@@ -204,7 +204,7 @@
     "privacy": "Privacy policy",
     "reach": "Get in touch",
     "whatsapp": "WhatsApp {phone}",
-    "hours": "Monday to Saturday, 8 am to 7 pm",
+    "hours": "7 days a week, 8 am to 8 pm",
     "copyright": "© {year} Wá xɔ · Cotonou, Benin",
     "payments": "MTN MoMo · Moov Money · Celtiis Cash · Visa · Mastercard",
     "paymentsCod": " · Cash on delivery"

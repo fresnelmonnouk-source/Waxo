@@ -6,6 +6,12 @@ import { fieldErrors, profileSchema } from "@/lib/auth/validation";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const limiter = createSharedLimiter({ name: "me-profile-limiter", windowMs: 60_000, max: 20 });
+/**
+ * Audit Raphaël F6 : un refus « numéro déjà pris » confirme qu'un compte existe pour ce numéro. Sans vérification OTP,
+ * on ne peut pas le taire sans faire croire au client que son numéro est enregistré ; on borne donc l'oracle :
+ * 5 conflits par heure et par compte (au lieu de 20 essais par minute), puis 429.
+ */
+const conflictLimiter = createSharedLimiter({ name: "me-profile-phone-conflict", windowMs: 60 * 60_000, max: 5 });
 
 /**
  * Mise à jour du profil. Colonnes autorisées UNIQUEMENT : first_name, last_name, phone, address, news
@@ -30,7 +36,10 @@ export async function PATCH(req: Request) {
         .eq("id", ctx.userId),
     );
     // Numéro déjà rattaché à un autre compte (index unique, 0010) : erreur de champ, jamais un 502.
-    if (error?.code === "23505") return fail("invalid", 422, { fields: { phone: "phoneTaken" } });
+    if (error?.code === "23505") {
+      if (!(await conflictLimiter.hit(ctx.userId))) return fail("rateLimited", 429);
+      return fail("invalid", 422, { fields: { phone: "phoneTaken" } });
+    }
     if (error) return fail("generic", 502);
   } catch {
     return fail("generic", 502);

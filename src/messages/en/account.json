@@ -152,7 +152,7 @@
       "firstRequired": "Enter your first name.",
       "lastRequired": "Enter your last name.",
       "phoneInvalid": "A 10-digit number starting with 01.",
-      "phoneTaken": "This number is already used by another account.",
+      "phoneTaken": "This number cannot be saved. Check it or contact us.",
       "emailInvalid": "Invalid email address.",
       "passShort": "At least 8 characters.",
       "passLong": "72 characters maximum.",
@@ -210,7 +210,7 @@
   "Contact": {
     "eyebrow": "Contact",
     "title": "A question? Write to us.",
-    "intro": "We reply Monday to Saturday, 8 am to 7 pm. For an order in progress, WhatsApp is the fastest.",
+    "intro": "We reply 7 days a week, 8 am to 8 pm. For an order in progress, WhatsApp is the fastest.",
     "whatsapp": "WhatsApp",
     "writeWa": "Write on WhatsApp →",
     "phone": "Phone",
@@ -239,7 +239,7 @@
     "sending": "Sending…",
     "privacy": "Your details are only used to reply to you. <privacy>Privacy</privacy>",
     "sentTitle": "Message sent.",
-    "sentText": "We reply Monday to Saturday, 8 am to 7 pm.",
+    "sentText": "We reply 7 days a week, 8 am to 8 pm.",
     "another": "Send another message",
     "errors": {
       "nameRequired": "Enter your name.",

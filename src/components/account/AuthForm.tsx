@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { api, apiFieldErrors, errorCode, refreshMe, toast, type AuthMode } from "@/lib/auth/client";
 import { fieldErrors, forgotSchema, loginSchema, signupSchema } from "@/lib/auth/validation";
 import { Checkbox, Honeypot, PasswordField, TextField } from "./ui";
+import { TurnstileWidget, type TurnstileHandle } from "@/components/checkout/TurnstileWidget";
+
+/** CAPTCHA de l'inscription (audit M1) : sans clé de site, aucun widget ni script (le serveur exige les deux clés). */
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() || null;
 
 type Props = {
   initialMode: AuthMode;
@@ -25,6 +29,8 @@ const LINK_BTN = "cursor-pointer border-0 bg-transparent text-[14px] underline u
 export function AuthForm({ initialMode, message, variant, onSuccess }: Props) {
   const t = useTranslations("Auth");
   const tToast = useTranslations("Account.toast");
+  const tSec = useTranslations("Security.auth");
+  const turnstile = useRef<TurnstileHandle>(null);
   const locale = useLocale();
   const bg = variant === "modal" ? "white" : "cream";
 
@@ -36,6 +42,7 @@ export function AuthForm({ initialMode, message, variant, onSuccess }: Props) {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [cgu, setCgu] = useState(false);
+  const cguErrId = useId();
   const [news, setNews] = useState(false); // consentement : jamais pré-coché (Helena B3)
   const [show, setShow] = useState(false);
   const [hp, setHp] = useState("");
@@ -49,7 +56,8 @@ export function AuthForm({ initialMode, message, variant, onSuccess }: Props) {
     shownAt.current = Date.now();
   }, []);
 
-  const err = (code?: string) => (code ? (t.has(`errors.${code}`) ? t(`errors.${code}`) : t("errors.generic")) : "");
+  const err = (code?: string) =>
+    code === "captcha" ? tSec("captcha") : code ? (t.has(`errors.${code}`) ? t(`errors.${code}`) : t("errors.generic")) : "";
   const switchMode = (next: AuthMode) => {
     setMode(next);
     setErrors({});
@@ -93,7 +101,9 @@ export function AuthForm({ initialMode, message, variant, onSuccess }: Props) {
     const parsed = signupSchema.safeParse(input);
     if (!parsed.success) return setErrors(fieldErrors(parsed.error));
     setBusy(true);
-    const res = await api("/api/auth/signup", "POST", { ...input, lang: locale, website: hp, t: shownAt.current });
+    const captcha = (await turnstile.current?.token()) ?? undefined;
+    const res = await api("/api/auth/signup", "POST", { ...input, lang: locale, website: hp, t: shownAt.current, captcha });
+    turnstile.current?.reset(); // jeton à usage unique
     setBusy(false);
     if (res.data?.ok === true) {
       if (res.data.status === "signedIn") return loggedIn();
@@ -195,6 +205,8 @@ export function AuthForm({ initialMode, message, variant, onSuccess }: Props) {
               }}
               align="start"
               small
+              describedBy={cguErrId}
+              invalid={!!errors.cgu}
             >
               {t.rich("cgu", {
                 cgu: (c) => (
@@ -209,12 +221,13 @@ export function AuthForm({ initialMode, message, variant, onSuccess }: Props) {
                 ),
               })}
             </Checkbox>
-            <span aria-live="polite" className="-mt-2 text-[13px] text-terracotta-deep">
+            <span id={cguErrId} aria-live="polite" className="-mt-2 text-[13px] text-terracotta-deep">
               {err(errors.cgu)}
             </span>
             <Checkbox checked={news} onChange={setNews} small>
               {t("news")}
             </Checkbox>
+            <TurnstileWidget ref={turnstile} siteKey={TURNSTILE_SITE_KEY} lang={locale === "en" ? "en" : "fr"} />
             {formError}
             <button type="submit" disabled={busy} className={SUBMIT}>
               {busy ? t("submitting") : t("submitSignup")}

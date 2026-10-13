@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { PackBuy } from "@/components/packs/PackBuy";
 import { PackCard } from "@/components/packs/PackCard";
 import { PackContents } from "@/components/packs/PackContents";
@@ -11,9 +11,11 @@ import { DeliveryNote, StockPromise } from "@/components/shop/DeliveryPromise";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getSettings } from "@/lib/catalog";
-import { getPackBySlug, getPacks, getPacksEnabled } from "@/lib/catalog/packs";
+import { findPackSlug, getPackBySlug, getPackSlugs, getPacks, getPacksEnabled } from "@/lib/catalog/packs";
 import { Price } from "@/lib/currency/client";
-import { withSeo } from "@/lib/seo/metadata";
+import { JsonLd } from "@/lib/seo/JsonLdScript";
+import { packPageJsonLd } from "@/lib/seo/jsonld";
+import { metaDescription, pageMetadata, priceFcfa, seoText } from "@/lib/seo/metadata";
 
 // Page statique (ISR) : aucun cookies()/headers(). Prix, économie et stock se rafraîchissent toutes les 2 minutes.
 export const revalidate = 120;
@@ -31,7 +33,19 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   setRequestLocale(lang);
   const pack = await getPackBySlug(lang, slug);
   if (!pack) return {};
-  return withSeo({ title: pack.name, description: pack.description }, lang, `/packs/${encodeURIComponent(slug)}`, { canonicalOnly: true });
+  // Mêmes règles que la fiche produit : `SeoPages.pack`, photo du pack (sinon du premier produit), hreflang par langue traduite.
+  const [t, slugs] = await Promise.all([getTranslations({ locale: lang, namespace: "SeoPages" }), getPackSlugs()]);
+  const vars = { name: pack.name, price: priceFcfa(pack.price, lang) };
+  const s = slugs.get(pack.id) ?? { fr: pack.slug };
+  return pageMetadata({
+    lang,
+    path: `/packs/${encodeURIComponent(slug)}`,
+    title: t("pack.title", vars),
+    brand: t("brand"),
+    description: metaDescription(pack.description) ?? seoText(t("pack.descriptionFallback", vars)),
+    image: pack.imageUrl ?? pack.items.find((i) => i.imageUrl)?.imageUrl ?? null,
+    languagePaths: { fr: `/packs/${encodeURIComponent(s.fr)}`, ...(s.en ? { en: `/packs/${encodeURIComponent(s.en)}` } : {}) },
+  });
 }
 
 export default async function PackPage({ params }: { params: Promise<Params> }) {
@@ -39,10 +53,15 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
   if (!hasLocale(routing.locales, lang)) notFound();
   setRequestLocale(lang);
 
-  const pack = await getPackBySlug(lang, slug);
-  if (!pack) notFound();
   // Packs désactivés depuis l'admin : la fiche n'existe plus (404).
   if (!(await getPacksEnabled())) notFound();
+  const pack = await getPackBySlug(lang, slug);
+  if (!pack) {
+    // Slug de l'autre langue : 308 vers le bon slug (S2, décision D4).
+    const target = await findPackSlug(lang, slug);
+    if (target) permanentRedirect(`/${lang}/packs/${encodeURIComponent(target)}`);
+    notFound();
+  }
 
   const [t, tp, all, settings] = await Promise.all([
     getTranslations({ locale: lang, namespace: "Packs.detail" }),
@@ -56,9 +75,16 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
   const kind = stockKind(pack.stock);
   const stockText = soldOut ? t("stockOut") : kind === "low" ? t("stockLow", { count: pack.stock }) : t("stockOk");
   const others = all.filter((p) => p.id !== pack.id).slice(0, 3);
+  // JSON-LD Product du pack (productID = sku = UUID du pack, offre XOF, disponibilité) + fil d'Ariane. Aucune note.
+  const ld = packPageJsonLd(
+    { id: pack.id, slug: pack.slug, name: pack.name, description: pack.description, price: pack.price, stock: pack.stock, imageUrl: pack.imageUrl ?? pack.items.find((i) => i.imageUrl)?.imageUrl ?? null },
+    { home: tp("home"), catalogue: "", packs: tp("title") },
+    lang,
+  );
 
   return (
     <main className="mx-auto min-h-[70vh] max-w-[1180px] px-5 pt-6 pb-20">
+      <JsonLd data={ld} />
       <nav aria-label={tp("crumb")} className="text-muted mb-4 flex flex-wrap gap-2 text-[13px]">
         <Link href="/" className="text-muted!">
           {tp("home")}

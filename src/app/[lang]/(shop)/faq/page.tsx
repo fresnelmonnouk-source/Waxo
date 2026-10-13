@@ -3,15 +3,23 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { FaqList } from "@/components/account/FaqList";
 import { richTags } from "@/components/account/legal/rich";
-import { pageTitle } from "@/components/account/page-meta";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getSettings } from "@/lib/catalog";
 import { fmtXof } from "@/lib/money";
+import { JsonLd } from "@/lib/seo/JsonLdScript";
+import { faqJsonLd } from "@/lib/seo/jsonld";
+import { seoPageMetadata } from "@/lib/seo/pages";
 
 type Props = { params: Promise<{ lang: string }> };
 
-export const generateMetadata = ({ params }: Props) => pageTitle(params, "Info.meta", "faq");
+export async function generateMetadata({ params }: Props) {
+  const { lang } = await params;
+  return seoPageMetadata(lang, "faq", "/faq");
+}
+
+/** Balises riches des réponses, rendues en texte brut pour le JSON-LD FAQPage (mêmes mots que la page). */
+const plainTags = Object.fromEntries(Object.keys(richTags).map((k) => [k, (chunks: string) => chunks]));
 
 export default async function Page({ params }: Props) {
   const { lang } = await params;
@@ -29,14 +37,17 @@ export default async function Page({ params }: Props) {
     days: settings.shipping.returnDays,
     cod: settings.pay.cod ? t("cod") : "",
   };
-  const items = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
+  const numbers = [1, 2, 3, 4, 5, 6, 7, 8];
+  const items = numbers.map((n) => ({
     id: `q${n}`,
     question: t(`q${n}`),
     answer: t.rich(`a${n}`, { ...values, ...richTags }),
   }));
+  const ld = faqJsonLd(numbers.map((n) => ({ question: t(`q${n}`), answer: t.markup(`a${n}`, { ...values, ...plainTags }) })));
 
   return (
     <main className="mx-auto min-h-[70vh] max-w-[860px] px-5 pt-10 pb-[72px]">
+      <JsonLd data={ld} />
       <h1 className="font-display m-0 mb-[10px] text-[clamp(30px,4vw,44px)] font-semibold tracking-[-0.035em]">{t("title")}</h1>
       <p className="m-0 mb-7 text-[16px] text-text">{t.rich("intro", richTags)}</p>
       <FaqList items={items} />

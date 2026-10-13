@@ -1,21 +1,22 @@
 import { Suspense } from "react";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { CatalogStatic } from "@/components/shop/CatalogStatic";
 import { CatalogView } from "@/components/shop/CatalogView";
 import { getShopData } from "@/components/shop/data";
 import { routing } from "@/i18n/routing";
-import { withSeo } from "@/lib/seo/metadata";
+import { seoPageMetadata } from "@/lib/seo/pages";
 
 // Type local : PageProps<"/[lang]/catalogue"> n'existe qu'après la génération des types de routes par Next.
 type Props = { params: Promise<{ lang: string }> };
 
+// Canonique `/catalogue` quels que soient les filtres. Catalogue vide (aucun produit actif) : `noindex` (soft-404, S14).
 export async function generateMetadata({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(routing.locales, lang)) return {};
-  const t = await getTranslations({ locale: lang, namespace: "Catalog" });
-  return withSeo({ title: t("title") }, lang, "/catalogue");
+  const { products } = await getShopData(lang);
+  return seoPageMetadata(lang, "catalogue", "/catalogue", { noindex: products.length === 0 });
 }
 
 // Catalogue : page statique ; filtres et tri pilotés par l'URL et appliqués côté navigateur (24 produits).

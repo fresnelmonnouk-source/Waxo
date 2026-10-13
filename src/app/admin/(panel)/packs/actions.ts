@@ -26,6 +26,7 @@ const uuid = z.uuid();
 function refresh() {
   revalidatePath("/admin/packs");
   revalidatePath("/[lang]", "layout");
+  revalidatePath("/sitemap.xml");
 }
 
 type Prepared = { sb: SupabaseClient } | { error: Fail };

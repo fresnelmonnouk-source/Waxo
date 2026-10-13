@@ -45,6 +45,16 @@ function subscribe(listener: () => void) {
   };
 }
 
+/**
+ * Identifiants à retirer après une réponse RÉUSSIE de GET /api/products?ids= : ceux demandés mais non renvoyés
+ * (produit supprimé, désactivé ou purgé : audit Mia 4.7, l'en-tête annonçait « Mes favoris (3) » et la page « aucun favori »).
+ * Jamais appelé sur une erreur réseau ou une base injoignable (502) : un favori valide ne doit pas disparaître pour une panne.
+ */
+export function staleFavoriteIds(asked: readonly string[], found: readonly string[]): string[] {
+  const ok = new Set(found);
+  return [...new Set(asked)].filter((id) => !ok.has(id));
+}
+
 export const favorites = {
   toggle(productId: string) {
     const ids = snapshot();
@@ -52,6 +62,13 @@ export const favorites = {
   },
   clear() {
     write([]);
+  },
+  /** Retire plusieurs identifiants d'un coup (favoris fantômes) ; n'écrit rien si aucun n'est présent. */
+  removeMany(productIds: readonly string[]) {
+    const drop = new Set(productIds);
+    const ids = snapshot();
+    if (!ids.some((x) => drop.has(x))) return;
+    write(ids.filter((x) => !drop.has(x)));
   },
 };
 

@@ -1,1 +1,28 @@
-{}
+{
+  "NotFound": {
+    "eyebrow": "Erreur 404",
+    "title": "Cette page n'existe pas, ou plus.",
+    "text": "Le lien est peut-être ancien, ou le produit n'est plus en vente. Le reste de la boutique vous attend.",
+    "home": "Retour à l'accueil",
+    "catalogue": "Voir le catalogue",
+    "contact": "Nous écrire",
+    "label": "Liens utiles",
+    "whatsapp": "Écrire sur WhatsApp"
+  },
+  "ErrorPage": {
+    "eyebrow": "Petit souci",
+    "title": "La page n'a pas pu s'afficher.",
+    "text": "Un souci technique de notre côté, pas du vôtre. Réessayez dans un instant, et si cela continue, écrivez-nous.",
+    "retry": "Réessayer",
+    "home": "Retour à l'accueil",
+    "contact": "Nous écrire"
+  },
+  "EmptyStates": {
+    "arrivalEyebrow": "Bientôt en rayon",
+    "arrivalTitle": "Arrivage en cours",
+    "arrivalText": "Nos premiers produits arrivent très bientôt. En attendant, dites-nous ce que vous cherchez, on s'en occupe.",
+    "arrivalCta": "Nous écrire",
+    "filtersTitle": "Aucun produit ne correspond à ces filtres.",
+    "filtersText": "L'assistant peut vous proposer quelque chose d'approchant dans notre stock."
+  }
+}

@@ -279,7 +279,7 @@ export function AssistantWidget({ nudge = false }: { nudge?: boolean }) {
           className="bg-cream border-border fixed right-4 bottom-4 z-[60] flex h-[min(640px,calc(100dvh-32px))] w-[min(410px,calc(100vw-32px))] flex-col overflow-hidden rounded-[24px] border shadow-[0_24px_60px_-20px_rgba(20,18,16,0.55)]"
           style={{ animation: "wxup .25s ease both" }}
         >
-          <div className="bg-ink text-cream flex items-center gap-3 px-4 py-[14px]">
+          <div className="on-dark bg-ink text-cream flex items-center gap-3 px-4 py-[14px]">
             <Mark size={38} className="bg-cream text-terracotta" />
             <div className="flex flex-1 flex-col gap-[2px]">
               <strong className="text-[15px]">{t("widget.title")}</strong>

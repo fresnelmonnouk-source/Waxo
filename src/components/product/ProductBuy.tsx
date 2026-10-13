@@ -31,10 +31,15 @@ export function ProductBuy({ id, slug, name, price, stock, bg, imageUrl }: Props
   const [qty, setQty] = useState(1);
   const [maxHit, setMaxHit] = useState(false);
 
-  // Barre d'achat collante visible (mobile) : le bouton flottant de l'assistant se décale au-dessus.
+  // Barre d'achat collante visible (mobile) : le bouton flottant de l'assistant se décale au-dessus, et le bas de page
+  // gagne une marge (classe `has-sticky-buy`, globals.css) pour que la barre ne masque plus la dernière ligne du pied de page.
   useEffect(() => {
     assistant.setStickyBuy(!drawerOpen);
-    return () => assistant.setStickyBuy(false);
+    document.body.classList.toggle("has-sticky-buy", !drawerOpen);
+    return () => {
+      assistant.setStickyBuy(false);
+      document.body.classList.remove("has-sticky-buy");
+    };
   }, [drawerOpen]);
 
   const inCart = lines.find((l) => l.kind === "product" && l.id === id)?.qty ?? 0;
@@ -82,7 +87,7 @@ export function ProductBuy({ id, slug, name, price, stock, bg, imageUrl }: Props
             onClick={() => {
               if (add()) cartDrawer.open();
             }}
-            className="h-[52px] flex-[1_1_200px] cursor-pointer rounded-full border-0 bg-ink px-[22px] text-[16px] font-semibold text-cream hover:bg-[#2C2823]"
+            className="h-[52px] flex-[1_1_200px] cursor-pointer rounded-full border-0 bg-ink px-[22px] text-[16px] font-semibold whitespace-nowrap text-cream hover:bg-[#2C2823] max-[479px]:basis-full"
           >
             {t("addToCart", { total: fmt(price * qty) })}
           </button>

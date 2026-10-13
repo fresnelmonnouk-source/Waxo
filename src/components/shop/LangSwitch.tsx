@@ -13,7 +13,7 @@ export function LangSwitch({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const current = useLocale();
   const pathname = usePathname();
   return (
-    <nav aria-label={t("label")} className="flex items-center gap-1">
+    <nav aria-label={t("label")} className={`flex items-center gap-1 ${tone === "dark" ? "on-dark" : ""}`}>
       {routing.locales.map((l) => {
         const active = l === current;
         return (

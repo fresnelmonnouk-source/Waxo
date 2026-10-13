@@ -152,7 +152,7 @@
       "firstRequired": "Indiquez votre prénom.",
       "lastRequired": "Indiquez votre nom.",
       "phoneInvalid": "Numéro à 10 chiffres commençant par 01.",
-      "phoneTaken": "Ce numéro est déjà utilisé par un autre compte.",
+      "phoneTaken": "Ce numéro ne peut pas être enregistré. Vérifiez-le ou écrivez-nous.",
       "emailInvalid": "Adresse e-mail invalide.",
       "passShort": "8 caractères minimum.",
       "passLong": "72 caractères maximum.",
@@ -210,7 +210,7 @@
   "Contact": {
     "eyebrow": "Contact",
     "title": "Une question ? Écrivez-nous.",
-    "intro": "Nous répondons du lundi au samedi, de 8 h à 19 h. Pour une commande en cours, WhatsApp est le plus rapide.",
+    "intro": "Nous répondons 7 j/7, de 8 h à 20 h. Pour une commande en cours, WhatsApp est le plus rapide.",
     "whatsapp": "WhatsApp",
     "writeWa": "Écrire sur WhatsApp →",
     "phone": "Téléphone",
@@ -239,7 +239,7 @@
     "sending": "Envoi…",
     "privacy": "Vos coordonnées servent uniquement à vous répondre. <privacy>Confidentialité</privacy>",
     "sentTitle": "Message envoyé.",
-    "sentText": "Nous vous répondons du lundi au samedi, de 8 h à 19 h.",
+    "sentText": "Nous vous répondons 7 j/7, de 8 h à 20 h.",
     "another": "Envoyer un autre message",
     "errors": {
       "nameRequired": "Indiquez votre nom.",

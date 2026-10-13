@@ -37,3 +37,15 @@ export function siteOrigin(req: Request): string {
 export function isLocale(v: unknown): v is "fr" | "en" {
   return v === "fr" || v === "en";
 }
+
+/**
+ * Le POST vient-il du site lui-même (et non d'un formulaire piégé sur un autre site) ? Sec-Fetch-Site d'abord, puis
+ * Origin. Navigateur ancien qui n'envoie ni l'un ni l'autre : accepté (les autres garde-fous restent en place).
+ */
+export function sameSiteRequest(req: Request, allowed: string[]): boolean {
+  const site = req.headers.get("sec-fetch-site");
+  if (site && site !== "same-origin") return false;
+  const origin = req.headers.get("origin");
+  if (origin === null) return true;
+  return allowed.includes(origin);
+}

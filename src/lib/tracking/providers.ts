@@ -89,13 +89,45 @@ export function gaEvent(e: TrackEvent): void {
 }
 
 // ───────────────────────── Meta Pixel ─────────────────────────
-/** Charge fbevents.js (consentement « marketing » accordé), avec autoConfig désactivé : aucun événement automatique. */
+type IdleWindow = {
+  document: { readyState: string };
+  addEventListener: (type: "load", cb: () => void, opts?: { once?: boolean }) => void;
+  requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => unknown;
+  setTimeout: (cb: () => void, ms: number) => unknown;
+};
+
+/** Plafond d'attente du moment « calme » après `load` : le pixel part au plus tard 4 s après la fin du chargement. */
+export const PIXEL_IDLE_TIMEOUT_MS = 4000;
+
+/**
+ * Lance `cb` après l'événement `load`, puis au premier moment calme du navigateur (plafonné) : fbevents.js
+ * (≈ 600 Ko bruts) ne concurrence plus le rendu, l'image LCP ni l'hydratation (audit perf M1).
+ */
+export function whenIdleAfterLoad(w: IdleWindow, cb: () => void): void {
+  const idle = () => {
+    if (typeof w.requestIdleCallback === "function") w.requestIdleCallback(cb, { timeout: PIXEL_IDLE_TIMEOUT_MS });
+    else w.setTimeout(cb, 1); // Safari : pas de requestIdleCallback
+  };
+  if (w.document.readyState === "complete") idle();
+  else w.addEventListener("load", idle, { once: true });
+}
+
+let pixelWanted = false;
+let pixelScriptScheduled = false;
+
+/**
+ * Consentement « marketing » effectif (dès l'arrivée, sauf refus) : la file `fbq` est créée et initialisée TOUT DE SUITE
+ * (autoConfig désactivé : aucun événement automatique) et capte PageView et événements ; seul le téléchargement
+ * de fbevents.js est différé après `load`. Aucun événement perdu, aucune modification du régime de consentement.
+ */
 export function loadPixel(): void {
   const id = pixelId();
   if (!id || typeof window === "undefined") return;
   const w = window as unknown as TrackWindow;
+  pixelWanted = true;
   if (pixelLoaded) {
     w.fbq?.("consent", "grant");
+    schedulePixelScript();
     return;
   }
   pixelLoaded = true;
@@ -115,12 +147,23 @@ export function loadPixel(): void {
   fbq("set", "autoConfig", false, id); // AVANT init : sinon Meta ajoute des « Purchase »/clics automatiques erronés
   fbq("init", id);
   fbq("consent", "grant");
-  addScript("https://connect.facebook.net/en_US/fbevents.js", "waxo-meta-pixel");
+  schedulePixelScript();
+}
+
+function schedulePixelScript(): void {
+  if (pixelScriptScheduled) return;
+  pixelScriptScheduled = true;
+  whenIdleAfterLoad(window as unknown as IdleWindow, () => {
+    // Refus arrivé entre-temps : le script n'est jamais téléchargé (et sera reprogrammé si l'accord revient).
+    if (pixelWanted) addScript("https://connect.facebook.net/en_US/fbevents.js", "waxo-meta-pixel");
+    else pixelScriptScheduled = false;
+  });
 }
 
 export function unloadPixel(): void {
   const w = window as unknown as TrackWindow;
   if (!pixelId()) return;
+  pixelWanted = false;
   w.fbq?.("consent", "revoke");
 }
 
