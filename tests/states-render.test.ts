@@ -87,7 +87,7 @@ describe.each(["fr", "en"] as const)("boutique vide (%s)", (locale) => {
     const { CatalogView } = await import("@/components/shop/CatalogView");
     const product = {
       id: "p1", slug: "a", name: "Gourde", description: "", categoryId: "cuisine", price: 2500, comparePrice: null, stock: 3, sold: 0,
-      keyword: "", bg: null, imageUrl: null, createdAt: "2026-10-01T00:00:00Z", rating: { average: 0, count: 0 },
+      keyword: "", bg: null, imageUrl: null, images: [], createdAt: "2026-10-01T00:00:00Z", rating: { average: 0, count: 0 },
     };
     search = "budget=gt7";
     const { html, errors } = render(locale, createElement(CatalogView, { products: [product], categories: [{ ...cats[0], count: 1 }], newIds: [], bestIds: [] }));

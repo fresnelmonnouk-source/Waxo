@@ -15,10 +15,15 @@ export function PhotoCropper({
   bitmap,
   onCancel,
   onDone,
+  title = "Recadrer la photo",
+  cancelLabel = "Annuler",
 }: {
   bitmap: ImageBitmap;
   onCancel: () => void;
   onDone: (url: string) => void;
+  /** Titre du dialogue (ex. « Recadrer la photo 2 sur 3 » quand plusieurs photos sont ajoutées d'un coup). */
+  title?: string;
+  cancelLabel?: string;
 }) {
   const [state, setState] = useState<CropState>({ zoom: 1, panX: 0, panY: 0 });
   const [busy, setBusy] = useState(false);
@@ -103,10 +108,10 @@ export function PhotoCropper({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Recadrer la photo"
+        aria-label={title}
         className="flex w-[min(360px,100%)] flex-col gap-3.5 rounded-3xl bg-[#F4F1EA] p-5"
       >
-        <strong className="font-display text-[17px] font-semibold">Recadrer la photo</strong>
+        <strong className="font-display text-[17px] font-semibold">{title}</strong>
         <canvas
           ref={canvasRef}
           tabIndex={0}
@@ -155,7 +160,7 @@ export function PhotoCropper({
             disabled={busy}
             className="min-h-11 cursor-pointer rounded-full border border-[#D6CFC0] bg-transparent px-[18px]"
           >
-            Annuler
+            {cancelLabel}
           </button>
         </div>
       </div>

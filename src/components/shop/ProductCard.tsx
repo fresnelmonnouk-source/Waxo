@@ -6,8 +6,9 @@ import { useCartLines } from "@/lib/cart/store";
 import type { Product } from "@/lib/catalog/types";
 import { favorites, useIsFavorite } from "@/lib/favorites/store";
 import { usePrice } from "@/lib/currency/client";
+import { imageSources } from "@/lib/media/product-images";
 import { addProductToCart } from "./add-to-cart";
-import { STOCK_COLOR, TAG_STYLE, cssUrl, fmtRating, productTag, promoLabel, stockKind, type TagKind } from "./logic";
+import { STOCK_COLOR, TAG_STYLE, fmtRating, productTag, promoLabel, stockKind, type TagKind } from "./logic";
 
 /**
  * Carte produit partagée (accueil, catalogue, « Vous aimerez aussi », favoris). Fidèle à la maquette.
@@ -43,6 +44,7 @@ export function ProductCard({
   const kind = tag === undefined ? productTag(product) : tag;
   const stock = stockKind(product.stock);
   const href = `/produit/${product.slug}`;
+  const cover = product.imageUrl ? imageSources(product.imageUrl) : null;
   const tagText: Record<TagKind, string> = {
     soldout: t("soldOut"),
     promo: promoLabel(product),
@@ -65,11 +67,20 @@ export function ProductCard({
         >
           {product.keyword}
         </span>
-        {product.imageUrl ? (
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full"
-            style={{ background: `${cssUrl(product.imageUrl)} center/cover no-repeat` }}
+        {cover ? (
+          // Couverture en vrai <img> (S6/M4) au même rendu que l'ancien fond « cover » ; alt vide : le lien porte le nom.
+          // eslint-disable-next-line @next/next/no-img-element -- pas d'optimiseur Vercel (quota), voir ProductGallery
+          <img
+            src={cover.src}
+            srcSet={cover.srcSet}
+            sizes={cover.srcSet ? "(max-width: 640px) 50vw, (max-width: 1180px) 33vw, 280px" : undefined}
+            alt=""
+            width={600}
+            height={600}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+            className="absolute inset-0 h-full w-full object-cover"
           />
         ) : null}
         {rank ? (

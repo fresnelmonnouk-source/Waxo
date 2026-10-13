@@ -20,7 +20,13 @@ export type Product = {
   sold: number;
   keyword: string;
   bg: string | null;
+  /** Photo principale (couverture) = `images[0]`, ou null sans photo. Lue par le panier, les cartes, l'Open Graph. */
   imageUrl: string | null;
+  /**
+   * Photos, couverture en premier (0 à 8, migration 0024 ; repli sur `imageUrl` avant la migration). Toutes sur la fiche
+   * (`getProductBySlug`) ; couverture seule dans les listes (`getProducts`…), qui ne montrent que la photo principale.
+   */
+  images: string[];
   createdAt: string;
   rating: { average: number; count: number };
   /** Campagne en cours qui fixe le prix (0015) ; `comparePrice` vaut alors le prix normal. */

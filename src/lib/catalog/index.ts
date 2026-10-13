@@ -7,6 +7,7 @@ import { DEFAULT_FX, sanitizeFx, type FxRates } from "@/lib/currency/core";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { getLiveCampaigns } from "@/lib/campaigns/data";
 import { applyCampaigns } from "@/lib/campaigns/logic";
+import { isMissingImagesColumn, productImages } from "@/lib/media/product-images";
 import type {
   Category,
   Product,
@@ -91,6 +92,7 @@ function demoProduct(p: DemoProduct, locale: Locale): Product {
     keyword: p.keyword,
     bg: p.bg,
     imageUrl: p.imageUrl,
+    images: productImages(null, p.imageUrl),
     createdAt: p.createdAt,
     rating: ratingOf(p.ratingSeed, p.ratingSeedCount, undefined),
   };
@@ -155,6 +157,8 @@ type DbProductRow = {
   keyword: string;
   bg: string | null;
   image_url: string | null;
+  /** Absente tant que la migration 0024 n'est pas appliquée. */
+  images?: string[] | null;
   created_at: string;
   product_translations: { locale: string; name: string; slug: string; description: string }[];
 };
@@ -204,23 +208,41 @@ export async function readRealRatings(sb: ReturnType<typeof createPublicClient>)
  * régénérée par l'ISR quelques minutes après le déploiement.
  * `cache` : une seule lecture par rendu, quelle que soit la langue (E1 : 3 à 6 lectures complètes auparavant).
  */
+const PRODUCT_COLUMNS =
+  "id,category_id,price,compare_price,stock,sold,rating_seed,rating_seed_count,keyword,bg,image_url,created_at,product_translations(locale,name,slug,description)";
+
+/** Colonne `images` constatée absente (0024 non appliquée) : on ne la redemande pas avant ce délai (évite 2 requêtes par lecture). */
+const IMAGES_RECHECK_MS = 10 * 60_000;
+let imagesMissingUntil = 0;
+
+/**
+ * Produits actifs, avec `images` si la colonne existe. Colonne absente (42703) → même lecture sans elle : la boutique
+ * affiche alors la photo unique `image_url`. Toute autre erreur reste une erreur.
+ */
+async function readProductRows(sb: ReturnType<typeof createPublicClient>): Promise<DbProductRow[]> {
+  const read = (columns: string) => withTimeout(sb.from("products").select(columns).eq("active", true));
+  if (Date.now() >= imagesMissingUntil) {
+    const { data, error } = await read(`${PRODUCT_COLUMNS},images`);
+    if (!error) return (data ?? []) as unknown as DbProductRow[];
+    if (!isMissingImagesColumn(error)) throw new Error("catalog_unavailable");
+    imagesMissingUntil = Date.now() + IMAGES_RECHECK_MS;
+  }
+  const { data, error } = await read(PRODUCT_COLUMNS);
+  if (error) throw new Error("catalog_unavailable");
+  return (data ?? []) as unknown as DbProductRow[];
+}
+
+/** Tests uniquement : oublie qu'`images` manquait. */
+export function resetImagesColumnProbe() {
+  imagesMissingUntil = 0;
+}
+
 const readCatalog = cache(async (): Promise<CatalogRows | null> => {
   if (!supabasePublicEnv()) return null;
   try {
     const sb = createPublicClient();
-    const [{ data: rows, error }, ratings] = await Promise.all([
-      withTimeout(
-        sb
-          .from("products")
-          .select(
-            "id,category_id,price,compare_price,stock,sold,rating_seed,rating_seed_count,keyword,bg,image_url,created_at,product_translations(locale,name,slug,description)",
-          )
-          .eq("active", true),
-      ),
-      readRealRatings(sb),
-    ]);
-    if (error) throw new Error("catalog_unavailable");
-    return { rows: (rows ?? []) as unknown as DbProductRow[], ratings };
+    const [rows, ratings] = await Promise.all([readProductRows(sb), readRealRatings(sb)]);
+    return { rows, ratings };
   } catch (e) {
     if (isBuildPhase()) return { rows: [], ratings: new Map() };
     throw e;
@@ -229,6 +251,7 @@ const readCatalog = cache(async (): Promise<CatalogRows | null> => {
 
 function dbProduct(p: DbProductRow, locale: Locale, ratings: Map<string, RatingSum>): Product {
   const tr = p.product_translations.find((t) => t.locale === locale) ?? p.product_translations.find((t) => t.locale === "fr");
+  const images = productImages(p.images, p.image_url);
   return {
     id: p.id,
     slug: tr?.slug ?? p.id,
@@ -241,7 +264,8 @@ function dbProduct(p: DbProductRow, locale: Locale, ratings: Map<string, RatingS
     sold: p.sold,
     keyword: p.keyword,
     bg: p.bg,
-    imageUrl: p.image_url,
+    imageUrl: images[0] ?? null,
+    images,
     createdAt: p.created_at,
     rating: ratingOf(Number(p.rating_seed), p.rating_seed_count, ratings.get(p.id)),
   };
@@ -255,17 +279,25 @@ const allProducts = cache(async (locale: Locale): Promise<Product[]> => {
   return applyCampaigns(list, campaigns, Date.now(), locale === "en" ? "en" : "fr");
 });
 
+/**
+ * Produit d'une LISTE (accueil, catalogue, favoris, « Vous aimerez aussi ») : couverture seule dans `images`.
+ * Les listes sont sérialisées vers des composants client : 200 produits × 8 URL alourdiraient chaque page pour rien,
+ * les cartes n'affichant que la photo principale. La fiche (`getProductBySlug`) garde toutes les photos.
+ */
+const listItem = (p: Product): Product => (p.images.length > 1 ? { ...p, images: p.images.slice(0, 1) } : p);
+
 export async function getProducts(locale: Locale, query: ProductQuery = {}): Promise<Product[]> {
-  return applyQuery(await allProducts(locale), query);
+  return applyQuery(await allProducts(locale), query).map(listItem);
 }
 
+/** Fiche produit : TOUTES les photos (galerie, JSON-LD). */
 export async function getProductBySlug(locale: Locale, slug: string): Promise<Product | null> {
   return (await allProducts(locale)).find((p) => p.slug === slug) ?? null;
 }
 
 export async function getProductsByIds(locale: Locale, ids: string[]): Promise<Product[]> {
   const set = new Set(ids);
-  return (await allProducts(locale)).filter((p) => set.has(p.id));
+  return (await allProducts(locale)).filter((p) => set.has(p.id)).map(listItem);
 }
 
 /** Produits « Vous aimerez aussi » : même rayon d'abord, puis meilleures ventes. */
@@ -273,7 +305,7 @@ export async function getRelatedProducts(locale: Locale, product: Product, limit
   const list = (await allProducts(locale)).filter((p) => p.id !== product.id);
   const same = applyQuery(list.filter((p) => p.categoryId === product.categoryId), { sort: "popular" });
   const rest = applyQuery(list.filter((p) => p.categoryId !== product.categoryId), { sort: "popular" });
-  return [...same, ...rest].slice(0, limit);
+  return [...same, ...rest].slice(0, limit).map(listItem);
 }
 
 /** Slugs d'une fiche par langue. `en` absent = pas de texte anglais (S8 : pas d'alternate EN, canonique FR). */

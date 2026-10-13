@@ -35,6 +35,7 @@ const base: Product = {
   keyword: "lampe",
   bg: null,
   imageUrl: null,
+  images: [],
   createdAt: "2026-01-01",
   rating: { average: 4.5, count: 10 },
 };

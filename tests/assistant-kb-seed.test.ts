@@ -101,6 +101,7 @@ describe("0021_kb_seed : recherche", () => {
       keyword: p.keyword,
       bg: p.bg,
       imageUrl: p.imageUrl,
+      images: p.imageUrl ? [p.imageUrl] : [],
       createdAt: p.createdAt,
       rating: { average: p.ratingSeed, count: p.ratingSeedCount },
     }));

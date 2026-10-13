@@ -245,6 +245,7 @@ export function ProductsView({ data }: { data: ProductsData }) {
           key={editing?.product?.id ?? "new"}
           product={editing?.product ?? null}
           categories={data.categories}
+          maxPhotos={data.imagesColumn ? undefined : 1}
           onClose={() => {
             setEditing(null);
             if (creating) router.replace("/admin/produits", { scroll: false });

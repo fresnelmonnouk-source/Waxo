@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import demo from "@/lib/demo/catalog.json";
 import demoAdmin from "@/lib/demo/admin.json";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isMissingImagesColumn, productImages } from "@/lib/media/product-images";
 import type { AdminCategory, AdminProduct, ProductsData } from "@/components/admin/products/types";
 
 // Lecture admin du catalogue (produits + traductions + prix d'achat). Service_role : voit AUSSI les produits masqués.
@@ -41,6 +42,8 @@ type ProductRow = {
   keyword: string;
   bg: string | null;
   image_url: string | null;
+  /** Absente tant que la migration 0024 n'est pas appliquée. */
+  images?: string[] | null;
   active: boolean;
   created_at: string;
   product_translations: TrRow[] | null;
@@ -58,6 +61,7 @@ function fromRow(row: ProductRow, own: number[]): AdminProduct {
   const fr = tr.find((t) => t.locale === "fr");
   const en = tr.find((t) => t.locale === "en");
   const costRow = Array.isArray(row.product_costs) ? row.product_costs[0] : row.product_costs;
+  const images = productImages(row.images, row.image_url);
   return {
     id: row.id,
     categoryId: row.category_id,
@@ -67,7 +71,8 @@ function fromRow(row: ProductRow, own: number[]): AdminProduct {
     sold: row.sold,
     keyword: row.keyword,
     bg: row.bg,
-    imageUrl: row.image_url,
+    imageUrl: images[0] ?? null,
+    images,
     active: row.active,
     createdAt: row.created_at,
     cost: costRow ? costRow.cost : null,
@@ -93,6 +98,7 @@ function demoProducts(): AdminProduct[] {
     keyword: p.keyword,
     bg: p.bg,
     imageUrl: p.imageUrl,
+    images: productImages(null, p.imageUrl),
     active: true,
     createdAt: p.createdAt,
     cost: typeof costs[p.id] === "number" ? costs[p.id] : null,
@@ -126,25 +132,30 @@ async function fetchOwnRatings(sb: SupabaseClient): Promise<Map<string, number[]
   return out;
 }
 
+const ADMIN_PRODUCT_COLUMNS =
+  "id,category_id,price,compare_price,stock,sold,rating_seed,rating_seed_count,keyword,bg,image_url,active,created_at,product_translations(locale,name,slug,description),product_costs(cost)";
+
+/** Produits (avec `images` si la migration 0024 est appliquée, sinon la même lecture sans la colonne). */
+async function readAdminRows(sb: SupabaseClient): Promise<{ rows: ProductRow[]; imagesColumn: boolean }> {
+  const read = (columns: string) =>
+    withTimeout(sb.from("products").select(columns).order("created_at", { ascending: false }).range(0, ADMIN_LIST_LIMIT - 1));
+  const first = await read(`${ADMIN_PRODUCT_COLUMNS},images`);
+  if (!first.error) return { rows: (first.data ?? []) as unknown as ProductRow[], imagesColumn: true };
+  if (!isMissingImagesColumn(first.error)) throw first.error;
+  const legacy = await read(ADMIN_PRODUCT_COLUMNS);
+  if (legacy.error) throw legacy.error;
+  return { rows: (legacy.data ?? []) as unknown as ProductRow[], imagesColumn: false };
+}
+
 export async function getAdminProducts(): Promise<ProductsData> {
   const sb = adminDb();
-  if (!sb) return { source: "demo", products: demoProducts(), categories: demoCategories(), truncated: false };
+  if (!sb) return { source: "demo", products: demoProducts(), categories: demoCategories(), truncated: false, imagesColumn: true };
   try {
-    const [prod, cats, ratings] = await Promise.all([
-      withTimeout(
-        sb
-          .from("products")
-          .select(
-            "id,category_id,price,compare_price,stock,sold,rating_seed,rating_seed_count,keyword,bg,image_url,active,created_at,product_translations(locale,name,slug,description),product_costs(cost)",
-          )
-          .order("created_at", { ascending: false })
-          .range(0, ADMIN_LIST_LIMIT - 1),
-      ),
+    const [{ rows, imagesColumn }, cats, ratings] = await Promise.all([
+      readAdminRows(sb),
       withTimeout(sb.from("categories").select("id,label_fr,bg,sort").order("sort")),
       fetchOwnRatings(sb),
     ]);
-    if (prod.error) throw prod.error;
-    const rows = (prod.data ?? []) as unknown as ProductRow[];
     const categories: AdminCategory[] = cats.error || !cats.data?.length
       ? demoCategories()
       : cats.data.map((c) => ({ id: c.id, label: c.label_fr, bg: c.bg, sort: c.sort }));
@@ -153,9 +164,10 @@ export async function getAdminProducts(): Promise<ProductsData> {
       products: rows.map((r) => fromRow(r, ratings.get(r.id) ?? [])),
       categories,
       truncated: rows.length >= ADMIN_LIST_LIMIT,
+      imagesColumn,
     };
   } catch {
-    return { source: "error", products: [], categories: demoCategories(), truncated: false };
+    return { source: "error", products: [], categories: demoCategories(), truncated: false, imagesColumn: true };
   }
 }
 

@@ -28,7 +28,7 @@ const base: ProductFormValues = {
   keyword: "",
   bg: "#f3e3a6",
   active: true,
-  imageUrl: null,
+  images: [],
 };
 
 describe("slugs", () => {

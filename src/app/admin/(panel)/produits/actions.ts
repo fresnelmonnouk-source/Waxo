@@ -14,6 +14,7 @@ import {
   type ProductInput,
 } from "@/components/admin/products/logic";
 import { UNAVAILABLE_MESSAGE, type ActionResult, type ProductFormValues } from "@/components/admin/products/types";
+import { isMissingImagesColumn } from "@/lib/media/product-images";
 
 // Server actions produits. Chaque action : assertAdmin() d'abord → base joignable ? → Zod → validation métier → écriture service_role.
 // Retour { ok:true } | { ok:false, code, message, fields? } : jamais d'erreur SQL ni de stack côté client.
@@ -43,6 +44,8 @@ async function prepare(): Promise<Prepared> {
 type DbErr = { code?: string; message?: string } | null;
 const isUnique = (e: DbErr) => e?.code === "23505";
 const isFk = (e: DbErr) => e?.code === "23503";
+/** Contrainte CHECK refusée : pour les photos, `products_images_valid` (0024 : 8 au plus, bucket `products`). */
+const isPhotoCheck = (e: DbErr) => e?.code === "23514" && /images/.test(e?.message ?? "");
 const logDb = (where: string, e: DbErr) => console.error(`[admin/produits] ${where}`, e?.code ?? "", (e?.message ?? "").slice(0, 120));
 
 function parseForm(values: unknown): { input: ProductInput } | { error: Fail } {
@@ -56,10 +59,20 @@ function parseForm(values: unknown): { input: ProductInput } | { error: Fail } {
   return { input: v.value };
 }
 
-function imageOk(url: string | null, current: string | null): boolean {
-  if (url === null || url === current) return true;
-  return isStorageImageUrl(url, process.env.NEXT_PUBLIC_SUPABASE_URL);
+/** Chaque photo est une photo DÉJÀ enregistrée sur ce produit, ou une URL de NOTRE bucket `products` (jamais une URL arbitraire). */
+function imagesOk(urls: readonly string[], current: readonly string[]): boolean {
+  return urls.every((u) => current.includes(u) || isStorageImageUrl(u, process.env.NEXT_PUBLIC_SUPABASE_URL));
 }
+
+const BAD_PHOTO = "Photo invalide : renvoyez-la depuis le formulaire.";
+const NEED_0024 = "Plusieurs photos : la migration 0024 n'est pas encore appliquée. Gardez une seule photo pour l'instant.";
+
+/**
+ * Colonnes photo à écrire : `images` (0024) + `image_url` = photo principale (compatibilité, aussi tenue par le trigger).
+ * `legacy` = sans `images`, quand la colonne n'existe pas encore (une seule photo possible).
+ */
+const photoColumns = (images: readonly string[], legacy = false) =>
+  legacy ? { image_url: images[0] ?? null } : { images: [...images], image_url: images[0] ?? null };
 
 /** Insère une traduction avec un slug libre ; réessaie si un autre admin prend le même slug entre-temps. */
 async function insertTranslation(
@@ -87,27 +100,29 @@ export async function createProduct(values: ProductFormValues): Promise<ActionRe
   const parsed = parseForm(values);
   if ("error" in parsed) return parsed.error;
   const { input } = parsed;
-  if (!imageOk(input.imageUrl, null)) return fail("invalid", "Photo invalide : renvoyez-la depuis le formulaire.", { imageUrl: "Photo invalide." });
+  if (!imagesOk(input.images, [])) return fail("invalid", BAD_PHOTO, { images: "Photo invalide." });
 
   const { sb } = p;
   try {
-    const { data, error } = await sb
-      .from("products")
-      .insert({
-        category_id: input.categoryId,
-        price: input.price,
-        compare_price: input.comparePrice,
-        stock: input.stock,
-        keyword: input.keyword,
-        bg: input.bg,
-        image_url: input.imageUrl,
-        active: input.active,
-      })
-      .select("id")
-      .single();
+    const row = {
+      category_id: input.categoryId,
+      price: input.price,
+      compare_price: input.comparePrice,
+      stock: input.stock,
+      keyword: input.keyword,
+      bg: input.bg,
+      active: input.active,
+    };
+    const insert = (legacy: boolean) => sb.from("products").insert({ ...row, ...photoColumns(input.images, legacy) }).select("id").single();
+    let { data, error } = await insert(false);
+    if (isMissingImagesColumn(error)) {
+      if (input.images.length > 1) return fail("invalid", NEED_0024, { images: NEED_0024 });
+      ({ data, error } = await insert(true));
+    }
     if (error || !data) {
       logDb("create", error);
       if (isFk(error)) return fail("invalid", "Rayon inconnu.", { categoryId: "Rayon inconnu." });
+      if (isPhotoCheck(error)) return fail("invalid", BAD_PHOTO, { images: "Photo invalide." });
       return fail("error", GENERIC);
     }
     const id = data.id as string;
@@ -155,37 +170,43 @@ export async function updateProduct(id: string, values: ProductFormValues): Prom
   const { sb } = p;
 
   try {
-    const { data: cur, error: curErr } = await sb
-      .from("products")
-      .select("id,image_url,product_translations(locale)")
-      .eq("id", id)
-      .maybeSingle();
+    const readCurrent = (columns: string) => sb.from("products").select(columns).eq("id", id).maybeSingle();
+    let legacy = false;
+    let { data: curData, error: curErr } = await readCurrent("id,image_url,images,product_translations(locale)");
+    if (isMissingImagesColumn(curErr)) {
+      legacy = true;
+      ({ data: curData, error: curErr } = await readCurrent("id,image_url,product_translations(locale)"));
+    }
     if (curErr) {
       logDb("update read", curErr);
       return fail("error", GENERIC);
     }
+    const cur = curData as { image_url?: string | null; images?: string[] | null; product_translations?: { locale: string }[] | null } | null;
     if (!cur) return fail("not_found", "Ce produit n'existe plus.");
-    if (!imageOk(input.imageUrl, (cur.image_url as string | null) ?? null)) {
-      return fail("invalid", "Photo invalide : renvoyez-la depuis le formulaire.", { imageUrl: "Photo invalide." });
-    }
-    const locales = new Set(((cur.product_translations as { locale: string }[] | null) ?? []).map((t) => t.locale));
+    const currentImages = [...(cur.images ?? []), ...(cur.image_url ? [cur.image_url] : [])];
+    if (!imagesOk(input.images, currentImages)) return fail("invalid", BAD_PHOTO, { images: "Photo invalide." });
+    if (legacy && input.images.length > 1) return fail("invalid", NEED_0024, { images: NEED_0024 });
+    const locales = new Set((cur.product_translations ?? []).map((t) => t.locale));
 
-    const { error } = await sb
-      .from("products")
-      .update({
-        category_id: input.categoryId,
-        price: input.price,
-        compare_price: input.comparePrice,
-        stock: input.stock,
-        keyword: input.keyword,
-        bg: input.bg,
-        image_url: input.imageUrl,
-        active: input.active,
-      })
-      .eq("id", id);
+    const row = {
+      category_id: input.categoryId,
+      price: input.price,
+      compare_price: input.comparePrice,
+      stock: input.stock,
+      keyword: input.keyword,
+      bg: input.bg,
+      active: input.active,
+    };
+    const update = (asLegacy: boolean) => sb.from("products").update({ ...row, ...photoColumns(input.images, asLegacy) }).eq("id", id);
+    let { error } = await update(legacy);
+    if (!legacy && isMissingImagesColumn(error)) {
+      if (input.images.length > 1) return fail("invalid", NEED_0024, { images: NEED_0024 });
+      ({ error } = await update(true));
+    }
     if (error) {
       logDb("update", error);
       if (isFk(error)) return fail("invalid", "Rayon inconnu.", { categoryId: "Rayon inconnu." });
+      if (isPhotoCheck(error)) return fail("invalid", BAD_PHOTO, { images: "Photo invalide." });
       return fail("error", GENERIC);
     }
 

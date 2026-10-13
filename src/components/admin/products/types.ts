@@ -13,7 +13,10 @@ export type AdminProduct = {
   sold: number;
   keyword: string;
   bg: string | null;
+  /** Photo principale = `images[0]` (compatibilité : panier, packs, tableau de bord). */
   imageUrl: string | null;
+  /** Photos dans l'ordre d'affichage, la première est la photo principale (0 à 8). */
+  images: string[];
   active: boolean;
   createdAt: string;
   /** Prix d'achat (product_costs) — null = non renseigné. Lu uniquement par le back-office. */
@@ -32,6 +35,8 @@ export type ProductsData = {
   categories: AdminCategory[];
   /** true si la limite de 200 produits est atteinte (la liste est tronquée). */
   truncated: boolean;
+  /** Colonne `products.images` présente (migration 0024) : sinon une seule photo par produit. */
+  imagesColumn: boolean;
 };
 
 /** Valeurs du formulaire produit (chaînes, comme saisies). Le serveur re-valide tout. */
@@ -48,7 +53,8 @@ export type ProductFormValues = {
   keyword: string;
   bg: string;
   active: boolean;
-  imageUrl: string | null;
+  /** Photos (URL du bucket `products`), la première est la photo principale. 8 au plus. */
+  images: string[];
 };
 
 export type PackItem = { productId: string; qty: number };

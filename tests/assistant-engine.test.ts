@@ -23,6 +23,7 @@ const products: Product[] = demoCatalog.products.map((p) => ({
   keyword: p.keyword,
   bg: p.bg,
   imageUrl: p.imageUrl,
+  images: p.imageUrl ? [p.imageUrl] : [],
   createdAt: p.createdAt,
   rating: { average: p.ratingSeed, count: p.ratingSeedCount },
 }));

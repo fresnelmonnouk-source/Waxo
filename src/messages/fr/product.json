@@ -30,7 +30,12 @@
     "assistantQuestion": "J'ai une question sur « {name} » : est-ce qu'il me conviendra ?",
     "alsoBought": "Souvent pris avec",
     "addAria": "Ajouter {name} au panier",
-    "payCodOnly": "Vous payez à la réception, en espèces ou par Mobile Money."
+    "payCodOnly": "Vous payez à la réception, en espèces ou par Mobile Money.",
+    "galleryLabel": "Photos de {name}",
+    "photoAlt": "{name}, photo {n} sur {total}",
+    "showPhoto": "Afficher la photo {n} sur {total}",
+    "photoPosition": "Photo {n} sur {total}",
+    "galleryThumbs": "Choisir une photo"
   },
   "Reviews": {
     "title": "Avis clients",

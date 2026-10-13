@@ -1,6 +1,7 @@
 // Logique PURE du catalogue admin (produits + packs) : slugs, validation, marge, économie des packs.
 // Partagée par les formulaires (messages d'erreur immédiats) ET par les server actions (revalidation serveur). Testée.
 import { z } from "zod";
+import { MAX_PRODUCT_IMAGES } from "@/lib/media/product-images";
 import type { PackFormValues, PackItem, PackProductRef, ProductFormValues } from "./types";
 
 // ───────────────────────── Constantes ─────────────────────────
@@ -89,7 +90,8 @@ export const productFormSchema = z.object({
   keyword: z.string().max(100),
   bg: z.string().max(20),
   active: z.boolean(),
-  imageUrl: z.string().max(500).nullable(),
+  // Marge au-delà de 8 : la limite est vérifiée par validateProductForm (message clair plutôt que « formulaire invalide »).
+  images: z.array(z.string().max(500)).max(MAX_PRODUCT_IMAGES * 2),
 });
 
 export type ProductInput = {
@@ -105,10 +107,22 @@ export type ProductInput = {
   keyword: string;
   bg: string;
   active: boolean;
-  imageUrl: string | null;
+  /** Photos sans doublon ni vide, la première est la photo principale (`image_url`). */
+  images: string[];
 };
 
-export type ProductFieldKey = "name" | "nameEn" | "categoryId" | "price" | "comparePrice" | "stock" | "cost" | "description" | "descriptionEn" | "bg";
+export type ProductFieldKey =
+  | "name"
+  | "nameEn"
+  | "categoryId"
+  | "price"
+  | "comparePrice"
+  | "stock"
+  | "cost"
+  | "description"
+  | "descriptionEn"
+  | "bg"
+  | "images";
 export type ValidationResult<T> = { ok: true; value: T } | { ok: false; errors: Partial<Record<string, string>> };
 
 export function validateProductForm(f: ProductFormValues): ValidationResult<ProductInput> {
@@ -139,6 +153,8 @@ export function validateProductForm(f: ProductFormValues): ValidationResult<Prod
   if (nameEn === "" && descriptionEn !== "") errors.nameEn = "Ajoutez aussi le nom anglais.";
   if (descriptionEn.length > 2000) errors.descriptionEn = "Description trop longue (2 000 caractères maximum).";
   if (!isHexColor(f.bg)) errors.bg = "Couleur invalide.";
+  const images = [...new Set((f.images ?? []).map((u) => u.trim()).filter(Boolean))];
+  if (images.length > MAX_PRODUCT_IMAGES) errors.images = `${MAX_PRODUCT_IMAGES} photos au maximum.`;
 
   if (Object.keys(errors).length || price === null || stock === null) return { ok: false, errors };
   return {
@@ -156,7 +172,7 @@ export function validateProductForm(f: ProductFormValues): ValidationResult<Prod
       keyword: defaultKeyword(name, f.keyword),
       bg: f.bg.toUpperCase(),
       active: f.active,
-      imageUrl: f.imageUrl,
+      images,
     },
   };
 }

@@ -89,6 +89,8 @@ export type ProductLdInput = {
   price: number;
   stock: number;
   imageUrl?: string | null;
+  /** Toutes les photos, couverture en premier (fiche produit) ; prime sur `imageUrl` quand elle est renseignée. */
+  images?: readonly string[];
   /** Note des SEULS vrais avis publiés (jamais `rating_seed`). */
   rating?: { average: number; count: number };
 };
@@ -102,7 +104,9 @@ export type ProductLdOpts = {
 export function productJsonLd(p: ProductLdInput, lang: string, opts: ProductLdOpts | string = {}): JsonLdObject {
   const { base = siteUrl(), section = "produit" } = typeof opts === "string" ? { base: opts } : opts;
   const url = absoluteUrl(lang, `/${section}/${encodeURIComponent(p.slug)}`, base);
-  const image = p.imageUrl ? (p.imageUrl.startsWith("http") ? p.imageUrl : `${base}${p.imageUrl}`) : undefined;
+  const abs = (u: string) => (u.startsWith("http") ? u : `${base}${u}`);
+  const sources = p.images?.length ? p.images : p.imageUrl ? [p.imageUrl] : [];
+  const image = [...new Set(sources.filter(Boolean).map(abs))];
   return {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -111,7 +115,7 @@ export function productJsonLd(p: ProductLdInput, lang: string, opts: ProductLdOp
     sku: p.id,
     name: p.name,
     ...(p.description ? { description: p.description.slice(0, 500) } : {}),
-    ...(image ? { image: [image] } : {}),
+    ...(image.length ? { image } : {}),
     url,
     brand: { "@type": "Brand", name: BRAND_NAME },
     offers: {

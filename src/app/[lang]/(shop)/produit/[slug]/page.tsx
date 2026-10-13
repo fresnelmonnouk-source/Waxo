@@ -22,7 +22,8 @@ import {
 import { Price } from "@/lib/currency/client";
 import { discountPercent } from "@/lib/money";
 import { AskAssistantButton, SuggestAlternativeButton } from "@/components/product/AssistantButtons";
-import { cssImage, FALLBACK_BG } from "@/components/product/media";
+import { FALLBACK_BG } from "@/components/product/media";
+import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductBuy } from "@/components/product/ProductBuy";
 import { RatingLink } from "@/components/product/RatingLink";
 import { RelatedItem } from "@/components/product/RelatedItem";
@@ -45,7 +46,7 @@ export async function generateStaticParams() {
 
 /**
  * Titre `SeoPages.product.title` (nom + prix FCFA), description du produit coupée à 155 caractères (sinon le texte de
- * repli), photo du produit en aperçu de partage. Hreflang : les deux slugs quand le texte anglais existe ; sinon pas
+ * repli), photo PRINCIPALE du produit (couverture) en aperçu de partage. Hreflang : les deux slugs quand le texte anglais existe ; sinon pas
  * d'alternate EN et canonique FR, y compris depuis /en (S8).
  */
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
@@ -120,7 +121,6 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   const pct = discountPercent(product.comparePrice, product.price);
   const soldOut = product.stock <= 0;
   const bg = product.bg ?? FALLBACK_BG;
-  const img = cssImage(product.imageUrl);
   const { cutoff, returnDays } = settings.shipping;
   const stockColor = soldOut ? "#6B645A" : product.stock <= 5 ? "#C2410C" : "#1F6B4A";
   const stockText = soldOut
@@ -172,30 +172,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
       </nav>
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-start gap-9">
-        <div
-          className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[28px]"
-          style={{ background: bg }}
-        >
-          <span className="font-display text-[clamp(40px,5.5vw,68px)] font-semibold tracking-[-0.05em] opacity-75">
-            {product.keyword}
-          </span>
-          {img ? (
-            <div
-              role="img"
-              aria-label={product.name}
-              className="absolute inset-0 h-full w-full"
-              style={{ background: img }}
-            />
-          ) : null}
-          {tag ? (
-            <span
-              className="absolute top-[18px] left-[18px] rounded-full px-3 py-1.5 text-[13px] font-semibold"
-              style={{ background: tag.bg, color: tag.color }}
-            >
-              {tag.label}
-            </span>
-          ) : null}
-        </div>
+        <ProductGallery images={product.images} name={product.name} bg={bg} keyword={product.keyword} tag={tag} />
 
         <div className="flex min-w-0 flex-col gap-[18px]">
           <div className="flex flex-col gap-2.5">

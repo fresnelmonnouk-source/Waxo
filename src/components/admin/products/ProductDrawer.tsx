@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { createProduct, deleteProduct, updateProduct } from "@/app/admin/(panel)/produits/actions";
 import { fmtXof } from "@/lib/money";
 import { FIELD_ERR, FIELD_LABEL, Drawer, Switch, inputClass } from "./ui";
-import { PhotoField } from "./PhotoField";
+import { PhotosField } from "./PhotosField";
 import { SWATCHES, marginOf, parseAmount, validateProductForm } from "./logic";
 import type { AdminCategory, AdminProduct, ProductFormValues } from "./types";
 
@@ -23,7 +23,7 @@ function initialValues(p: AdminProduct | null, categories: AdminCategory[]): Pro
       keyword: "",
       bg: SWATCHES[0],
       active: true,
-      imageUrl: null,
+      images: [],
     };
   }
   return {
@@ -39,7 +39,7 @@ function initialValues(p: AdminProduct | null, categories: AdminCategory[]): Pro
     keyword: p.keyword,
     bg: (p.bg ?? SWATCHES[0]).toUpperCase(),
     active: p.active,
-    imageUrl: p.imageUrl,
+    images: p.images,
   };
 }
 
@@ -47,11 +47,14 @@ function initialValues(p: AdminProduct | null, categories: AdminCategory[]): Pro
 export function ProductDrawer({
   product,
   categories,
+  maxPhotos,
   onClose,
   onSaved,
 }: {
   product: AdminProduct | null;
   categories: AdminCategory[];
+  /** Photos autorisées (1 tant que la migration 0024 n'est pas appliquée). */
+  maxPhotos?: number;
   onClose: () => void;
   onSaved: (message: string, id: string | null) => void;
 }) {
@@ -106,8 +109,7 @@ export function ProductDrawer({
   return (
     <Drawer title={isNew ? "Nouveau produit" : "Modifier le produit"} onClose={onClose}>
       <div className="flex flex-col gap-3.5 p-5">
-        <PhotoField imageUrl={v.imageUrl} bg={v.bg} word={word} onChange={(url) => set("imageUrl", url)} />
-        {errors.imageUrl && <span className={FIELD_ERR}>{errors.imageUrl}</span>}
+        <PhotosField images={v.images} bg={v.bg} word={word} max={maxPhotos} error={errors.images} onChange={(list) => set("images", list)} />
 
         <label className={FIELD_LABEL}>
           Nom du produit
