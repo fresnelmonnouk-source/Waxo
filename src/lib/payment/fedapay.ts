@@ -18,6 +18,8 @@ export class FedapayError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** Motif renvoyé par FedaPay (champ `message` du corps) ou cause réseau : diagnostic admin, jamais de secret. */
+    readonly detail: string = "",
   ) {
     super(message);
     this.name = "FedapayError";
@@ -39,23 +41,40 @@ async function call(cfg: FedapayConfig, path: string, init: { method: "GET" | "P
       signal: ctrl.signal,
       cache: "no-store",
     });
-    if (!res.ok) throw new FedapayError(`fedapay_http_${res.status}`, res.status);
+    if (!res.ok) {
+      let detail = "";
+      try {
+        const body = (await res.json()) as { message?: unknown };
+        if (typeof body?.message === "string") detail = body.message.slice(0, 160);
+      } catch {
+        /* corps non JSON */
+      }
+      throw new FedapayError(`fedapay_http_${res.status}`, res.status, detail);
+    }
     return (await res.json()) as unknown;
   } catch (e) {
     if (e instanceof FedapayError) throw e;
-    throw new FedapayError("fedapay_network", 0);
+    const timeout = e instanceof Error && e.name === "AbortError";
+    throw new FedapayError("fedapay_network", 0, timeout ? `délai de ${TIMEOUT_MS / 1000} s dépassé` : e instanceof Error ? e.message.slice(0, 160) : "");
   } finally {
     clearTimeout(timer);
   }
 }
 
 /** Test de connexion (espace admin) : une lecture inoffensive prouve que la clé est acceptée par l'API du bon mode. */
-export async function pingFedapay(cfg: FedapayConfig): Promise<"ok" | "unauthorized" | "unreachable"> {
+export type PingResult = { result: "ok" | "unauthorized" | "unreachable" | "http_error"; status?: number; detail?: string };
+
+export async function pingFedapay(cfg: FedapayConfig): Promise<PingResult> {
   try {
     await call(cfg, "/transactions?per_page=1", { method: "GET" });
-    return "ok";
+    return { result: "ok" };
   } catch (e) {
-    return e instanceof FedapayError && (e.status === 401 || e.status === 403) ? "unauthorized" : "unreachable";
+    const err = e instanceof FedapayError ? e : new FedapayError("fedapay_unknown", 0);
+    // Journal Vercel : statut + motif FedaPay (la clé n'est jamais journalisée).
+    console.error(`[payment] test FedaPay (${cfg.env}) : statut=${err.status} motif=${err.detail || err.message}`);
+    if (err.status === 401 || err.status === 403) return { result: "unauthorized", status: err.status, detail: err.detail };
+    if (err.status === 0) return { result: "unreachable", detail: err.detail };
+    return { result: "http_error", status: err.status, detail: err.detail };
   }
 }
 

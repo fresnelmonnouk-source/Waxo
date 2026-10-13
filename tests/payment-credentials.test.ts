@@ -182,10 +182,16 @@ describe("actions admin FedaPay", () => {
     const a = await actions();
     expect(await a.testFedapayAction()).toMatchObject({ ok: false, code: "invalid" });
     await a.saveFedapayAction({ secretKey: KEY });
-    ping.mockResolvedValueOnce("ok").mockResolvedValueOnce("unauthorized").mockResolvedValueOnce("unreachable");
+    ping
+      .mockResolvedValueOnce({ result: "ok" })
+      .mockResolvedValueOnce({ result: "unauthorized", status: 401 })
+      .mockResolvedValueOnce({ result: "unreachable", detail: "délai de 8 s dépassé" })
+      .mockResolvedValueOnce({ result: "http_error", status: 422, detail: "Compte non activé" });
     expect(await a.testFedapayAction()).toEqual({ ok: true, mode: "sandbox" });
     expect(await a.testFedapayAction()).toMatchObject({ ok: false, code: "invalid" });
-    expect(await a.testFedapayAction()).toMatchObject({ ok: false, code: "error" });
+    expect(await a.testFedapayAction()).toMatchObject({ ok: false, code: "error", message: expect.stringContaining("délai de 8 s dépassé") });
+    // Le vrai motif de FedaPay est montré à l'admin (auparavant masqué derrière « injoignable »).
+    expect(await a.testFedapayAction()).toMatchObject({ ok: false, code: "error", message: expect.stringMatching(/erreur 422.*Compte non activé/) });
   });
   it("sans chiffrement serveur : message clair, rien d'écrit", async () => {
     vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "courte");

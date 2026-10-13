@@ -208,8 +208,10 @@ export async function testFedapayAction(): Promise<ActionResult<{ mode: "sandbox
   if (!(await payLimiter.hit(admin.id))) return fail("rate_limited");
   const cfg = await loadFedapayConfig();
   if (!cfg) return fail("invalid", "Aucune clé FedaPay enregistrée.");
-  const result = await pingFedapay(cfg);
-  if (result === "ok") return { ok: true, mode: cfg.env };
-  if (result === "unauthorized") return fail("invalid", "FedaPay refuse cette clé : vérifiez qu'elle est complète et du bon mode (essai / réel).");
-  return fail("error", "FedaPay est injoignable pour le moment. Réessayez dans un instant.");
+  const ping = await pingFedapay(cfg);
+  const why = ping.detail ? ` (FedaPay : « ${ping.detail} »)` : "";
+  if (ping.result === "ok") return { ok: true, mode: cfg.env };
+  if (ping.result === "unauthorized") return fail("invalid", `FedaPay refuse cette clé${why} : vérifiez qu'elle est complète, du bon mode (essai / réel) et que le compte réel est activé.`);
+  if (ping.result === "http_error") return fail("error", `FedaPay a répondu une erreur ${ping.status}${why}. Mode testé : ${cfg.env === "live" ? "réel" : "essai"}.`);
+  return fail("error", `FedaPay est injoignable pour le moment${ping.detail ? ` (${ping.detail})` : ""}. Réessayez dans un instant.`);
 }
