@@ -66,7 +66,8 @@ export type PingResult = { result: "ok" | "unauthorized" | "unreachable" | "http
 
 export async function pingFedapay(cfg: FedapayConfig): Promise<PingResult> {
   try {
-    await call(cfg, "/transactions?per_page=1", { method: "GET" });
+    // GET /transactions (liste) est obsolète en mode réel : FedaPay répond 400 et indique /transactions/search.
+    await call(cfg, "/transactions/search?per_page=1", { method: "GET" });
     return { result: "ok" };
   } catch (e) {
     const err = e instanceof FedapayError ? e : new FedapayError("fedapay_unknown", 0);

@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const insert = vi.fn();
 vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => ({ from: () => ({ insert }) }) }));
 
-import { FedaPayProvider, FedapayError } from "@/lib/payment/fedapay";
+import { FedaPayProvider, FedapayError, pingFedapay } from "@/lib/payment/fedapay";
 import { getPaymentProvider, MockPaymentProvider } from "@/lib/payment";
 import { fedapayConfig } from "@/lib/payment/config";
 import type { PayableOrder } from "@/lib/payment/types";
@@ -117,5 +117,26 @@ describe("choix du provider", () => {
   it("avec clé : FedaPay", async () => {
     vi.stubEnv("FEDAPAY_SECRET_KEY", "sk_sandbox_abc");
     expect((await getPaymentProvider()).name).toBe("fedapay");
+  });
+});
+
+describe("pingFedapay (test de connexion admin)", () => {
+  const cfg = { secretKey: "sk_live_abcdefgh", webhookSecret: null, env: "live" as const, apiBase: "https://api.fedapay.com/v1" };
+
+  it("interroge /transactions/search (la liste /transactions est obsolète en mode réel : 400)", async () => {
+    const fetchSpy = vi.fn(async () => json({ "v1/transactions": [] }));
+    vi.stubGlobal("fetch", fetchSpy);
+    expect(await pingFedapay(cfg)).toEqual({ result: "ok" });
+    expect(String((fetchSpy.mock.calls[0] as unknown[])[0])).toBe("https://api.fedapay.com/v1/transactions/search?per_page=1");
+  });
+
+  it("400 de FedaPay : statut et motif remontés tels quels", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => json({ message: "Invoquer /v1/transactions est obsolète." }, 400)));
+    expect(await pingFedapay(cfg)).toEqual({ result: "http_error", status: 400, detail: "Invoquer /v1/transactions est obsolète." });
+  });
+
+  it("401 = clé refusée", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => json({ message: "Erreur d'authentification." }, 401)));
+    expect(await pingFedapay(cfg)).toMatchObject({ result: "unauthorized", status: 401 });
   });
 });
