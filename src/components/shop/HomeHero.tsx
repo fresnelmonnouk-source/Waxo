@@ -19,9 +19,12 @@ export function HomeHero({
   settings,
   bestIds,
   newIds,
+  online,
 }: {
   products: Product[];
   settings: ShopSettings;
+  /** Paiement en ligne réellement proposé (réglages + clé FedaPay utilisable). */
+  online: boolean;
   bestIds: string[];
   newIds: string[];
 }) {
@@ -48,7 +51,7 @@ export function HomeHero({
             <span className="text-terracotta text-[13px] font-semibold tracking-[0.08em] uppercase">{t("heroEyebrow")}</span>
             <h1 className="font-display m-0 text-[clamp(34px,4.6vw,60px)] leading-[1.04] font-semibold tracking-[-0.035em] text-balance">{t("title")}</h1>
             <p className="m-0 max-w-[500px] text-[18px] leading-normal text-[#D6CFC0] text-pretty">
-              {t("lead")} {cod ? t("payCod") : t("payNoCod")}
+              {t("lead")} {cod ? (online ? t("payCod") : t("payCodOnly")) : t("payNoCod")}
             </p>
             <div className="mb-[6px]">
               <HeroDeliveryProof cutoff={cutoff} />
@@ -139,7 +142,7 @@ export function HomeHero({
         >
           {[
             [t("g1Title"), t("g1Sub")],
-            [cod ? t("g2CodTitle") : t("g2Title"), cod ? t("g2CodSub") : t("g2Sub")],
+            [cod ? t("g2CodTitle") : t("g2Title"), cod ? (online ? t("g2CodSub") : t("g2CodOnlySub")) : t("g2Sub")],
             [t("g3Title"), t("g3Sub", hourParams)],
             [t("g4Title"), t("g4Sub")],
           ].map(([title, sub], i) => (

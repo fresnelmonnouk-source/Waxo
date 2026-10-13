@@ -1,3 +1,4 @@
+import { seoHour } from "@/lib/seo/pages";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -38,7 +39,7 @@ export async function generateMetadata({
   const name = campaignName(found.campaign, lang);
   const description =
     seoText(campaignTagline(found.campaign, lang)) ??
-    seoText(ts("campaign.descriptionFallback", { name })) ??
+    seoText(ts("campaign.descriptionFallback", { name, hour: await seoHour(lang) })) ??
     t("metaDescription", { name });
   // Même slug en FR et en EN : canonique + hreflang ; Open Graph propre à la campagne.
   return pageMetadata({

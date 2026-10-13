@@ -29,7 +29,8 @@
     "askAssistant": "A question about this product? Ask the assistant",
     "assistantQuestion": "I have a question about “{name}”: would it suit me?",
     "alsoBought": "Often bought with",
-    "addAria": "Add {name} to cart"
+    "addAria": "Add {name} to cart",
+    "payCodOnly": "You pay on delivery, in cash or by Mobile Money."
   },
   "Reviews": {
     "title": "Customer reviews",

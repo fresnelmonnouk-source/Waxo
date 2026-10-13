@@ -16,3 +16,12 @@ export async function onlinePaymentReady(): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Un moyen de paiement EN LIGNE est-il réellement proposé ? Coché dans les réglages ET clé FedaPay utilisable (audit
+ * Helena B1) : sinon l'accueil, le pied de page et les fiches n'annoncent que le paiement à la livraison.
+ */
+export async function onlinePayAvailable(pay: { momo: boolean; moov: boolean; celtiis: boolean; carte: boolean }): Promise<boolean> {
+  if (!(pay.momo || pay.moov || pay.celtiis || pay.carte)) return false;
+  return onlinePaymentReady();
+}

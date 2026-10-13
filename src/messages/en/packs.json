@@ -62,7 +62,8 @@
       "returns": "Exchange or refund within {days} days.",
       "conditions": "Terms",
       "otherPacks": "Other packs",
-      "allPacks": "All packs"
+      "allPacks": "All packs",
+      "payCodOnly": "You pay on delivery, in cash or by Mobile Money."
     }
   }
 }

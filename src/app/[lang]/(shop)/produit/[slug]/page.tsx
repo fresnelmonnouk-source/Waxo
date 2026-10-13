@@ -1,3 +1,5 @@
+import { seoHour } from "@/lib/seo/pages";
+import { onlinePayAvailable } from "@/lib/payment/ready";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -52,7 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const product = await getProductBySlug(lang, slug);
   if (!product) return {};
   const [t, slugs] = await Promise.all([getTranslations({ locale: lang, namespace: "SeoPages" }), getProductSlugs()]);
-  const vars = { name: product.name, price: priceFcfa(product.price, lang) };
+  const vars = { name: product.name, price: priceFcfa(product.price, lang), hour: await seoHour(lang) };
   const s = slugs.get(product.id) ?? { fr: product.slug };
   return pageMetadata({
     lang,
@@ -110,6 +112,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
     getSettings(),
     getRealRating(product.id),
   ]);
+  const online = await onlinePayAvailable(settings.pay);
 
   const category = categories.find((c) => c.id === product.categoryId);
   const tag = pickTag(product, all, (k) => t(k));
@@ -246,7 +249,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
           )}
 
           <div className="flex flex-col gap-2 border-t border-border pt-4 text-[14px] text-text">
-            <span>{settings.pay.cod ? t("payAll") : t("payNoCod")}</span>
+            <span>{settings.pay.cod ? (online ? t("payAll") : t("payCodOnly")) : t("payNoCod")}</span>
             <span>
               {t("returns", { days: returnDays })}{" "}
               <Link href="/livraison-retours">{t("conditions")}</Link>

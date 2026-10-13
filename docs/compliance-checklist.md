@@ -140,3 +140,9 @@ Cadre : droit béninois (Code du numérique, loi n° 2017-20 modifiée ; APDP ; 
 - [ ] 🟠 Date de revue suivante fixée (3 mois après le lancement, ou à chaque changement de prestataire, de tarif ou de promesse)
 
 Fichiers de référence : `docs/reviews/helena-conformite-J1.md`, `docs/reviews/marcus-copy.md`, `docs/copy/emails.md`, `docs/marketing/analytics-stack.md`.
+
+## Revue Helena du 2026-10-13 (textes SEO, `docs/reviews/helena-seo-copy-2026-10-12.md`)
+- 🔴 Paiement en ligne masqué : plus aucun texte n'annonce la carte ou le Mobile Money en ligne (metas, accueil, pied de page, fiches, packs, CGV art. 5). Code : `onlinePayAvailable()` ; CGV en base = Fresnel.
+- 🔴 Pages CGV et Livraison en base : 0 occurrence de « lundi au samedi » ou « pas le dimanche » (requête B2 du rapport).
+- 🟠 Paiement à la livraison désactivé dans l'admin : mettre à jour `seo.json` (les metas annoncent le paiement à la livraison). Heure limite : automatique (`{hour}`, lue dans les réglages).
+- 🟠 Aucun pack public plus cher que ses produits achetés séparément, campagnes comprises : garanti par `hasRealSaving()` (`src/lib/catalog/packs.ts`).

@@ -17,6 +17,7 @@ import { getLiveCampaigns } from "@/lib/campaigns/data";
 import { CurrencyProvider } from "@/lib/currency/client";
 import { FavoritesSanitizer } from "@/lib/favorites/FavoritesSanitizer";
 import { routing } from "@/i18n/routing";
+import { onlinePayAvailable } from "@/lib/payment/ready";
 
 /** ISR : prix, stocks et réglages de TOUTES les pages de la boutique se rafraîchissent toutes les 2 min (sinon ils restent figés jusqu'au prochain déploiement — T5). */
 export const revalidate = 120;
@@ -40,6 +41,7 @@ export default async function ShopLayout({
     getLiveCampaigns(),
   ]);
   const { settings } = data;
+  const online = await onlinePayAvailable(settings.pay);
   // Campagne en cours mise en avant (lien du menu + bannière), selon les interrupteurs de l'admin.
   const campaign = shopCampaigns(campaigns, lang);
 
@@ -70,6 +72,7 @@ export default async function ShopLayout({
         <Footer
           brand={settings.brand}
           cod={settings.pay.cod}
+          online={online}
           cutoff={settings.shipping.cutoff}
           lang={lang}
           defaultHours={DEFAULT_SETTINGS.brand.hours}

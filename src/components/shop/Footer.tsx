@@ -15,12 +15,15 @@ const LINK = "text-cream! hover:text-sun! no-underline";
 export function Footer({
   brand,
   cod,
+  online,
   cutoff = DEFAULT_CUTOFF,
   lang,
   defaultHours,
 }: {
   brand: BrandSettings;
   cod: boolean;
+  /** Paiement en ligne réellement proposé (réglages + clé FedaPay utilisable). */
+  online: boolean;
   cutoff?: number;
   lang: string;
   defaultHours: string;
@@ -113,8 +116,14 @@ export function Footer({
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-x-6 gap-y-[10px] px-5 py-[18px] text-[13px] text-[#B9B1A4]">
           <span>{t("copyright", { year })}</span>
           <span>
-            {t("payments")}
-            {cod ? t("paymentsCod") : ""}
+            {online ? (
+              <>
+                {t("payments")}
+                {cod ? t("paymentsCod") : ""}
+              </>
+            ) : cod ? (
+              t("paymentsCodOnly")
+            ) : null}
           </span>
           <LangSwitch />
         </div>

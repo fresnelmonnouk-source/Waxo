@@ -1,3 +1,4 @@
+import { onlinePayAvailable } from "@/lib/payment/ready";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
@@ -25,11 +26,12 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   setRequestLocale(lang);
   // Avis boutique : jusqu'à 200 avis publiés pour une moyenne réelle ; l'accueil n'en affiche que 6.
   const [data, siteReviews] = await Promise.all([getShopData(lang), getPublishedSiteReviews(200)]);
+  const online = await onlinePayAvailable(data.settings.pay);
   const empty = data.products.length === 0;
 
   return (
     <main data-screen-label="Accueil">
-      <HomeHero products={data.products} settings={data.settings} bestIds={data.bestIds} newIds={data.newIds} />
+      <HomeHero products={data.products} settings={data.settings} bestIds={data.bestIds} newIds={data.newIds} online={online} />
       {empty ? (
         <ArrivalNotice />
       ) : (

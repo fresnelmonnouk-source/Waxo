@@ -1,3 +1,5 @@
+import { seoHour } from "@/lib/seo/pages";
+import { onlinePayAvailable } from "@/lib/payment/ready";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -35,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!pack) return {};
   // Mêmes règles que la fiche produit : `SeoPages.pack`, photo du pack (sinon du premier produit), hreflang par langue traduite.
   const [t, slugs] = await Promise.all([getTranslations({ locale: lang, namespace: "SeoPages" }), getPackSlugs()]);
-  const vars = { name: pack.name, price: priceFcfa(pack.price, lang) };
+  const vars = { name: pack.name, price: priceFcfa(pack.price, lang), hour: await seoHour(lang) };
   const s = slugs.get(pack.id) ?? { fr: pack.slug };
   return pageMetadata({
     lang,
@@ -69,6 +71,7 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
     getPacks(lang),
     getSettings(),
   ]);
+  const online = await onlinePayAvailable(settings.pay);
 
   const { cutoff, returnDays } = settings.shipping;
   const soldOut = pack.stock <= 0;
@@ -175,7 +178,7 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
           )}
 
           <div className="border-border text-text flex flex-col gap-2 border-t pt-4 text-[14px]">
-            <span>{settings.pay.cod ? t("payAll") : t("payNoCod")}</span>
+            <span>{settings.pay.cod ? (online ? t("payAll") : t("payCodOnly")) : t("payNoCod")}</span>
             <span>
               {t("returns", { days: returnDays })} <Link href="/livraison-retours">{t("conditions")}</Link>
             </span>

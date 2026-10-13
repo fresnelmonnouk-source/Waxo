@@ -65,7 +65,7 @@ describe.each(["fr", "en"] as const)("rendu serveur (%s)", (locale) => {
     const { BestSellers, CategoryTiles, HomeCatalog, HowItWorks } = await import("@/components/shop/HomeSections");
     const { Selection } = await import("@/components/shop/Selection");
     const parts = [
-      createElement(HomeHero, { products: d.products, settings: d.settings, bestIds: d.bestIds, newIds: d.newIds }),
+      createElement(HomeHero, { products: d.products, settings: d.settings, bestIds: d.bestIds, newIds: d.newIds, online: true }),
       createElement(CategoryTiles, { categories: d.categories }),
       createElement(HomeCatalog, { products: d.products, total: d.products.length }),
       createElement(Selection, { products: d.products, newIds: d.newIds, bestIds: d.bestIds }),
@@ -76,6 +76,21 @@ describe.each(["fr", "en"] as const)("rendu serveur (%s)", (locale) => {
       const { html, errors } = await render(locale, () => part);
       expect(errors).toEqual([]);
       expect(html.length).toBeGreaterThan(100);
+    }
+  });
+
+  it("paiement en ligne indisponible : ni carte ni Visa annoncées, seulement la livraison (audit Helena B1)", async () => {
+    const d = await data(locale);
+    const { HomeHero } = await import("@/components/shop/HomeHero");
+    const { Footer } = await import("@/components/shop/Footer");
+    const { DEFAULT_SETTINGS } = await import("@/components/shop/data");
+    for (const part of [
+      createElement(HomeHero, { products: d.products, settings: d.settings, bestIds: d.bestIds, newIds: d.newIds, online: false }),
+      createElement(Footer, { brand: d.settings.brand, cod: true, online: false, lang: locale, defaultHours: DEFAULT_SETTINGS.brand.hours }),
+    ]) {
+      const { html, errors } = await render(locale, () => part);
+      expect(errors).toEqual([]);
+      expect(html).not.toMatch(/\bVisa\b|Mastercard|par carte|, carte\b|by card|or card/i);
     }
   });
 
@@ -91,7 +106,7 @@ describe.each(["fr", "en"] as const)("rendu serveur (%s)", (locale) => {
       createElement(TopBar, { freeFrom: d.settings.shipping.freeFrom, cod: true }),
       createElement(Header, { categories: d.categories, searchIndex: d.searchIndex, total: d.products.length }),
       createElement(Newsletter),
-      createElement(Footer, { brand: d.settings.brand, cod: true, lang: locale, defaultHours: DEFAULT_SETTINGS.brand.hours }),
+      createElement(Footer, { brand: d.settings.brand, cod: true, online: true, lang: locale, defaultHours: DEFAULT_SETTINGS.brand.hours }),
       createElement(ShopToast),
     ];
     for (const part of parts) {

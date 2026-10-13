@@ -201,9 +201,17 @@ function dbPacks(rows: DbPackRow[], locale: Locale, products: Product[]): Pack[]
 /** Tous les packs actifs, localisés. Démo seulement sans base (développement) : jamais de packs fictifs en production. */
 export const getPacks = cache(async (locale: Locale): Promise<Pack[]> => {
   const products = await getProducts(locale);
-  if (!supabasePublicEnv()) return buildDemoPacks(locale, products);
-  return dbPacks((await readPackRows()) ?? [], locale, products);
+  const packs = supabasePublicEnv() ? dbPacks((await readPackRows()) ?? [], locale, products) : buildDemoPacks(locale, products);
+  return packs.filter(hasRealSaving);
 });
+
+/**
+ * « Moins cher que séparément » doit être vrai pour CHAQUE pack affiché (audit Helena C2) : un pack qui ne coûte pas moins
+ * que ses produits aux prix ACTUELS (prix de campagne compris, appliqués par getProducts) est masqué côté public.
+ */
+export function hasRealSaving(pack: Pick<Pack, "price" | "itemsTotal">): boolean {
+  return pack.price > 0 && pack.price < pack.itemsTotal;
+}
 
 /** Les packs sont-ils activés (bouton Admin → Packs) ? Vrai par défaut ; base en panne = exception (comme `getSettings`). */
 export async function getPacksEnabled(): Promise<boolean> {

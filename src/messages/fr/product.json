@@ -29,7 +29,8 @@
     "askAssistant": "Une question sur ce produit ? Demandez à l'assistant",
     "assistantQuestion": "J'ai une question sur « {name} » : est-ce qu'il me conviendra ?",
     "alsoBought": "Souvent pris avec",
-    "addAria": "Ajouter {name} au panier"
+    "addAria": "Ajouter {name} au panier",
+    "payCodOnly": "Vous payez à la réception, en espèces ou par Mobile Money."
   },
   "Reviews": {
     "title": "Avis clients",

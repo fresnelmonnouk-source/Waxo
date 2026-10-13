@@ -139,3 +139,13 @@ describe("sitemap (lot 2)", () => {
     expect(e.find((x) => x.url === `${BASE}/en/campagne/noel`)?.alternates.languages.fr).toBe(`${BASE}/fr/campagne/noel`);
   });
 });
+
+describe("packs : allégation « moins cher que séparément » (audit Helena C2)", () => {
+  it("un pack égal ou plus cher que ses produits (prix actuels) n'est pas public", async () => {
+    const { hasRealSaving } = await import("@/lib/catalog/packs");
+    expect(hasRealSaving({ price: 9000, itemsTotal: 10000 })).toBe(true);
+    expect(hasRealSaving({ price: 10000, itemsTotal: 10000 })).toBe(false);
+    expect(hasRealSaving({ price: 11000, itemsTotal: 10000 })).toBe(false);
+    expect(hasRealSaving({ price: 0, itemsTotal: 10000 })).toBe(false);
+  });
+});

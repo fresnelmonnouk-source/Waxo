@@ -1,20 +1,64 @@
 {
   "SeoPages": {
     "brand": "Waxo",
-    "home": { "title": "Boutique en ligne à Cotonou, livraison le jour même | Waxo", "description": "Boutique en ligne à Cotonou. Commandé avant 20 h, livré le jour même à Cotonou et Calavi, 7 j/7. Petits prix, paiement Mobile Money ou à la livraison." },
-    "catalogue": { "title": "Catalogue : tous nos produits livrés à Cotonou", "description": "Achetez en ligne à Cotonou : maison, cuisine, beauté, tech, bureau, voyage. Commandé avant 20 h, livré le jour même. Mobile Money ou à la livraison." },
-    "faq": { "title": "FAQ : livraison, paiement et retours à Cotonou", "description": "Livraison le jour même à Cotonou et Calavi pour toute commande avant 20 h, paiement Mobile Money, carte ou à la livraison, retours : toutes nos réponses." },
-    "contact": { "title": "Contact : service client WhatsApp à Cotonou", "description": "Service client à Cotonou : notre équipe répond sur WhatsApp 7 j/7, de 8 h à 20 h, et l'assistant du site 24 h/24. Une question ? Écrivez-nous." },
-    "aPropos": { "title": "À propos : une boutique en ligne de Cotonou", "description": "Wá xɔ veut dire « venez acheter » en fon. Nous choisissons des objets utiles, les stockons à Cotonou et les livrons chez vous, souvent le jour même." },
-    "livraisonRetours": { "title": "Livraison le jour même à Cotonou et Calavi", "description": "Livraison le jour même à Cotonou et Calavi si commandé avant 20 h, sinon le lendemain, 7 j/7. Autres villes : 48 à 72 h. Frais et retours expliqués." },
-    "packs": { "title": "Packs : produits utiles réunis, livrés à Cotonou", "description": "Packs de produits utiles choisis pour aller ensemble, moins chers que séparément. Commandé avant 20 h, livré le jour même à Cotonou et Calavi." },
-    "cgv": { "title": "Conditions générales de vente", "description": "Conditions générales de vente de la boutique en ligne : commande, prix, paiement, livraison, échange et remboursement. À lire avant d'acheter." },
-    "cgu": { "title": "Conditions générales d'utilisation", "description": "Conditions générales d'utilisation du site : accès, compte client, avis clients, assistant en ligne, propriété intellectuelle et responsabilité." },
-    "confidentialite": { "title": "Politique de confidentialité", "description": "Quelles données personnelles nous collectons et pourquoi, combien de temps nous les gardons, avec qui elles sont partagées et comment exercer vos droits." },
-    "mentionsLegales": { "title": "Mentions légales", "description": "Mentions légales : éditeur du site, directeur de la publication, hébergeur, données personnelles et propriété intellectuelle de la boutique Wá xɔ." },
-    "product": { "title": "{name}, prix au Bénin", "descriptionFallback": "{name} à {price}. Commandé avant 20 h, livré le jour même à Cotonou et Calavi, 7 j/7. Paiement Mobile Money ou à la livraison." },
-    "pack": { "title": "{name}, pack livré à Cotonou", "descriptionFallback": "{name} : produits choisis pour aller ensemble, en un seul colis. Commandé avant 20 h, livré le jour même à Cotonou et Calavi." },
-    "campaign": { "title": "{name} : offres à Cotonou", "descriptionFallback": "Les offres {name}, pour une durée limitée. Commandé avant 20 h, livré le jour même à Cotonou et Calavi. Paiement Mobile Money ou à la livraison." },
-    "notFound": { "title": "Page introuvable" }
+    "home": {
+      "title": "Boutique en ligne à Cotonou, livraison le jour même | Waxo",
+      "description": "Boutique en ligne à Cotonou. Commandé avant {hour}, livré le jour même à Cotonou et Calavi, 7 j/7. Paiement à la livraison, en espèces ou Mobile Money."
+    },
+    "catalogue": {
+      "title": "Catalogue : tous nos produits livrés à Cotonou",
+      "description": "Achetez en ligne à Cotonou : maison, cuisine, beauté, tech, bureau, voyage. Commandé avant {hour}, livré le jour même. Payez à la livraison."
+    },
+    "faq": {
+      "title": "FAQ : livraison, paiement et retours à Cotonou",
+      "description": "Livraison le jour même à Cotonou et Calavi pour toute commande avant {hour}, moyens de paiement, retours : toutes nos réponses."
+    },
+    "contact": {
+      "title": "Contact : service client WhatsApp à Cotonou",
+      "description": "Service client à Cotonou : notre équipe répond sur WhatsApp 7 j/7, de 8 h à 20 h, et l'assistant IA du site 24 h/24. Une question ? Écrivez-nous."
+    },
+    "aPropos": {
+      "title": "À propos : une boutique en ligne de Cotonou",
+      "description": "Wá xɔ veut dire « venez acheter » en fon. Nous choisissons des objets utiles, les stockons à Cotonou et les livrons chez vous, souvent le jour même."
+    },
+    "livraisonRetours": {
+      "title": "Livraison le jour même à Cotonou et Calavi",
+      "description": "Livraison le jour même à Cotonou et Calavi si commandé avant {hour}, sinon le lendemain, 7 j/7. Autres villes : 48 à 72 h. Frais et retours expliqués."
+    },
+    "packs": {
+      "title": "Packs : produits utiles réunis, livrés à Cotonou",
+      "description": "Packs de produits utiles choisis pour aller ensemble, moins chers que séparément. Commandé avant {hour}, livré le jour même à Cotonou et Calavi."
+    },
+    "cgv": {
+      "title": "Conditions générales de vente",
+      "description": "Conditions générales de vente de la boutique en ligne : commande, prix, paiement, livraison, échange et remboursement. À lire avant d'acheter."
+    },
+    "cgu": {
+      "title": "Conditions générales d'utilisation",
+      "description": "Conditions générales d'utilisation du site : accès, compte client, avis clients, assistant en ligne, propriété intellectuelle et responsabilité."
+    },
+    "confidentialite": {
+      "title": "Politique de confidentialité",
+      "description": "Quelles données personnelles nous collectons et pourquoi, combien de temps nous les gardons, avec qui elles sont partagées et comment exercer vos droits."
+    },
+    "mentionsLegales": {
+      "title": "Mentions légales",
+      "description": "Mentions légales : éditeur du site, directeur de la publication, hébergeur, données personnelles et propriété intellectuelle de la boutique Wá xɔ."
+    },
+    "product": {
+      "title": "{name}, prix au Bénin",
+      "descriptionFallback": "{name} à {price}. Commandé avant {hour}, livré le jour même à Cotonou et Calavi, 7 j/7. Paiement à la livraison, en espèces ou Mobile Money."
+    },
+    "pack": {
+      "title": "{name}, pack livré à Cotonou",
+      "descriptionFallback": "{name} : produits choisis pour aller ensemble, en un seul colis. Commandé avant {hour}, livré le jour même à Cotonou et Calavi."
+    },
+    "campaign": {
+      "title": "{name} : offres à Cotonou",
+      "descriptionFallback": "Les offres {name}, pour une durée limitée. Commandé avant {hour}, livré le jour même à Cotonou et Calavi. Paiement à la livraison, en espèces ou Mobile Money."
+    },
+    "notFound": {
+      "title": "Page introuvable"
+    }
   }
 }

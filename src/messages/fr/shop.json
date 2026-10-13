@@ -99,7 +99,7 @@
     "g3Title": "Livraison Express",
     "g3Sub": "Commandé avant {hour}, livré le jour même à Cotonou & Calavi. 7 j/7, dimanche compris. Autres villes : 48 à 72 h.",
     "g4Title": "Assistant en ligne 24 h/24",
-    "g4Sub": "L'assistant du site répond à toute heure. Notre équipe vous répond sur WhatsApp, 7 j/7, de 8 h à 20 h.",
+    "g4Sub": "L'assistant IA du site répond à toute heure. Notre équipe vous répond sur WhatsApp, 7 j/7, de 8 h à 20 h.",
     "browse": "Parcourir par rayon",
     "categories": "Catégories",
     "catalogTitle": "Catalogue",
@@ -122,7 +122,9 @@
     "step2Text": "Un message WhatsApp vous confirme le créneau de livraison.",
     "step3Title": "Vous recevez",
     "step3Text": "Le livreur vous appelle à l'arrivée. Vous payez si ce n'est pas déjà fait.",
-    "g3Hour": "{hour}"
+    "g3Hour": "{hour}",
+    "payCodOnly": "Vous payez à la réception, en espèces ou par Mobile Money.",
+    "g2CodOnlySub": "En espèces ou par Mobile Money, à la porte"
   },
   "Catalog": {
     "crumb": "Fil d'Ariane",
@@ -207,7 +209,8 @@
     "hours": "7 j/7, de 8 h à 20 h",
     "copyright": "© {year} Wá xɔ · Cotonou, Bénin",
     "payments": "MTN MoMo · Moov Money · Celtiis Cash · Visa · Mastercard",
-    "paymentsCod": " · Paiement à la livraison"
+    "paymentsCod": " · Paiement à la livraison",
+    "paymentsCodOnly": "Paiement à la livraison : espèces ou Mobile Money"
   },
   "Campaign": {
     "bannerLabel": "Campagne {name}",

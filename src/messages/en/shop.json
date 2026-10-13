@@ -99,7 +99,7 @@
     "g3Title": "Express Delivery",
     "g3Sub": "Ordered before {hour}, delivered the same day in Cotonou & Calavi. 7 days a week, Sundays too. Other cities: 48 to 72 h.",
     "g4Title": "24/7 online assistant",
-    "g4Sub": "Our site assistant answers any time. Our team replies on WhatsApp, 7 days a week, 8 am to 8 pm.",
+    "g4Sub": "Our AI site assistant answers any time. Our team replies on WhatsApp, 7 days a week, 8 am to 8 pm.",
     "browse": "Browse by aisle",
     "categories": "Categories",
     "catalogTitle": "Catalogue",
@@ -122,7 +122,9 @@
     "step2Text": "A WhatsApp message confirms your delivery slot.",
     "step3Title": "You receive",
     "step3Text": "The courier calls you on arrival. You pay then if you have not already.",
-    "g3Hour": "{hour}"
+    "g3Hour": "{hour}",
+    "payCodOnly": "You pay on delivery, in cash or by Mobile Money.",
+    "g2CodOnlySub": "In cash or by Mobile Money, at your door"
   },
   "Catalog": {
     "crumb": "Breadcrumb",
@@ -207,7 +209,8 @@
     "hours": "7 days a week, 8 am to 8 pm",
     "copyright": "© {year} Wá xɔ · Cotonou, Benin",
     "payments": "MTN MoMo · Moov Money · Celtiis Cash · Visa · Mastercard",
-    "paymentsCod": " · Cash on delivery"
+    "paymentsCod": " · Pay on delivery",
+    "paymentsCodOnly": "Pay on delivery: cash or Mobile Money"
   },
   "Campaign": {
     "bannerLabel": "{name} campaign",

@@ -62,7 +62,8 @@
       "returns": "Échange ou remboursement sous {days} jours.",
       "conditions": "Conditions",
       "otherPacks": "Les autres packs",
-      "allPacks": "Tous les packs"
+      "allPacks": "Tous les packs",
+      "payCodOnly": "Vous payez à la réception, en espèces ou par Mobile Money."
     }
   }
 }
