@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { getProducts, getSettings } from "@/lib/catalog";
 import { getPacks } from "@/lib/catalog/packs";
+import { freeShippingIds } from "@/lib/catalog/free-shipping";
 import { onlinePaymentReady } from "@/lib/payment/ready";
 import type { Locale } from "@/i18n/routing";
 
 /**
  * GET /api/checkout/config?lang=fr&ids=a,b — données publiques dont le tiroir panier a besoin sans que les pages
- * (statiques) ne les embarquent : réglages de livraison/paiement, stock des articles du panier, 2 produits « à petit prix ».
+ * (statiques) ne les embarquent : réglages de livraison/paiement, stock des articles du panier, 2 produits « à petit prix »,
+ * articles du panier en « livraison offerte à Cotonou & Calavi » (`free`, 0025).
  * Lecture seule, aucune donnée privée. Ne renvoie jamais d'erreur 5xx : repli sur les réglages par défaut.
  * Paiement en ligne impossible (clé d'essai refusée en production, audit C1) : Mobile Money et carte sont masqués.
  */
@@ -50,6 +52,7 @@ export async function GET(request: Request) {
     // Jamais un UUID : si la base est lente et que le catalogue retombe sur la démo, un vrai panier ne doit pas être vidé.
     const known = new Set([...products.map((p) => p.id), ...(packsEnabled ? packs.map((k) => k.id) : [])]);
     const stale = [...ids].filter((id) => !known.has(id) && !UUID.test(id));
+    const free = freeShippingIds(products, packsEnabled ? packs : []).filter((id) => ids.has(id));
 
     const upsell = products
       .filter((p) => !ids.has(p.id) && p.price <= 3000 && p.stock > 0)
@@ -57,7 +60,7 @@ export async function GET(request: Request) {
       .map((p) => ({ id: p.id, slug: p.slug, name: p.name, price: p.price, bg: p.bg, imageUrl: p.imageUrl }));
 
     return NextResponse.json(
-      { ok: true, shipping: settings.shipping, pay, stock, prices, upsell, stale, packsEnabled },
+      { ok: true, shipping: settings.shipping, pay, stock, prices, upsell, stale, packsEnabled, free },
       { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } },
     );
   } catch {

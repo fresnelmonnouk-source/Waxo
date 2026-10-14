@@ -5,7 +5,8 @@ import { createProduct, deleteProduct, updateProduct } from "@/app/admin/(panel)
 import { fmtXof } from "@/lib/money";
 import { FIELD_ERR, FIELD_LABEL, Drawer, Switch, inputClass } from "./ui";
 import { PhotosField } from "./PhotosField";
-import { SWATCHES, marginOf, parseAmount, validateProductForm } from "./logic";
+import { DETAIL_LABELS, SWATCHES, detailErrorKey, marginOf, parseAmount, validateProductForm } from "./logic";
+import { DETAIL_KEYS, EMPTY_DETAILS, hasAnyDetail, type DetailKey, type ProductDetails } from "@/lib/catalog/details";
 import type { AdminCategory, AdminProduct, ProductFormValues } from "./types";
 
 function initialValues(p: AdminProduct | null, categories: AdminCategory[]): ProductFormValues {
@@ -24,6 +25,9 @@ function initialValues(p: AdminProduct | null, categories: AdminCategory[]): Pro
       bg: SWATCHES[0],
       active: true,
       images: [],
+      details: { ...EMPTY_DETAILS },
+      detailsEn: { ...EMPTY_DETAILS },
+      freeShipping: false,
     };
   }
   return {
@@ -40,7 +44,77 @@ function initialValues(p: AdminProduct | null, categories: AdminCategory[]): Pro
     bg: (p.bg ?? SWATCHES[0]).toUpperCase(),
     active: p.active,
     images: p.images,
+    details: { ...p.details.fr },
+    detailsEn: { ...p.details.en },
+    freeShipping: p.freeShipping,
+    stockAtOpen: String(p.stock),
   };
+}
+
+/** Libellés anglais (la version anglaise du formulaire est rédigée en anglais, comme « Product name »). */
+const DETAIL_LABELS_EN: Record<DetailKey, string> = {
+  color: "Colour",
+  materials: "Materials",
+  specs: "Technical specifications",
+  highlights: "Key features",
+  uses: "Possible uses",
+  care: "Use & care tips",
+};
+
+/** Exemples de saisie (une information par ligne). */
+const DETAIL_PLACEHOLDERS: Record<DetailKey, string> = {
+  color: "Ex. Noir mat",
+  materials: "Ex. Acier inoxydable, bouchon en bambou",
+  specs: "Ex.\nContenance : 750 ml\nDimensions : 7 x 26 cm",
+  highlights: "Ex.\nGarde au frais 24 h\nNe fuit pas dans le sac",
+  uses: "Ex.\nBureau\nSport\nVoyage",
+  care: "Ex.\nLaver à la main à l'eau tiède\nNe pas passer au micro-ondes",
+};
+
+/** Les six rubriques facultatives (couleur et matériaux sur une ligne, les autres en zone de texte). */
+function DetailFields({
+  values,
+  labels,
+  en = false,
+  errors,
+  onChange,
+}: {
+  values: ProductDetails;
+  labels: Record<DetailKey, string>;
+  en?: boolean;
+  errors: Record<string, string>;
+  onChange: (k: DetailKey, value: string) => void;
+}) {
+  return (
+    <>
+      {DETAIL_KEYS.map((k) => {
+        const err = errors[detailErrorKey(k, en)];
+        const short = k === "color" || k === "materials";
+        const common = {
+          value: values[k],
+          placeholder: en ? undefined : DETAIL_PLACEHOLDERS[k],
+          lang: en ? "en" : undefined,
+        };
+        return (
+          <label key={k} className={FIELD_LABEL}>
+            {labels[k]}
+            {short ? (
+              <input {...common} onChange={(e) => onChange(k, e.target.value)} maxLength={200} className={inputClass(err)} />
+            ) : (
+              <textarea
+                {...common}
+                onChange={(e) => onChange(k, e.target.value)}
+                rows={3}
+                maxLength={3000}
+                className={`${inputClass(err)} resize-y leading-normal`}
+              />
+            )}
+            <span className={FIELD_ERR}>{err}</span>
+          </label>
+        );
+      })}
+    </>
+  );
 }
 
 /** Tiroir création / édition d'un produit (maquette 621-671) + version anglaise, prix d'achat et marge. */
@@ -48,6 +122,7 @@ export function ProductDrawer({
   product,
   categories,
   maxPhotos,
+  detailsReady = true,
   onClose,
   onSaved,
 }: {
@@ -55,6 +130,8 @@ export function ProductDrawer({
   categories: AdminCategory[];
   /** Photos autorisées (1 tant que la migration 0024 n'est pas appliquée). */
   maxPhotos?: number;
+  /** Migration 0025 appliquée (rubriques + livraison gratuite enregistrables). */
+  detailsReady?: boolean;
   onClose: () => void;
   onSaved: (message: string, id: string | null) => void;
 }) {
@@ -71,6 +148,17 @@ export function ProductDrawer({
     setErrors((e) => ({ ...e, [k]: "" }));
     setFormError("");
   };
+  const setDetail = (k: DetailKey, value: string, en = false) => {
+    setV((s) => (en ? { ...s, detailsEn: { ...s.detailsEn, [k]: value } } : { ...s, details: { ...s.details, [k]: value } }));
+    setErrors((e) => ({ ...e, [detailErrorKey(k, en)]: "", ...(en ? { nameEn: "" } : {}) }));
+    setFormError("");
+  };
+  const detailError = DETAIL_KEYS.some((k) => errors[detailErrorKey(k)]);
+  const detailEnError = DETAIL_KEYS.some((k) => errors[detailErrorKey(k, true)]);
+  // Ouverts selon le contenu À L'OUVERTURE, puis au gré de l'admin (et forcés en cas d'erreur) : effacer la dernière
+  // rubrique ne replie plus le panneau pendant la saisie (audit Victor V5).
+  const [detailsOpen, setDetailsOpen] = useState(() => hasAnyDetail(v.details));
+  const [enOpen, setEnOpen] = useState(() => Boolean(v.nameEn || v.descriptionEn || hasAnyDetail(v.detailsEn)));
 
   const price = parseAmount(v.price);
   const cost = v.cost.trim() === "" ? null : parseAmount(v.cost);
@@ -173,6 +261,21 @@ export function ProductDrawer({
           </span>
         </label>
 
+        <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-[14px] border border-[#E2DCCF] bg-white px-3.5 py-3">
+          <input
+            type="checkbox"
+            checked={v.freeShipping}
+            onChange={(e) => set("freeShipping", e.target.checked)}
+            className="mt-0.5 h-5 w-5 flex-none cursor-pointer accent-[#1F6B4A]"
+          />
+          <span className="flex flex-col gap-0.5">
+            <span className="text-sm font-medium">Livraison gratuite à Cotonou &amp; Calavi</span>
+            <span className="text-xs text-[#4A443C]">
+              Offerte quand tout le panier est composé de produits cochés. Avec un produit non coché, le tarif habituel s&apos;applique.
+            </span>
+          </span>
+        </label>
+
         <label className={FIELD_LABEL}>
           Description
           <textarea
@@ -185,7 +288,31 @@ export function ProductDrawer({
           <span className={FIELD_ERR}>{errors.description}</span>
         </label>
 
-        <details className="rounded-[14px] border border-[#E2DCCF] bg-white px-3.5 py-1" open={Boolean(v.nameEn || v.descriptionEn)}>
+        <details
+          className="rounded-[14px] border border-[#E2DCCF] bg-white px-3.5 py-1"
+          open={detailsOpen || detailError}
+          onToggle={(e) => setDetailsOpen(e.currentTarget.open)}
+        >
+          <summary className="flex min-h-11 cursor-pointer items-center text-sm font-medium">Détails du produit (facultatif)</summary>
+          <div className="flex flex-col gap-3.5 pb-3.5 pt-1">
+            <span className="text-xs text-[#4A443C]">
+              Une information par ligne. Une rubrique laissée vide n&apos;apparaît pas sur la fiche, ni son titre.
+            </span>
+            <DetailFields values={v.details} labels={DETAIL_LABELS} errors={errors} onChange={(k, value) => setDetail(k, value)} />
+          </div>
+        </details>
+
+        {!detailsReady && (
+          <span role="status" className="rounded-[12px] bg-[#FBF1D9] px-3.5 py-2.5 text-xs leading-[1.45] text-[#141210]">
+            Les détails du produit et la livraison gratuite seront enregistrables après la migration 0025 (éditeur SQL Supabase).
+          </span>
+        )}
+
+        <details
+          className="rounded-[14px] border border-[#E2DCCF] bg-white px-3.5 py-1"
+          open={enOpen || detailEnError || Boolean(errors.nameEn)}
+          onToggle={(e) => setEnOpen(e.currentTarget.open)}
+        >
           <summary className="flex min-h-11 cursor-pointer items-center text-sm font-medium">Version anglaise (facultative)</summary>
           <div className="flex flex-col gap-3.5 pb-3.5 pt-1">
             <label className={FIELD_LABEL}>
@@ -205,7 +332,10 @@ export function ProductDrawer({
               />
               <span className={FIELD_ERR}>{errors.descriptionEn}</span>
             </label>
-            <span className="text-xs text-[#4A443C]">Sans nom anglais, la boutique affiche la version française.</span>
+            <DetailFields values={v.detailsEn} labels={DETAIL_LABELS_EN} en errors={errors} onChange={(k, value) => setDetail(k, value, true)} />
+            <span className="text-xs text-[#4A443C]">
+              Sans nom anglais, la boutique affiche la version française. Une rubrique anglaise vide reprend la rubrique française.
+            </span>
           </div>
         </details>
 
@@ -218,6 +348,7 @@ export function ProductDrawer({
             maxLength={40}
             className={inputClass()}
           />
+          <span className="text-xs font-normal text-[#4A443C]">Visible seulement tant que le produit n&apos;a aucune photo.</span>
         </label>
 
         <div className="flex flex-col gap-2 text-sm font-medium">

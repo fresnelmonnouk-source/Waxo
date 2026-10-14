@@ -26,6 +26,7 @@ const products: Product[] = demoCatalog.products.map((p) => ({
   images: p.imageUrl ? [p.imageUrl] : [],
   createdAt: p.createdAt,
   rating: { average: p.ratingSeed, count: p.ratingSeedCount },
+  freeShipping: false,
 }));
 const categories = demoCatalog.categories.map((c) => ({ id: c.id, label: c.labelFr }));
 const kbFr: KbEntry[] = demoKb.map((d) => ({ id: d.id, tag: d.tag, title: d.title, text: d.text, keywords: d.keywords }));

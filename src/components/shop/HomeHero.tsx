@@ -106,9 +106,11 @@ export function HomeHero({
                   >
                     {tagText(feat, tagOf(feat))}
                   </span>
-                  <span aria-hidden="true" className="font-display relative text-[clamp(28px,3.4vw,44px)] leading-none font-semibold tracking-[-0.04em] opacity-80">
-                    {feat.keyword}
-                  </span>
+                  {feat.imageUrl ? null : (
+                    <span aria-hidden="true" className="font-display relative text-[clamp(28px,3.4vw,44px)] leading-none font-semibold tracking-[-0.04em] opacity-80">
+                      {feat.keyword}
+                    </span>
+                  )}
                   <div className="relative flex flex-col gap-[6px] rounded-[16px] bg-white/90 px-[14px] py-3">
                     <span className="text-[15px] leading-[1.25] font-semibold">{feat.name}</span>
                     <div className="flex items-baseline gap-2">

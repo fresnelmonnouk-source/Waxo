@@ -42,12 +42,13 @@ export function PackVisual({
               className={`relative flex items-center justify-center overflow-hidden ${shown.length === 1 || (shown.length === 3 && i === 0) ? "col-span-2" : ""}`}
               style={{ background: it.bg ?? FALLBACK_BG }}
             >
-              <span className="font-display px-1 text-center font-semibold tracking-[-0.04em] opacity-75" style={{ fontSize: font }}>
-                {it.keyword}
-              </span>
               {it.imageUrl ? (
                 <div className="absolute inset-0" style={{ background: `${cssUrl(it.imageUrl)} center/cover no-repeat` }} />
-              ) : null}
+              ) : (
+                <span className="font-display px-1 text-center font-semibold tracking-[-0.04em] opacity-75" style={{ fontSize: font }}>
+                  {it.keyword}
+                </span>
+              )}
               {i === 3 && more > 0 ? (
                 <span className="font-display bg-ink/80 text-cream absolute inset-0 flex items-center justify-center text-[18px] font-semibold">
                   +{more}

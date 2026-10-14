@@ -91,12 +91,27 @@ export function StockPromise({ label, color, cutoff, soldOut }: { label: string;
 }
 
 /** Note de livraison sous le bouton d'achat (spec §5.2) : le SEUL badge Express de la fiche. Tarifs issus des réglages. */
-export function DeliveryNote({ cotonou, autre, freeFrom, cod }: { cotonou: number; autre: number; freeFrom: number; cod: boolean }) {
+export function DeliveryNote({
+  cotonou,
+  autre,
+  freeFrom,
+  cod,
+  freeShipping = false,
+}: {
+  cotonou: number;
+  autre: number;
+  freeFrom: number;
+  cod: boolean;
+  /** Produit en « livraison offerte à Cotonou & Calavi » (0025) : offerte si tout le panier l'est. */
+  freeShipping?: boolean;
+}) {
   const t = useTranslations("Express");
   const price = usePrice();
-  const zone = freeShippingEnabled({ freeFrom })
-    ? t("noteZone", { price: price(cotonou), free: price(freeFrom) })
-    : t("noteZoneNoFree", { price: price(cotonou) });
+  const zone = freeShipping
+    ? t("noteZoneFreeProduct")
+    : freeShippingEnabled({ freeFrom })
+      ? t("noteZone", { price: price(cotonou), free: price(freeFrom) })
+      : t("noteZoneNoFree", { price: price(cotonou) });
   return (
     <div className="border-border flex flex-col gap-1.5 rounded-[var(--radius-field)] border bg-white px-4 py-[14px]">
       <p className="text-ink m-0 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] leading-[1.4] font-medium">
@@ -104,6 +119,7 @@ export function DeliveryNote({ cotonou, autre, freeFrom, cod }: { cotonou: numbe
         <span>{zone}</span>
       </p>
       <p className="text-muted m-0 text-[13px] leading-[1.45]">
+        {freeShipping ? `${t("noteFreeProductCond")} ` : ""}
         {t("noteOther", { price: price(autre) })}
         {cod ? ` ${t("noteCod")}` : ""}
       </p>

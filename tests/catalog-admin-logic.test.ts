@@ -29,6 +29,9 @@ const base: ProductFormValues = {
   bg: "#f3e3a6",
   active: true,
   images: [],
+  details: { color: "", materials: "", specs: "", highlights: "", uses: "", care: "" },
+  detailsEn: { color: "", materials: "", specs: "", highlights: "", uses: "", care: "" },
+  freeShipping: false,
 };
 
 describe("slugs", () => {

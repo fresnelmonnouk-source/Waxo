@@ -11,6 +11,7 @@ import {
   enabledPayMethods,
   isMobileMoney,
   shippingFee,
+  cartShipsFree,
   type PayConfig,
   type PayMethod,
   type ShippingConfig,
@@ -106,6 +107,33 @@ function RadioCard({
 
 const inputClass = "rounded-[14px] border bg-card p-3.5 text-[16px] font-normal";
 
+/**
+ * Articles du panier en « livraison offerte à Cotonou & Calavi » (0025), lus au chargement : la page est en cache, la liste
+ * ne doit pas l'être. Vide en attendant = frais normaux affichés (jamais une gratuité promise à tort). Le serveur refuse la
+ * commande si les frais ont augmenté (`shipping_changed`) et renvoie la liste à jour (setter exposé).
+ */
+function useFreeShippingIds(lines: readonly { id: string }[], locale: string) {
+  const [freeIds, setFreeIds] = useState<string[]>([]);
+  const idsKey = lines
+    .map((l) => l.id)
+    .sort()
+    .join(",");
+  useEffect(() => {
+    if (!idsKey) return;
+    const ctrl = new AbortController();
+    fetch(`/api/checkout/config?lang=${locale === "en" ? "en" : "fr"}&ids=${encodeURIComponent(idsKey)}`, { signal: ctrl.signal })
+      .then((r) => r.json())
+      .then((j: { ok?: boolean; free?: unknown }) => {
+        if (j.ok && Array.isArray(j.free)) setFreeIds(j.free.filter((x): x is string => typeof x === "string"));
+      })
+      .catch(() => {
+        /* frais normaux affichés ; le serveur reste l'autorité */
+      });
+    return () => ctrl.abort();
+  }, [idsKey, locale]);
+  return [freeIds, setFreeIds] as const;
+}
+
 export function CheckoutFlow({ shipping, pay, turnstileSiteKey = null }: Props) {
   const t = useTranslations("Checkout");
   const ts = useTranslations("Security.checkout");
@@ -143,7 +171,9 @@ export function CheckoutFlow({ shipping, pay, turnstileSiteKey = null }: Props) 
   const [resumed, setResumed] = useState(false);
 
   const methods = enabledPayMethods(pay);
-  const fee = shippingFee(subtotal, zone, shipping);
+  const [freeIds, setFreeIds] = useFreeShippingIds(lines, locale);
+  const allFree = cartShipsFree(lines, freeIds);
+  const fee = shippingFee(subtotal, zone, shipping, allFree);
   const total = subtotal + fee;
   const mm = isMobileMoney(method);
 
@@ -266,6 +296,8 @@ export function CheckoutFlow({ shipping, pay, turnstileSiteKey = null }: Props) 
           elapsed: Date.now() - shownAt.current,
           // Sous-total affiché : le serveur refuse si un prix a augmenté depuis (fin de campagne), sans rien créer.
           expectedSubtotal: subtotal,
+          // Frais affichés : refus si la livraison n'est plus offerte (case décochée entre-temps), rien n'est créé.
+          expectedShipping: shippingFee(subtotal, zone, shipping, cartShipsFree(lines, freeIds)),
           captcha,
           replaces: replaces.current ?? undefined,
         }),
@@ -279,11 +311,21 @@ export function CheckoutFlow({ shipping, pay, turnstileSiteKey = null }: Props) 
         order?: { number: string; total: number };
         payment?: { kind: "cod" | "pending" | "redirect"; url?: string };
         prices?: Record<string, number>;
+        free?: string[];
       } | null;
+
+      // Frais de livraison en hausse (livraison plus offerte) : liste à jour, nouveau total affiché, le client valide à nouveau.
+      if (json?.code === "shipping_changed") {
+        if (Array.isArray(json.free)) setFreeIds(json.free);
+        setSubmitError(json.message || t("errGeneric"));
+        setPaying(false);
+        return;
+      }
 
       // Un prix a augmenté depuis l'affichage (fin de campagne) : panier mis à jour, le client vérifie et valide à nouveau.
       if (json?.code === "price_changed") {
         if (json.prices) cart.syncPrices(json.prices);
+        if (Array.isArray(json.free)) setFreeIds(json.free);
         setSubmitError(json.message || t("errGeneric"));
         setPaying(false);
         return;
@@ -484,7 +526,7 @@ export function CheckoutFlow({ shipping, pay, turnstileSiteKey = null }: Props) 
               <span className="text-[14px] font-medium">{t("zoneLabel")}</span>
               <div className="grid gap-2.5 @2xl:grid-cols-2">
                 {(["cotonou", "autre"] as const).map((z) => {
-                  const zoneFee = shippingFee(subtotal, z, shipping);
+                  const zoneFee = shippingFee(subtotal, z, shipping, allFree);
                   return (
                     <RadioCard key={z} zoneCard checked={zone === z} onSelect={() => setZone(z)}>
                       <div className="flex min-w-0 flex-1 flex-col gap-1.5">

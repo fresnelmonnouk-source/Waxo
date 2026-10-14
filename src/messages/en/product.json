@@ -68,5 +68,14 @@
     "verified": "Verified purchase",
     "mine": "Your review",
     "empty": "No detailed reviews for this product yet."
+  },
+  "ProductDetails": {
+    "title": "Product details",
+    "color": "Colour",
+    "materials": "Materials",
+    "specs": "Technical specifications",
+    "highlights": "Key features",
+    "uses": "Possible uses",
+    "care": "Use and care tips"
   }
 }

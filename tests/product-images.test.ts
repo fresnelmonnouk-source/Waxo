@@ -87,6 +87,9 @@ describe("validateProductForm : photos", () => {
     bg: "#F3E3A6",
     active: true,
     images: [],
+    details: { color: "", materials: "", specs: "", highlights: "", uses: "", care: "" },
+    detailsEn: { color: "", materials: "", specs: "", highlights: "", uses: "", care: "" },
+    freeShipping: false,
   };
   it("garde l'ordre, retire doublons et vides", () => {
     const v = validateProductForm({ ...base, images: [B, A, B, " ", C] });

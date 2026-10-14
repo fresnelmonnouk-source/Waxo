@@ -8,7 +8,7 @@ const rpc = vi.hoisted(() => vi.fn());
 
 vi.mock("@/lib/catalog/packs", () => ({
   getPacksEnabled: async () => packsEnabled.value,
-  getPacks: async () => [{ id: "pk-1", slug: "pack-cuisine", stock: 4 }],
+  getPacks: async () => [{ id: "pk-1", slug: "pack-cuisine", stock: 4, items: [] }],
 }));
 vi.mock("@/lib/catalog", () => ({
   getSettings: async () => ({

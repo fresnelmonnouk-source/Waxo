@@ -7,7 +7,9 @@ import { DEFAULT_FX, sanitizeFx, type FxRates } from "@/lib/currency/core";
 import { supabasePublicEnv } from "@/lib/supabase/env";
 import { getLiveCampaigns } from "@/lib/campaigns/data";
 import { applyCampaigns } from "@/lib/campaigns/logic";
-import { isMissingImagesColumn, productImages } from "@/lib/media/product-images";
+import { productImages } from "@/lib/media/product-images";
+import { isMissingColumn } from "@/lib/supabase/missing-column";
+import { DETAIL_KEYS, EMPTY_DETAILS, detailsFrom, mergeDetails, type ProductDetails } from "./details";
 import type {
   Category,
   Product,
@@ -95,6 +97,7 @@ function demoProduct(p: DemoProduct, locale: Locale): Product {
     images: productImages(null, p.imageUrl),
     createdAt: p.createdAt,
     rating: ratingOf(p.ratingSeed, p.ratingSeedCount, undefined),
+    freeShipping: false,
   };
 }
 
@@ -159,6 +162,8 @@ type DbProductRow = {
   image_url: string | null;
   /** Absente tant que la migration 0024 n'est pas appliquée. */
   images?: string[] | null;
+  /** Absente tant que la migration 0025 n'est pas appliquée. */
+  free_shipping?: boolean | null;
   created_at: string;
   product_translations: { locale: string; name: string; slug: string; description: string }[];
 };
@@ -208,33 +213,51 @@ export async function readRealRatings(sb: ReturnType<typeof createPublicClient>)
  * régénérée par l'ISR quelques minutes après le déploiement.
  * `cache` : une seule lecture par rendu, quelle que soit la langue (E1 : 3 à 6 lectures complètes auparavant).
  */
-const PRODUCT_COLUMNS =
-  "id,category_id,price,compare_price,stock,sold,rating_seed,rating_seed_count,keyword,bg,image_url,created_at,product_translations(locale,name,slug,description)";
-
-/** Colonne `images` constatée absente (0024 non appliquée) : on ne la redemande pas avant ce délai (évite 2 requêtes par lecture). */
-const IMAGES_RECHECK_MS = 10 * 60_000;
-let imagesMissingUntil = 0;
+const BASE_COLUMNS = "id,category_id,price,compare_price,stock,sold,rating_seed,rating_seed_count,keyword,bg,image_url,created_at";
+const TR_COLUMNS = "locale,name,slug,description";
+const PRODUCT_COLUMNS = `${BASE_COLUMNS},product_translations(${TR_COLUMNS})`;
 
 /**
- * Produits actifs, avec `images` si la colonne existe. Colonne absente (42703) → même lecture sans elle : la boutique
- * affiche alors la photo unique `image_url`. Toute autre erreur reste une erreur.
+ * Lectures possibles, de la plus complète à la plus ancienne : 0024 (photos) et 0025 (livraison offerte), dans n'importe quel
+ * ordre d'application, puis le socle. Une colonne absente fait passer à la suivante : la boutique reste en ligne.
+ * Les rubriques de la fiche (0025) ne sont PAS lues ici : seulement par getProductDetails, sur la fiche (audit Tariq 🟠3).
  */
+const COLUMN_TIERS = [
+  `${PRODUCT_COLUMNS},images,free_shipping`,
+  `${PRODUCT_COLUMNS},free_shipping`, // 0025 sans 0024 (production au 2026-10-14)
+  `${PRODUCT_COLUMNS},images`,
+  PRODUCT_COLUMNS,
+] as const;
+
+/** Lecture complète constatée impossible : on ne la retente pas avant ce délai (évite 2 à 3 requêtes par lecture). */
+const COLUMNS_RECHECK_MS = 10 * 60_000;
+let tier = 0;
+let tierUntil = 0;
+
+/** Produits actifs, avec les colonnes des migrations appliquées. Toute erreur autre qu'une colonne absente reste une erreur. */
 async function readProductRows(sb: ReturnType<typeof createPublicClient>): Promise<DbProductRow[]> {
   const read = (columns: string) => withTimeout(sb.from("products").select(columns).eq("active", true));
-  if (Date.now() >= imagesMissingUntil) {
-    const { data, error } = await read(`${PRODUCT_COLUMNS},images`);
-    if (!error) return (data ?? []) as unknown as DbProductRow[];
-    if (!isMissingImagesColumn(error)) throw new Error("catalog_unavailable");
-    imagesMissingUntil = Date.now() + IMAGES_RECHECK_MS;
+  if (Date.now() >= tierUntil) tier = 0;
+  for (let i = tier; i < COLUMN_TIERS.length; i++) {
+    const { data, error } = await read(COLUMN_TIERS[i]);
+    if (!error) {
+      if (i !== tier) {
+        tier = i;
+        tierUntil = Date.now() + COLUMNS_RECHECK_MS;
+        // Visible dans les journaux Vercel : une migration manque (ou une colonne a été mal nommée dans le code).
+        console.warn(`[catalogue] colonnes absentes : lecture de repli n° ${i} (migrations 0024/0025 à vérifier)`);
+      }
+      return (data ?? []) as unknown as DbProductRow[];
+    }
+    if (!isMissingColumn(error)) throw new Error("catalog_unavailable");
   }
-  const { data, error } = await read(PRODUCT_COLUMNS);
-  if (error) throw new Error("catalog_unavailable");
-  return (data ?? []) as unknown as DbProductRow[];
+  throw new Error("catalog_unavailable");
 }
 
-/** Tests uniquement : oublie qu'`images` manquait. */
+/** Tests uniquement : oublie les colonnes constatées absentes. */
 export function resetImagesColumnProbe() {
-  imagesMissingUntil = 0;
+  tier = 0;
+  tierUntil = 0;
 }
 
 const readCatalog = cache(async (): Promise<CatalogRows | null> => {
@@ -268,6 +291,7 @@ function dbProduct(p: DbProductRow, locale: Locale, ratings: Map<string, RatingS
     images,
     createdAt: p.created_at,
     rating: ratingOf(Number(p.rating_seed), p.rating_seed_count, ratings.get(p.id)),
+    freeShipping: p.free_shipping === true,
   };
 }
 
@@ -289,6 +313,28 @@ const listItem = (p: Product): Product => (p.images.length > 1 ? { ...p, images:
 export async function getProducts(locale: Locale, query: ProductQuery = {}): Promise<Product[]> {
   return applyQuery(await allProducts(locale), query).map(listItem);
 }
+
+/**
+ * Rubriques facultatives d'UNE fiche (0025), dans la langue demandée avec repli FR rubrique par rubrique. Lues à part pour
+ * ne pas alourdir les listes ni l'API du panier. Non critique : colonnes absentes ou base en erreur → rubriques vides (la
+ * fiche reste affichée, sans bloc « Détails »).
+ */
+export const getProductDetails = cache(async (productId: string, locale: Locale): Promise<ProductDetails> => {
+  if (!supabasePublicEnv()) return { ...EMPTY_DETAILS };
+  try {
+    const { data, error } = await withTimeout(
+      createPublicClient().from("product_translations").select(`locale,${DETAIL_KEYS.join(",")}`).eq("product_id", productId),
+    );
+    if (error) {
+      if (!isMissingColumn(error)) console.warn("[catalogue] rubriques illisibles", error.code ?? "");
+      return { ...EMPTY_DETAILS };
+    }
+    const rows = (data ?? []) as unknown as ({ locale: string } & Partial<Record<keyof ProductDetails, string>>)[];
+    return mergeDetails(detailsFrom(rows.find((r) => r.locale === locale)), detailsFrom(rows.find((r) => r.locale === "fr")));
+  } catch {
+    return { ...EMPTY_DETAILS };
+  }
+});
 
 /** Fiche produit : TOUTES les photos (galerie, JSON-LD). */
 export async function getProductBySlug(locale: Locale, slug: string): Promise<Product | null> {

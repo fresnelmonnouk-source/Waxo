@@ -100,9 +100,12 @@ export function ProductGallery({
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[28px]" style={{ background: bg }}>
-        <span aria-hidden="true" className="font-display text-[clamp(40px,5.5vw,68px)] font-semibold tracking-[-0.05em] opacity-75">
-          {keyword}
-        </span>
+        {total === 0 ? (
+          // Mot seulement sans photo : une photo détourée (fond transparent) le laissait voir à travers.
+          <span aria-hidden="true" className="font-display text-[clamp(40px,5.5vw,68px)] font-semibold tracking-[-0.05em] opacity-75">
+            {keyword}
+          </span>
+        ) : null}
         {total === 1 ? img(images[0], 0, "absolute inset-0 h-full w-full object-cover") : null}
         {total > 1 ? (
           <div

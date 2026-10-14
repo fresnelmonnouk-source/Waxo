@@ -10,9 +10,12 @@ import {
   productFormSchema,
   slugify,
   uniqueSlug,
+  usesMigration0025,
   validateProductForm,
   type ProductInput,
 } from "@/components/admin/products/logic";
+import type { ProductDetails } from "@/lib/catalog/details";
+import { isMissingColumn } from "@/lib/supabase/missing-column";
 import { UNAVAILABLE_MESSAGE, type ActionResult, type ProductFormValues } from "@/components/admin/products/types";
 import { isMissingImagesColumn } from "@/lib/media/product-images";
 
@@ -66,6 +69,46 @@ function imagesOk(urls: readonly string[], current: readonly string[]): boolean 
 
 const BAD_PHOTO = "Photo invalide : renvoyez-la depuis le formulaire.";
 const NEED_0024 = "Plusieurs photos : la migration 0024 n'est pas encore appliquée. Gardez une seule photo pour l'instant.";
+const NEED_0025 =
+  "Rubriques et livraison gratuite : la migration 0025 n'est pas encore appliquée. Videz ces champs (ou appliquez 0025) puis réessayez.";
+
+/** La colonne manquante est-elle `products.free_shipping` (0025) ? Seule colonne de 0025 écrite dans `products`. */
+const isMissing0025 = (e: DbErr) => isMissingColumn(e) && /\bfree_shipping\b/.test(e?.message ?? "");
+
+type WriteOutcome<T> = { data: T | null; error: DbErr; legacy0025: boolean } | { fail: Fail };
+
+/**
+ * Écrit la ligne produit en retirant les colonnes des migrations pas encore appliquées : `images` (0024, une seule photo
+ * alors) et `free_shipping` (0025, seulement si le formulaire ne s'en sert pas). Sinon : message clair, rien d'écrit.
+ */
+async function writeProductRow<T>(
+  write: (cols: Record<string, unknown>) => PromiseLike<{ data: T | null; error: DbErr }>,
+  row: Record<string, unknown>,
+  input: ProductInput,
+  legacyImages: boolean,
+): Promise<WriteOutcome<T>> {
+  let legacy0025 = false;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const cols = { ...row, ...photoColumns(input.images, legacyImages), ...(legacy0025 ? {} : { free_shipping: input.freeShipping }) };
+    const { data, error } = await write(cols);
+    if (!legacy0025 && isMissing0025(error)) {
+      if (usesMigration0025(input)) return { fail: fail("invalid", NEED_0025) };
+      console.warn("[admin/produits] migration 0025 absente : enregistrement sans livraison offerte ni rubriques");
+      legacy0025 = true;
+      continue;
+    }
+    if (!legacyImages && isMissingImagesColumn(error)) {
+      if (input.images.length > 1) return { fail: fail("invalid", NEED_0024, { images: NEED_0024 }) };
+      legacyImages = true;
+      continue;
+    }
+    return { data, error, legacy0025 };
+  }
+  return { fail: fail("error", GENERIC) };
+}
+
+/** Colonnes de traduction : nom, description et, si 0025 est appliquée, les rubriques. */
+const trColumns = (name: string, description: string, details: ProductDetails | null) => ({ name, description, ...(details ?? {}) });
 
 /**
  * Colonnes photo à écrire : `images` (0024) + `image_url` = photo principale (compatibilité, aussi tenue par le trigger).
@@ -81,12 +124,13 @@ async function insertTranslation(
   locale: "fr" | "en",
   name: string,
   description: string,
+  details: ProductDetails | null,
 ): Promise<DbErr> {
   const base = slugify(name);
   let last: DbErr = null;
   for (let attempt = 0; attempt < 3; attempt++) {
     const slug = uniqueSlug(base, await takenSlugs(sb, "product_translations", locale, base));
-    const { error } = await sb.from("product_translations").insert({ product_id: productId, locale, name, slug, description });
+    const { error } = await sb.from("product_translations").insert({ product_id: productId, locale, slug, ...trColumns(name, description, details) });
     if (!error) return null;
     last = error;
     if (!isUnique(error)) break;
@@ -113,12 +157,9 @@ export async function createProduct(values: ProductFormValues): Promise<ActionRe
       bg: input.bg,
       active: input.active,
     };
-    const insert = (legacy: boolean) => sb.from("products").insert({ ...row, ...photoColumns(input.images, legacy) }).select("id").single();
-    let { data, error } = await insert(false);
-    if (isMissingImagesColumn(error)) {
-      if (input.images.length > 1) return fail("invalid", NEED_0024, { images: NEED_0024 });
-      ({ data, error } = await insert(true));
-    }
+    const written = await writeProductRow<{ id: string }>((cols) => sb.from("products").insert(cols).select("id").single(), row, input, false);
+    if ("fail" in written) return written.fail;
+    const { data, error, legacy0025 } = written;
     if (error || !data) {
       logDb("create", error);
       if (isFk(error)) return fail("invalid", "Rayon inconnu.", { categoryId: "Rayon inconnu." });
@@ -130,14 +171,14 @@ export async function createProduct(values: ProductFormValues): Promise<ActionRe
       await sb.from("products").delete().eq("id", id); // cascade : traductions + coût
     };
 
-    const frErr = await insertTranslation(sb, id, "fr", input.name, input.description);
+    const frErr = await insertTranslation(sb, id, "fr", input.name, input.description, legacy0025 ? null : input.details);
     if (frErr) {
       logDb("create fr", frErr);
       await rollback();
       return fail("error", GENERIC);
     }
     if (input.nameEn) {
-      const enErr = await insertTranslation(sb, id, "en", input.nameEn, input.descriptionEn);
+      const enErr = await insertTranslation(sb, id, "en", input.nameEn, input.descriptionEn, legacy0025 ? null : input.detailsEn);
       if (enErr) {
         logDb("create en", enErr);
         await rollback();
@@ -197,12 +238,32 @@ export async function updateProduct(id: string, values: ProductFormValues): Prom
       bg: input.bg,
       active: input.active,
     };
-    const update = (asLegacy: boolean) => sb.from("products").update({ ...row, ...photoColumns(input.images, asLegacy) }).eq("id", id);
-    let { error } = await update(legacy);
-    if (!legacy && isMissingImagesColumn(error)) {
-      if (input.images.length > 1) return fail("invalid", NEED_0024, { images: NEED_0024 });
-      ({ error } = await update(true));
+    // Stock : non modifié dans le formulaire → pas réécrit (une vente pendant l'édition reste décomptée) ; modifié → écrit
+    // seulement s'il vaut encore la valeur affichée à l'ouverture, sinon conflit (audit Tariq 🟠4, 2026-10-14).
+    const stockTouched = input.stockAtOpen === null || input.stock !== input.stockAtOpen;
+    const { stock: _stock, ...rowNoStock } = row;
+    void _stock;
+    const written = await writeProductRow<{ id: string }[]>(
+      (cols) => {
+        const q = sb.from("products").update(cols).eq("id", id);
+        return (stockTouched && input.stockAtOpen !== null ? q.eq("stock", input.stockAtOpen) : q).select("id");
+      },
+      stockTouched ? row : rowNoStock,
+      input,
+      legacy,
+    );
+    if ("fail" in written) return written.fail;
+    const { data: updated, error, legacy0025 } = written;
+    if (!error && !updated?.length) {
+      if (stockTouched && input.stockAtOpen !== null) {
+        return fail("conflict", "Le stock a changé pendant votre modification (une vente ?). Fermez la fiche, rouvrez-la et corrigez le stock.", {
+          stock: "Stock modifié entre-temps.",
+        });
+      }
+      return fail("not_found", "Ce produit n'existe plus.");
     }
+    const frDetails = legacy0025 ? null : input.details;
+    const enDetails = legacy0025 ? null : input.detailsEn;
     if (error) {
       logDb("update", error);
       if (isFk(error)) return fail("invalid", "Rayon inconnu.", { categoryId: "Rayon inconnu." });
@@ -212,13 +273,13 @@ export async function updateProduct(id: string, values: ProductFormValues): Prom
 
     // FR (obligatoire) : le slug reste stable (les liens partagés ne cassent pas), seuls nom et description changent.
     if (locales.has("fr")) {
-      const { error: e } = await sb.from("product_translations").update({ name: input.name, description: input.description }).eq("product_id", id).eq("locale", "fr");
+      const { error: e } = await sb.from("product_translations").update(trColumns(input.name, input.description, frDetails)).eq("product_id", id).eq("locale", "fr");
       if (e) {
         logDb("update fr", e);
         return fail("error", GENERIC);
       }
     } else {
-      const e = await insertTranslation(sb, id, "fr", input.name, input.description);
+      const e = await insertTranslation(sb, id, "fr", input.name, input.description, frDetails);
       if (e) {
         logDb("update fr insert", e);
         return fail("error", GENERIC);
@@ -227,13 +288,13 @@ export async function updateProduct(id: string, values: ProductFormValues): Prom
     // EN (facultatif) : créée, mise à jour ou retirée selon le nom saisi.
     if (input.nameEn) {
       if (locales.has("en")) {
-        const { error: e } = await sb.from("product_translations").update({ name: input.nameEn, description: input.descriptionEn }).eq("product_id", id).eq("locale", "en");
+        const { error: e } = await sb.from("product_translations").update(trColumns(input.nameEn, input.descriptionEn, enDetails)).eq("product_id", id).eq("locale", "en");
         if (e) {
           logDb("update en", e);
           return fail("error", GENERIC);
         }
       } else {
-        const e = await insertTranslation(sb, id, "en", input.nameEn, input.descriptionEn);
+        const e = await insertTranslation(sb, id, "en", input.nameEn, input.descriptionEn, enDetails);
         if (e) {
           logDb("update en insert", e);
           return fail("error", GENERIC);

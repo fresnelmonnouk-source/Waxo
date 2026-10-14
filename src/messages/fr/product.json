@@ -68,5 +68,14 @@
     "verified": "Achat vérifié",
     "mine": "Votre avis",
     "empty": "Pas encore d'avis détaillé sur ce produit."
+  },
+  "ProductDetails": {
+    "title": "Détails du produit",
+    "color": "Couleur",
+    "materials": "Matériaux",
+    "specs": "Caractéristiques techniques",
+    "highlights": "Points forts",
+    "uses": "Utilisations possibles",
+    "care": "Conseils d'utilisation et d'entretien"
   }
 }

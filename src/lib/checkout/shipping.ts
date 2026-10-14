@@ -18,11 +18,20 @@ export const isMobileMoney = (m: PayMethod): boolean => m === "momo" || m === "m
 
 /**
  * Frais de livraison — règle de place_order (et de la maquette) : franco SEULEMENT à Cotonou & Calavi dès `freeFrom` ; ailleurs, tarif de la zone.
- * `freeFrom` ≤ 0 désactive le franco.
+ * `freeFrom` ≤ 0 désactive le franco. `allFree` (0025) : tout le panier est en « livraison offerte » → 0 à Cotonou & Calavi.
  */
-export function shippingFee(subtotal: number, zone: Zone, cfg: ShippingConfig): number {
-  if (zone === "cotonou") return cfg.freeFrom > 0 && subtotal >= cfg.freeFrom ? 0 : cfg.cotonou;
+export function shippingFee(subtotal: number, zone: Zone, cfg: ShippingConfig, allFree = false): number {
+  if (zone === "cotonou") return allFree || (cfg.freeFrom > 0 && subtotal >= cfg.freeFrom) ? 0 : cfg.cotonou;
   return cfg.autre;
+}
+
+/**
+ * Tout le panier est-il en « livraison offerte à Cotonou & Calavi » (0025) ? Panier vide = non. `freeIds` = identifiants
+ * (produits et packs) livrés gratuitement, fournis par le serveur. Même règle que place_order (pack : tous ses produits cochés).
+ */
+export function cartShipsFree(lines: readonly { id: string }[], freeIds: ReadonlySet<string> | readonly string[]): boolean {
+  const set = freeIds instanceof Set ? freeIds : new Set(freeIds as readonly string[]);
+  return lines.length > 0 && lines.every((l) => set.has(l.id));
 }
 
 /** Montant restant avant la livraison offerte (0 si franco atteint ou désactivé). */

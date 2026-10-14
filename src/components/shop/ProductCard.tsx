@@ -60,13 +60,16 @@ export function ProductCard({
         style={{ background: product.bg ?? "#E9E2D3" }}
       >
         <Link href={href} aria-label={product.name} className="absolute inset-0 z-[1] rounded-[20px]" />
-        <span
-          aria-hidden="true"
-          className="font-display font-semibold tracking-[-0.04em]"
-          style={{ fontSize: "clamp(20px,2.2vw,28px)", opacity: variant === "home" ? 0.7 : 0.75 }}
-        >
-          {product.keyword}
-        </span>
+        {cover ? null : (
+          // Mot seulement sans photo : une photo détourée (fond transparent) le laissait voir à travers.
+          <span
+            aria-hidden="true"
+            className="font-display font-semibold tracking-[-0.04em]"
+            style={{ fontSize: "clamp(20px,2.2vw,28px)", opacity: variant === "home" ? 0.7 : 0.75 }}
+          >
+            {product.keyword}
+          </span>
+        )}
         {cover ? (
           // Couverture en vrai <img> (S6/M4) au même rendu que l'ancien fond « cover » ; alt vide : le lien porte le nom.
           // eslint-disable-next-line @next/next/no-img-element -- pas d'optimiseur Vercel (quota), voir ProductGallery

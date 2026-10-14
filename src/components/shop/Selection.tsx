@@ -65,12 +65,13 @@ export function Selection({ products, newIds, bestIds }: { products: Product[]; 
               <div key={p.id} className="flex min-w-0 snap-start flex-col gap-[10px] rounded-[20px] bg-white p-[10px]">
                 <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[14px]" style={{ background: p.bg ?? "#E9E2D3" }}>
                   <Link href={`/produit/${p.slug}`} aria-label={p.name} className="absolute inset-0 z-[1]" />
-                  <span aria-hidden="true" className="font-display text-[20px] font-semibold tracking-[-0.04em] opacity-75">
-                    {p.keyword}
-                  </span>
                   {p.imageUrl ? (
                     <div aria-hidden="true" className="absolute inset-0 h-full w-full" style={{ background: `${cssUrl(p.imageUrl)} center/cover no-repeat` }} />
-                  ) : null}
+                  ) : (
+                    <span aria-hidden="true" className="font-display text-[20px] font-semibold tracking-[-0.04em] opacity-75">
+                      {p.keyword}
+                    </span>
+                  )}
                   {kind ? (
                     <span
                       className="absolute top-2 left-2 rounded-full px-[9px] py-1 text-[11px] font-semibold"

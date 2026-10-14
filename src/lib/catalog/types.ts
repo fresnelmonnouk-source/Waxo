@@ -29,6 +29,8 @@ export type Product = {
   images: string[];
   createdAt: string;
   rating: { average: number; count: number };
+  /** Case « Livraison gratuite à Cotonou & Calavi » (0025). La livraison n'est offerte que si TOUT le panier l'est. */
+  freeShipping: boolean;
   /** Campagne en cours qui fixe le prix (0015) ; `comparePrice` vaut alors le prix normal. */
   campaign?: { slug: string; name: string; endsAt: string };
 };

@@ -1,4 +1,5 @@
 // Types partagés produits + packs du back-office (client ET serveur ; aucun import serveur ici).
+import type { ProductDetails } from "@/lib/catalog/details";
 
 export type AdminCategory = { id: string; label: string; bg: string; sort: number };
 
@@ -23,6 +24,10 @@ export type AdminProduct = {
   cost: number | null;
   fr: Translation;
   en: Translation | null;
+  /** Rubriques facultatives (0025) par langue ; vides avant la migration. */
+  details: { fr: ProductDetails; en: ProductDetails };
+  /** Case « Livraison gratuite à Cotonou & Calavi » (0025). */
+  freeShipping: boolean;
   rating: { average: number; count: number };
 };
 
@@ -37,6 +42,8 @@ export type ProductsData = {
   truncated: boolean;
   /** Colonne `products.images` présente (migration 0024) : sinon une seule photo par produit. */
   imagesColumn: boolean;
+  /** Rubriques + livraison offerte présentes (migration 0025) : sinon ces champs sont signalés indisponibles. */
+  detailsColumns: boolean;
 };
 
 /** Valeurs du formulaire produit (chaînes, comme saisies). Le serveur re-valide tout. */
@@ -55,6 +62,13 @@ export type ProductFormValues = {
   active: boolean;
   /** Photos (URL du bucket `products`), la première est la photo principale. 8 au plus. */
   images: string[];
+  /** Rubriques facultatives (0025), une information par ligne. Vide = rubrique absente de la fiche. */
+  details: ProductDetails;
+  detailsEn: ProductDetails;
+  /** Livraison gratuite à Cotonou & Calavi (si tout le panier l'est). */
+  freeShipping: boolean;
+  /** Stock affiché à l'ouverture (modification) : le stock n'est réécrit que s'il a été changé, et sans écraser une vente. */
+  stockAtOpen?: string;
 };
 
 export type PackItem = { productId: string; qty: number };

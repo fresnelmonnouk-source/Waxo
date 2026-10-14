@@ -121,8 +121,9 @@ describe("carte produit : couverture en <img>", () => {
     images: [A],
     createdAt: "2026-10-01T00:00:00Z",
     rating: { average: 0, count: 0 },
+    freeShipping: false,
   };
-  it("image de couverture en lazy, alt vide (le lien porte le nom), fond et mot conservés", async () => {
+  it("image de couverture en lazy, alt vide (le lien porte le nom) ; mot masqué (photo détourée : il se voyait à travers)", async () => {
     const { ProductCard } = await import("@/components/shop/ProductCard");
     const { html, errors } = render("fr", createElement(ProductCard, { product }));
     expect(errors).toEqual([]);
@@ -132,12 +133,13 @@ describe("carte produit : couverture en <img>", () => {
     expect(attr(all[0], "alt")).toBe("");
     expect(attr(all[0], "loading")).toBe("lazy");
     expect(html).toContain('aria-label="Lampe LED"');
-    expect(html).toContain(">lampe</span>");
+    expect(html).not.toContain(">lampe</span>");
   });
-  it("sans photo : aucune image", async () => {
+  it("sans photo : aucune image, le mot à la place", async () => {
     const { ProductCard } = await import("@/components/shop/ProductCard");
     const { html } = render("fr", createElement(ProductCard, { product: { ...product, imageUrl: null, images: [] } }));
     expect(imgs(html)).toHaveLength(0);
+    expect(html).toContain(">lampe</span>");
   });
 });
 

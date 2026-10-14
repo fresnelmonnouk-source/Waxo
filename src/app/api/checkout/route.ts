@@ -12,7 +12,9 @@ import { parseReplaceRef, releaseReplacedOrder } from "@/lib/payment/replace";
 import { withTimeout } from "@/lib/auth/timeout";
 import { turnstilePasses, verifyTurnstile } from "@/lib/auth/turnstile";
 import { getPacks, getPacksEnabled } from "@/lib/catalog/packs";
-import { getProductsByIds } from "@/lib/catalog";
+import { getProductsByIds, getSettings } from "@/lib/catalog";
+import { freeShippingIds } from "@/lib/catalog/free-shipping";
+import { cartShipsFree, shippingFee } from "@/lib/checkout/shipping";
 import {
   API_STATUS,
   apiMessage,
@@ -47,16 +49,22 @@ const RATE_LIMIT = { max: 8, windowMs: 10 * 60_000 };
  * Prix courants (campagnes comprises) des articles demandés, ou null si l'un d'eux est introuvable (place_order tranchera).
  * Sert à refuser AVANT la création une commande dont le total serait plus élevé que celui affiché (fin de campagne).
  */
-async function currentPrices(lang: ApiLang, items: { kind: "product" | "pack"; id: string }[]): Promise<Record<string, number> | null> {
-  const productIds = items.filter((i) => i.kind === "product").map((i) => i.id);
-  const [products, packs] = await Promise.all([
-    productIds.length ? getProductsByIds(lang, productIds) : Promise.resolve([]),
-    items.some((i) => i.kind === "pack") ? getPacks(lang) : Promise.resolve([]),
-  ]);
+/**
+ * Devis courant du panier, aux valeurs ACTUELLES du catalogue : prix (null si un article est introuvable) et articles en
+ * « livraison offerte à Cotonou & Calavi » (0025 ; pack = tous ses produits cochés, comme place_order).
+ */
+async function currentQuote(
+  lang: ApiLang,
+  items: { kind: "product" | "pack"; id: string }[],
+): Promise<{ prices: Record<string, number> | null; free: Set<string> }> {
+  const packIds = new Set(items.filter((i) => i.kind === "pack").map((i) => i.id));
+  const packs = packIds.size ? (await getPacks(lang)).filter((k) => packIds.has(k.id)) : [];
+  const productIds = [...items.filter((i) => i.kind === "product").map((i) => i.id), ...packs.flatMap((k) => k.items.map((it) => it.productId))];
+  const products = productIds.length ? await getProductsByIds(lang, [...new Set(productIds)]) : [];
   const prices: Record<string, number> = {};
   for (const p of products) prices[p.id] = p.price;
   for (const k of packs) prices[k.id] = k.price;
-  return items.every((i) => typeof prices[i.id] === "number") ? prices : null;
+  return { prices: items.every((i) => typeof prices[i.id] === "number") ? prices : null, free: new Set(freeShippingIds(products, packs)) };
 }
 
 function fail(lang: ApiLang, code: ApiErrorCode, extra: Record<string, unknown> = {}) {
@@ -191,14 +199,23 @@ export async function POST(request: Request) {
       const replaces = parseReplaceRef(rawObj.replaces);
       if (replaces) await releaseReplacedOrder(admin, replaces);
 
-      // Total attendu par le client (prix affichés). Si un prix a AUGMENTÉ depuis (fin de campagne), on ne crée rien :
-      // le client reçoit les prix à jour et valide en connaissance de cause (audit Tariq). Une baisse ne bloque pas.
-      const expected = typeof rawObj.expectedSubtotal === "number" && Number.isFinite(rawObj.expectedSubtotal) ? Math.round(rawObj.expectedSubtotal) : null;
-      if (expected !== null) {
-        const prices = await currentPrices(lang, input.items).catch(() => null);
-        if (prices) {
+      // Montants attendus par le client (affichés). Si un prix OU les frais de livraison ont AUGMENTÉ depuis (fin de campagne,
+      // case « livraison offerte » décochée), on ne crée rien : le client reçoit les valeurs à jour et valide en connaissance
+      // de cause (audits Tariq, Raphaël 2026-10-14). Une baisse ne bloque pas. place_order reste l'autorité sur le montant.
+      const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? Math.round(v) : null);
+      const expected = num(rawObj.expectedSubtotal);
+      const expectedShipping = num(rawObj.expectedShipping);
+      if (expected !== null || expectedShipping !== null) {
+        const quote = await currentQuote(lang, input.items).catch(() => null);
+        const prices = quote?.prices;
+        if (quote && prices) {
           const now = input.items.reduce((sum, i) => sum + prices[i.id] * i.qty, 0);
-          if (now > expected) return fail(lang, "price_changed", { prices });
+          if (expected !== null && now > expected) return fail(lang, "price_changed", { prices, free: [...quote.free] });
+          if (expectedShipping !== null) {
+            const settings = await getSettings().catch(() => null);
+            const feeNow = settings ? shippingFee(now, input.zone, settings.shipping, cartShipsFree(input.items, quote.free)) : null;
+            if (feeNow !== null && feeNow > expectedShipping) return fail(lang, "shipping_changed", { free: [...quote.free] });
+          }
         }
       }
       const phone = normPhone(input.customer.phone);
