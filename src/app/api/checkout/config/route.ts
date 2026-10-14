@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getProducts, getSettings } from "@/lib/catalog";
-import { getPacks } from "@/lib/catalog/packs";
+import { getAllPacks, hasRealSaving } from "@/lib/catalog/packs";
 import { freeShippingIds } from "@/lib/catalog/free-shipping";
 import { onlinePaymentReady } from "@/lib/payment/ready";
 import type { Locale } from "@/i18n/routing";
@@ -8,7 +8,7 @@ import type { Locale } from "@/i18n/routing";
 /**
  * GET /api/checkout/config?lang=fr&ids=a,b — données publiques dont le tiroir panier a besoin sans que les pages
  * (statiques) ne les embarquent : réglages de livraison/paiement, stock des articles du panier, 2 produits « à petit prix »,
- * articles du panier en « livraison offerte à Cotonou & Calavi » (`free`, 0025).
+ * articles du panier en « livraison offerte à Cotonou & Calavi » (`free` : produits cochés 0025, packs cochés 0026).
  * Lecture seule, aucune donnée privée. Ne renvoie jamais d'erreur 5xx : repli sur les réglages par défaut.
  * Paiement en ligne impossible (clé d'essai refusée en production, audit C1) : Mobile Money et carte sont masqués.
  */
@@ -28,12 +28,14 @@ export async function GET(request: Request) {
   );
 
   try {
-    const [settings, products, packs, online] = await Promise.all([
+    const [settings, products, allPacks, online] = await Promise.all([
       getSettings(),
       getProducts(lang, { sort: "popular" }),
-      getPacks(lang).catch(() => []),
+      getAllPacks(lang).catch(() => []),
       onlinePaymentReady(),
     ]);
+    // Packs affichés en boutique (stock, prix, ids connus) ; `allPacks` garde aussi les packs masqués par hasRealSaving.
+    const packs = allPacks.filter(hasRealSaving);
     const pay = online ? settings.pay : { ...settings.pay, momo: false, moov: false, celtiis: false, carte: false };
     const packsEnabled = settings.features?.packs !== false;
     const stock: Record<string, number> = {};
@@ -52,7 +54,8 @@ export async function GET(request: Request) {
     // Jamais un UUID : si la base est lente et que le catalogue retombe sur la démo, un vrai panier ne doit pas être vidé.
     const known = new Set([...products.map((p) => p.id), ...(packsEnabled ? packs.map((k) => k.id) : [])]);
     const stale = [...ids].filter((id) => !known.has(id) && !UUID.test(id));
-    const free = freeShippingIds(products, packsEnabled ? packs : []).filter((id) => ids.has(id));
+    // Packs actifs cochés, MASQUÉS COMPRIS (V8 « a ») : place_order les accepte et offre leur livraison, l'affichage aussi.
+    const free = freeShippingIds(products, packsEnabled ? allPacks : []).filter((id) => ids.has(id));
 
     const upsell = products
       .filter((p) => !ids.has(p.id) && p.price <= 3000 && p.stock > 0)

@@ -37,7 +37,7 @@ vi.mock("@/lib/admin/data/products", () => {
       }
       if (name === "products") {
         if (state.missing0024 && columns.includes("images")) return { data: null, error: { code: "42703", message: "column products.images does not exist" } };
-        return { data: { id: "x", image_url: null, ...(state.missing0024 ? {} : { images: [] }), product_translations: [{ locale: "fr" }] }, error: null };
+        return { data: { id: "x", image_url: null, stock: state.dbStock, ...(state.missing0024 ? {} : { images: [] }), product_translations: [{ locale: "fr" }] }, error: null };
       }
       return { data: null, error: null };
     };
@@ -155,5 +155,19 @@ describe("stock pendant l'édition", () => {
     const r = await updateProduct(ID, form({ stock: "12", stockAtOpen: "5" }));
     expect(r).toMatchObject({ ok: false, code: "conflict" });
     expect(state.writes.filter((w) => w.table === "products")).toHaveLength(0);
+  });
+  it("conflit : le stock actuel est renvoyé (la fiche se met à jour sans se fermer : audit Zoé Z5)", async () => {
+    state.dbStock = 8;
+    const r = await updateProduct(ID, form({ stock: "15", stockAtOpen: "10" }));
+    expect(r).toMatchObject({ ok: false, code: "conflict", currentStock: 8 });
+    if (!r.ok) {
+      expect(r.message).toContain("stock actuel 8");
+      expect(r.message).not.toMatch(/Fermez la fiche/);
+      expect(r.fields?.stock).toContain("8");
+    }
+    // Nouvel essai avec la référence mise à jour par le tiroir : écrit.
+    const again = await updateProduct(ID, form({ stock: "15", stockAtOpen: "8" }));
+    expect(again.ok).toBe(true);
+    expect(state.writes.find((w) => w.table === "products")?.values.stock).toBe(15);
   });
 });

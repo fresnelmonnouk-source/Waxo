@@ -26,7 +26,7 @@ const plural = (n: number, one: string, many: string) => `${n.toLocaleString("fr
  * Création : « + Ajouter un produit » est dans l'en-tête de page (PageHeading) et pointe vers `?nouveau=1`, qui ouvre le tiroir ;
  * le paramètre est retiré à la fermeture (lien partageable, retour arrière cohérent).
  */
-export function ProductsView({ data }: { data: ProductsData }) {
+export function ProductsView({ data, aiReady = false }: { data: ProductsData; /** Clé DeepSeek configurée : « Rédiger avec l'IA ». */ aiReady?: boolean }) {
   const router = useRouter();
   const creating = useSearchParams()?.get("nouveau") === "1";
   const [q, setQ] = useState("");
@@ -247,9 +247,12 @@ export function ProductsView({ data }: { data: ProductsData }) {
           categories={data.categories}
           maxPhotos={data.imagesColumn ? undefined : 1}
           detailsReady={data.detailsColumns}
+          aiReady={aiReady}
           onClose={() => {
             setEditing(null);
             if (creating) router.replace("/admin/produits", { scroll: false });
+            // Liste relue (stock vendu entre-temps) : la prochaine ouverture part du stock actuel (audit Zoé Z5).
+            router.refresh();
           }}
           onSaved={(message, id) => {
             if (id) patch(id, null);

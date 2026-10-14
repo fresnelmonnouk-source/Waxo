@@ -11,7 +11,9 @@
 --
 -- Compatibilité : colonnes avec valeur par défaut (''/false) → le code déjà déployé continue de fonctionner, et le nouveau
 -- code relit sans ces colonnes tant que 0025 n'est pas appliquée. RLS inchangée (les colonnes suivent leur table).
--- Rejouable : add column if not exists / create or replace.
+-- Rejouable : add column if not exists / create or replace. MAIS ne pas la rejouer après 0026 : elle remettrait la
+-- règle 0025 des packs (pack offert si tous ses produits le sont) et ignorerait leur propre case. Si c'est fait par
+-- erreur, rejouer 0026 aussitôt après.
 
 alter table public.product_translations
   add column if not exists color      text not null default '' check (length(color) <= 200),

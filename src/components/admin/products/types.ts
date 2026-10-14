@@ -82,6 +82,8 @@ export type AdminPack = {
   fr: Translation;
   en: Translation | null;
   items: PackItem[];
+  /** Case « Livraison gratuite à Cotonou & Calavi » DU PACK (0026) ; false tant que la migration n'est pas appliquée. */
+  freeShipping: boolean;
 };
 
 /** Produit minimal proposé dans le sélecteur de contenu d'un pack. */
@@ -102,6 +104,8 @@ export type PacksData = {
   truncated: boolean;
   /** Menu « Packs » affiché sur la boutique (réglage public `features.packs`). */
   menuEnabled: boolean;
+  /** Colonne `packs.free_shipping` présente (migration 0026) : sinon la case du pack ne peut pas être enregistrée cochée. */
+  freeShippingColumn: boolean;
 };
 
 export type PackFormValues = {
@@ -113,6 +117,8 @@ export type PackFormValues = {
   active: boolean;
   imageUrl: string | null;
   items: PackItem[];
+  /** Livraison gratuite à Cotonou & Calavi pour ce pack (si tout le panier l'est), indépendante de ses produits. */
+  freeShipping: boolean;
 };
 
 export type ActionCode =
@@ -128,6 +134,13 @@ export type ActionCode =
 /** Retour de toute server action : jamais d'erreur SQL brute, uniquement un message FR et des erreurs par champ. */
 export type ActionResult<T extends object = object> =
   | ({ ok: true } & T)
-  | { ok: false; code: ActionCode; message: string; fields?: Record<string, string> };
+  | {
+      ok: false;
+      code: ActionCode;
+      message: string;
+      fields?: Record<string, string>;
+      /** Conflit de stock (`updateProduct`) : stock actuel en base, pour mettre la fiche à jour sans la fermer. */
+      currentStock?: number;
+    };
 
 export const UNAVAILABLE_MESSAGE = "Base non connectée (mode démo) : modification impossible.";

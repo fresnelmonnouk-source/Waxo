@@ -18,12 +18,19 @@ import type { ProductDetails } from "@/lib/catalog/details";
 import { isMissingColumn } from "@/lib/supabase/missing-column";
 import { UNAVAILABLE_MESSAGE, type ActionResult, type ProductFormValues } from "@/components/admin/products/types";
 import { isMissingImagesColumn } from "@/lib/media/product-images";
+import { publishGate, publishGateFromRows, stripMarkers } from "@/lib/admin/ai/product-writer-gate";
 
 // Server actions produits. Chaque action : assertAdmin() d'abord → base joignable ? → Zod → validation métier → écriture service_role.
 // Retour { ok:true } | { ok:false, code, message, fields? } : jamais d'erreur SQL ni de stack côté client.
 
 type Fail = Extract<ActionResult, { ok: false }>;
-const fail = (code: Fail["code"], message: string, fields?: Record<string, string>): Fail => ({ ok: false, code, message, fields });
+const fail = (code: Fail["code"], message: string, fields?: Record<string, string>, extra: Pick<Fail, "currentStock"> = {}): Fail => ({
+  ok: false,
+  code,
+  message,
+  fields,
+  ...extra,
+});
 
 const GENERIC = "Une erreur est survenue. Réessayez dans un instant.";
 const uuid = z.uuid();
@@ -59,6 +66,10 @@ function parseForm(values: unknown): { input: ProductInput } | { error: Fail } {
     const first = Object.values(v.errors)[0] ?? "Formulaire invalide.";
     return { error: fail("invalid", first, v.errors as Record<string, string>) };
   }
+  // Un produit visible en boutique ne montre jamais de texte provisoire (« [à confirmer] », « [TBD] », « (à vérifier) »…)
+  // laissé par le rédacteur IA ; masqué (brouillon), c'est permis.
+  const gate = publishGate(v.value);
+  if (gate) return { error: fail("invalid", gate.message, gate.fields) };
   return { input: v.value };
 }
 
@@ -126,7 +137,8 @@ async function insertTranslation(
   description: string,
   details: ProductDetails | null,
 ): Promise<DbErr> {
-  const base = slugify(name);
+  // Marqueurs provisoires retirés AVANT le slug : il est fixé à cette première sauvegarde (audit Victor W2).
+  const base = slugify(stripMarkers(name));
   let last: DbErr = null;
   for (let attempt = 0; attempt < 3; attempt++) {
     const slug = uniqueSlug(base, await takenSlugs(sb, "product_translations", locale, base));
@@ -256,9 +268,22 @@ export async function updateProduct(id: string, values: ProductFormValues): Prom
     const { data: updated, error, legacy0025 } = written;
     if (!error && !updated?.length) {
       if (stockTouched && input.stockAtOpen !== null) {
-        return fail("conflict", "Le stock a changé pendant votre modification (une vente ?). Fermez la fiche, rouvrez-la et corrigez le stock.", {
-          stock: "Stock modifié entre-temps.",
-        });
+        // Stock actuel renvoyé : le tiroir reste ouvert, met à jour le champ et sa référence, rien d'autre n'est perdu
+        // (audit Zoé Z5).
+        const { data: now, error: nowErr } = await sb.from("products").select("stock").eq("id", id).maybeSingle();
+        if (!now && !nowErr) return fail("not_found", "Ce produit n'existe plus.");
+        const currentStock = typeof (now as { stock?: unknown } | null)?.stock === "number" ? (now as { stock: number }).stock : undefined;
+        if (currentStock === undefined) {
+          return fail("conflict", "Le stock a changé pendant votre modification (une vente ?). Rechargez la page puis corrigez le stock.", {
+            stock: "Stock modifié entre-temps.",
+          });
+        }
+        return fail(
+          "conflict",
+          `Le stock a changé pendant votre modification (une vente ?) : stock actuel ${currentStock}. Vérifiez le stock puis enregistrez à nouveau.`,
+          { stock: `Stock actuel : ${currentStock}. Vérifiez puis enregistrez.` },
+          { currentStock },
+        );
       }
       return fail("not_found", "Ce produit n'existe plus.");
     }
@@ -326,6 +351,19 @@ export async function setProductActive(id: string, active: boolean): Promise<Act
   if ("error" in p) return p.error;
   if (!uuid.safeParse(id).success || typeof active !== "boolean") return fail("invalid", "Demande invalide.");
   try {
+    if (active) {
+      // Remise en ligne depuis la liste : mêmes règles que le formulaire, sur les textes enregistrés (« * » : rubriques
+      // lues si la migration 0025 est appliquée, ignorées sinon).
+      const { data: cur, error: readErr } = await p.sb.from("products").select("keyword,product_translations(*)").eq("id", id).maybeSingle();
+      if (readErr) {
+        logDb("active read", readErr);
+        return fail("error", GENERIC);
+      }
+      if (!cur) return fail("not_found", "Ce produit n'existe plus.");
+      const row = cur as { keyword?: unknown; product_translations?: Record<string, unknown>[] | null };
+      const gate = publishGateFromRows(row.keyword, row.product_translations);
+      if (gate) return fail("invalid", gate.message);
+    }
     const { data, error } = await p.sb.from("products").update({ active }).eq("id", id).select("id");
     if (error) {
       logDb("active", error);

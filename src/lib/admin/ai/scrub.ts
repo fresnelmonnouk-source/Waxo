@@ -26,11 +26,38 @@ function envSecrets(): string[] {
   return out.sort((a, b) => b.length - a.length);
 }
 
-export function scrubText(input: string): string {
+function scrubSecretsAndEmails(input: string): string {
   let s = String(input ?? "");
   for (const v of envSecrets()) if (s.includes(v)) s = s.split(v).join(MASK.secret);
   for (const re of SECRET_RES) s = s.replace(re, MASK.secret);
-  s = s.replace(EMAIL_RE, MASK.email);
-  s = s.replace(LONG_NUMBER_RE, MASK.number);
+  return s.replace(EMAIL_RE, MASK.email);
+}
+
+/** Masquage du corpus de l'IA admin (commandes, clients) : tout nombre de 8 chiffres ou plus est masqué. */
+export function scrubText(input: string): string {
+  return scrubSecretsAndEmails(input).replace(LONG_NUMBER_RE, MASK.number);
+}
+
+/**
+ * Numéros de forme TÉLÉPHONE seulement (pas « 8 chiffres séparés ») :
+ *  - Bénin avec indicatif : +229 / 00229 / 229 suivi de 8 à 10 chiffres (« +229 01 97 12 34 56 », « 22997123456 ») ;
+ *  - Bénin, numéro à 10 chiffres commençant par 01, en un bloc ou par paires (« 0197123456 », « 01 97 12 34 56 ») ;
+ *  - international évident : « + » ou « 00 » suivi de 7 à 15 chiffres (« +33 6 12 34 56 78 », « +1 (555) 123-4567 »).
+ * Ne touche PAS aux listes de tailles ou de compatibilité (« 36 37 38 39 40 41 », « iPhone 12 13 14 15 », « USB 2.0 3.0 »).
+ */
+export const PHONE_RES: readonly RegExp[] = [
+  /(?:\+|\b00|\b)229(?:[\s.\-]?\d){8,10}\b/g,
+  /\b01(?:[\s.\-]?\d){8}\b/g,
+  /(?:\+|\b00)[1-9](?:[\s.()\-]{0,2}\d){6,14}\b/g,
+];
+
+/**
+ * Masquage pour le rédacteur IA des fiches produit (audit Zoé Z3) : e-mails, secrets (clés, jetons, variables
+ * d'environnement sensibles) et numéros de forme téléphone. Les autres suites de chiffres (tailles, modèles compatibles,
+ * normes) sont la matière même d'une fiche : elles restent intactes.
+ */
+export function scrubWriterText(input: string): string {
+  let s = scrubSecretsAndEmails(input);
+  for (const re of PHONE_RES) s = s.replace(re, MASK.number);
   return s;
 }

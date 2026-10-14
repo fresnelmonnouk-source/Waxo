@@ -24,7 +24,7 @@ const sendOrderEmail = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/email", () => ({ sendOrderEmail: (...a: unknown[]) => sendOrderEmail(...a) }));
 vi.mock("@/lib/email/shop", () => ({ sendShopNewOrderEmail: async () => ({ sent: true }) }));
 vi.mock("@/lib/catalog", () => ({ getProductsByIds: async () => [] }));
-vi.mock("@/lib/catalog/packs", () => ({ getPacks: async () => [], getPacksEnabled: async () => true }));
+vi.mock("@/lib/catalog/packs", () => ({ getPacks: async () => [], getAllPacks: async () => [], getPacksEnabled: async () => true }));
 
 import { POST } from "@/app/api/checkout/route";
 import { providerUsable } from "@/app/api/checkout/guard";

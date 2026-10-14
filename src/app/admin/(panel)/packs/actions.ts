@@ -5,6 +5,7 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { assertAdmin } from "@/lib/admin/guard";
 import { adminDb, takenSlugs } from "@/lib/admin/data/products";
+import { isMissingColumn } from "@/lib/supabase/missing-column";
 import {
   isStorageImageUrl,
   packFormSchema,
@@ -42,6 +43,27 @@ type DbErr = { code?: string; message?: string } | null;
 const isUnique = (e: DbErr) => e?.code === "23505";
 const isFk = (e: DbErr) => e?.code === "23503";
 const logDb = (where: string, e: DbErr) => console.error(`[admin/packs] ${where}`, e?.code ?? "", (e?.message ?? "").slice(0, 120));
+
+const NEED_0026 =
+  "Livraison gratuite du pack : la migration 0026 n'est pas encore appliquée. Exécutez d'abord le SQL 0026 (éditeur SQL Supabase), ou décochez la case, puis réessayez.";
+/** La colonne manquante est-elle `packs.free_shipping` (0026) ? */
+const isMissing0026 = (e: DbErr) => isMissingColumn(e) && /\bfree_shipping\b/.test(e?.message ?? "");
+
+/**
+ * Écrit la ligne `packs` avec sa case « livraison offerte » (0026). Colonne absente : case décochée → enregistrée sans
+ * la colonne ; case cochée → message clair et rien d'écrit (l'écriture refusée par la base n'a rien modifié).
+ */
+async function writePackRow<T>(
+  write: (cols: Record<string, unknown>) => PromiseLike<{ data: T | null; error: DbErr }>,
+  row: Record<string, unknown>,
+  input: PackInput,
+): Promise<{ data: T | null; error: DbErr } | { fail: Fail }> {
+  const first = await write({ ...row, free_shipping: input.freeShipping });
+  if (!isMissing0026(first.error)) return first;
+  if (input.freeShipping) return { fail: fail("invalid", NEED_0026, { freeShipping: NEED_0026 }) };
+  console.warn("[admin/packs] migration 0026 absente : pack enregistré sans livraison offerte");
+  return write(row);
+}
 
 function parseForm(values: unknown): { input: PackInput } | { error: Fail } {
   const shape = packFormSchema.safeParse(values);
@@ -88,12 +110,18 @@ export async function createPack(values: PackFormValues): Promise<ActionResult<{
     if (!(await itemsExist(sb, input.items.map((i) => i.productId)))) {
       return fail("invalid", "Un des produits du pack n'existe plus.", { items: "Un des produits n'existe plus." });
     }
-    const { data, error } = await sb.from("packs").insert({ price: input.price, image_url: input.imageUrl, active: input.active }).select("id").single();
+    const written = await writePackRow<{ id: string }>(
+      (cols) => sb.from("packs").insert(cols).select("id").single(),
+      { price: input.price, image_url: input.imageUrl, active: input.active },
+      input,
+    );
+    if ("fail" in written) return written.fail;
+    const { data, error } = written;
     if (error || !data) {
       logDb("create", error);
       return fail("error", GENERIC);
     }
-    const id = data.id as string;
+    const id = data.id;
     const rollback = async () => {
       await sb.from("packs").delete().eq("id", id); // cascade : traductions + contenu
     };
@@ -148,7 +176,13 @@ export async function updatePack(id: string, values: PackFormValues): Promise<Ac
     const locales = new Set(((cur.pack_translations as { locale: string }[] | null) ?? []).map((t) => t.locale));
     const oldIds = ((cur.pack_items as { product_id: string }[] | null) ?? []).map((i) => i.product_id);
 
-    const { error } = await sb.from("packs").update({ price: input.price, image_url: input.imageUrl, active: input.active }).eq("id", id);
+    const written = await writePackRow(
+      (cols) => sb.from("packs").update(cols).eq("id", id),
+      { price: input.price, image_url: input.imageUrl, active: input.active },
+      input,
+    );
+    if ("fail" in written) return written.fail;
+    const { error } = written;
     if (error) {
       logDb("update", error);
       return fail("error", GENERIC);

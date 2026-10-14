@@ -3,7 +3,12 @@
 -- Étape 1 (sûre, réversible en rejouant 0025) : place_order d'avant 0025 + case « livraison offerte » décochée partout
 -- (le site n'annonce plus de gratuité que la base ne ferait plus). Les rubriques saisies sont CONSERVÉES.
 -- Étape 2 (facultative, DESTRUCTIVE) : en bas, commentée. Exporter d'abord les rubriques (Table editor → Export CSV).
-set lock_timeout = '5s'; -- ne jamais rester bloqué derrière une transaction longue (la boutique attendrait aussi)
+-- Après 0026 : décoche AUSSI les packs (`packs.free_shipping`, bloc conditionnel en fin d'étape 1), car la place_order
+-- restaurée (0015) n'offre plus aucune livraison ; sans cela le site afficherait « offerte » un pack facturé par la base.
+-- Pour annuler ce script quand 0026 était appliquée : rejouer 0025 PUIS 0026 (0025 seule remettrait l'ancienne règle des
+-- packs), puis recocher produits et packs dans l'admin.
+-- lock_timeout : ne jamais rester bloqué derrière une transaction longue (la boutique attendrait aussi).
+set lock_timeout = '5s';
 begin;
 
 create or replace function public.place_order(
@@ -124,6 +129,17 @@ revoke execute on function public.place_order(jsonb, jsonb, text, text, uuid) fr
 grant execute on function public.place_order(jsonb, jsonb, text, text, uuid) to service_role;
 
 update public.products set free_shipping = false where free_shipping;
+
+-- Packs (0026) : décochés aussi si la colonne existe (sans 0026, rien à faire).
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'packs' and column_name = 'free_shipping'
+  ) then
+    execute 'update public.packs set free_shipping = false where free_shipping';
+  end if;
+end $$;
 
 commit;
 

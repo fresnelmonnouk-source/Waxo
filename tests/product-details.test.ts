@@ -114,30 +114,32 @@ describe("livraison offerte par produit (même règle que place_order)", () => {
     expect(cartShipsFree([{ id: "a" }, { id: "b" }], ["a", "b"])).toBe(true);
     expect(cartShipsFree([{ id: "a" }, { id: "c" }], new Set(["a", "b"]))).toBe(false);
   });
-  it("pack offert seulement si tous ses produits le sont", () => {
+  it("pack offert seulement si SA case est cochée (0026), quelles que soient les cases de ses produits", () => {
     const products = [
       { id: "a", freeShipping: true },
       { id: "b", freeShipping: true },
       { id: "c", freeShipping: false },
     ];
+    // k1 : produits tous cochés mais pack non coché → payant ; k2 : pack coché avec un produit non coché → offert.
     const packs = [
-      { id: "k1", items: [{ productId: "a" }, { productId: "b" }] },
-      { id: "k2", items: [{ productId: "a" }, { productId: "c" }] },
-      { id: "k3", items: [] },
-    ] as never;
-    expect(freeShippingIds(products, packs).sort()).toEqual(["a", "b", "k1"]);
+      { id: "k1", freeShipping: false },
+      { id: "k2", freeShipping: true },
+    ];
+    expect(freeShippingIds(products, packs).sort()).toEqual(["a", "b", "k2"]);
+    // La case d'un pack ne rend pas gratuits ses produits achetés séparément.
+    expect(freeShippingIds([{ id: "c", freeShipping: false }], [{ id: "k2", freeShipping: true }])).not.toContain("c");
   });
   it("note de livraison de la fiche : mention + condition en FR et EN", () => {
     const props = { cotonou: 1000, autre: 2500, freeFrom: 15000, cod: true, freeShipping: true };
     const fr = render("fr", createElement(DeliveryNote, props));
     expect(fr.errors).toEqual([]);
-    expect(fr.html).toContain("livraison offerte pour ce produit");
+    expect(fr.html).toContain("livraison offerte pour cet article");
     expect(fr.html).toContain("Offerte si tous les articles du panier le sont aussi.");
     const en = render("en", createElement(DeliveryNote, props));
     expect(en.errors).toEqual([]);
-    expect(en.html).toContain("free delivery on this product");
+    expect(en.html).toContain("free delivery on this item");
     const plain = render("fr", createElement(DeliveryNote, { ...props, freeShipping: false }));
-    expect(plain.html).not.toContain("pour ce produit");
+    expect(plain.html).not.toContain("pour cet article");
   });
 });
 

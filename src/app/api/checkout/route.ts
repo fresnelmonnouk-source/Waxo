@@ -11,10 +11,10 @@ import { reportMoneyError } from "@/lib/payment/observe";
 import { parseReplaceRef, releaseReplacedOrder } from "@/lib/payment/replace";
 import { withTimeout } from "@/lib/auth/timeout";
 import { turnstilePasses, verifyTurnstile } from "@/lib/auth/turnstile";
-import { getPacks, getPacksEnabled } from "@/lib/catalog/packs";
+import { getAllPacks, getPacksEnabled } from "@/lib/catalog/packs";
 import { getProductsByIds, getSettings } from "@/lib/catalog";
 import { freeShippingIds } from "@/lib/catalog/free-shipping";
-import { cartShipsFree, shippingFee } from "@/lib/checkout/shipping";
+import { cartShipsFree, shippingFee, type ShippingConfig } from "@/lib/checkout/shipping";
 import {
   API_STATUS,
   apiMessage,
@@ -51,20 +51,57 @@ const RATE_LIMIT = { max: 8, windowMs: 10 * 60_000 };
  */
 /**
  * Devis courant du panier, aux valeurs ACTUELLES du catalogue : prix (null si un article est introuvable) et articles en
- * « livraison offerte à Cotonou & Calavi » (0025 ; pack = tous ses produits cochés, comme place_order).
+ * « livraison offerte à Cotonou & Calavi » (comme place_order : produit coché 0025 ; pack = SA case cochée 0026).
+ * Tous les packs actifs, masqués compris (V8) : un pack masqué reste commandable, son devis doit donc être vérifié aussi.
  */
 async function currentQuote(
   lang: ApiLang,
   items: { kind: "product" | "pack"; id: string }[],
-): Promise<{ prices: Record<string, number> | null; free: Set<string> }> {
+): Promise<Quote> {
   const packIds = new Set(items.filter((i) => i.kind === "pack").map((i) => i.id));
-  const packs = packIds.size ? (await getPacks(lang)).filter((k) => packIds.has(k.id)) : [];
-  const productIds = [...items.filter((i) => i.kind === "product").map((i) => i.id), ...packs.flatMap((k) => k.items.map((it) => it.productId))];
+  const packs = packIds.size ? (await getAllPacks(lang)).filter((k) => packIds.has(k.id)) : [];
+  // Produits du panier seulement : la case d'un pack ne dépend plus de ses produits (0026).
+  const productIds = items.filter((i) => i.kind === "product").map((i) => i.id);
   const products = productIds.length ? await getProductsByIds(lang, [...new Set(productIds)]) : [];
   const prices: Record<string, number> = {};
   for (const p of products) prices[p.id] = p.price;
   for (const k of packs) prices[k.id] = k.price;
   return { prices: items.every((i) => typeof prices[i.id] === "number") ? prices : null, free: new Set(freeShippingIds(products, packs)) };
+}
+
+type Quote = { prices: Record<string, number> | null; free: Set<string> };
+
+/**
+ * Le client paierait-il PLUS que ce qu'il a vu ? Compare le TOTAL (sous-total + frais) au total affiché quand le navigateur
+ * envoie les deux montants (Z1) ; sinon (ancien client), le seul montant envoyé. `fee` null = frais inconnus → pas de verdict
+ * (le filet après place_order tranche). Code renvoyé : `price_changed` si le sous-total a monté, sinon `shipping_changed`.
+ */
+function guardVerdict(a: {
+  expected: number | null;
+  expectedShipping: number | null;
+  subtotal: number;
+  fee: number | null;
+}): "price_changed" | "shipping_changed" | null {
+  const { expected, expectedShipping, subtotal, fee } = a;
+  if (expected !== null && expectedShipping !== null) {
+    if (fee === null || subtotal + fee <= expected + expectedShipping) return null;
+    return subtotal > expected ? "price_changed" : "shipping_changed";
+  }
+  if (expected !== null) return subtotal > expected ? "price_changed" : null;
+  if (expectedShipping !== null && fee !== null && fee > expectedShipping) return "shipping_changed";
+  return null;
+}
+
+/**
+ * Valeurs à jour jointes à un 409 : le navigateur les applique (prix du panier, réglages de livraison, liste « offerte »)
+ * et son prochain envoi correspond au total réel. `notFree` : la base a facturé des frais → aucun article offert affiché.
+ */
+function refreshData(quote: Quote | null, shipping: ShippingConfig | null, notFree = false): Record<string, unknown> {
+  return {
+    ...(quote?.prices ? { prices: quote.prices } : {}),
+    ...(shipping ? { shipping } : {}),
+    ...(notFree ? { free: [] } : quote ? { free: [...quote.free] } : {}),
+  };
 }
 
 function fail(lang: ApiLang, code: ApiErrorCode, extra: Record<string, unknown> = {}) {
@@ -199,23 +236,25 @@ export async function POST(request: Request) {
       const replaces = parseReplaceRef(rawObj.replaces);
       if (replaces) await releaseReplacedOrder(admin, replaces);
 
-      // Montants attendus par le client (affichés). Si un prix OU les frais de livraison ont AUGMENTÉ depuis (fin de campagne,
-      // case « livraison offerte » décochée), on ne crée rien : le client reçoit les valeurs à jour et valide en connaissance
-      // de cause (audits Tariq, Raphaël 2026-10-14). Une baisse ne bloque pas. place_order reste l'autorité sur le montant.
+      // Montants attendus par le client (affichés). Si le TOTAL a augmenté depuis (fin de campagne, case « livraison offerte »
+      // décochée, réglages de livraison modifiés), on ne crée rien : le client reçoit les valeurs à jour (prix, réglages,
+      // liste « offerte ») et valide en connaissance de cause. Un total égal ou plus bas ne bloque JAMAIS, même si les frais
+      // montent parce qu'un prix a baissé sous le franco (Z1, sinon boucle). place_order reste l'autorité : son total est
+      // contrôlé ensuite (filet Z2), y compris quand la lecture du catalogue ou des réglages échoue ici.
       const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? Math.round(v) : null);
       const expected = num(rawObj.expectedSubtotal);
       const expectedShipping = num(rawObj.expectedShipping);
+      let quote: Quote | null = null;
+      let shippingNow: ShippingConfig | null = null;
       if (expected !== null || expectedShipping !== null) {
-        const quote = await currentQuote(lang, input.items).catch(() => null);
+        quote = await currentQuote(lang, input.items).catch(() => null);
+        if (expectedShipping !== null) shippingNow = (await getSettings().catch(() => null))?.shipping ?? null;
         const prices = quote?.prices;
         if (quote && prices) {
           const now = input.items.reduce((sum, i) => sum + prices[i.id] * i.qty, 0);
-          if (expected !== null && now > expected) return fail(lang, "price_changed", { prices, free: [...quote.free] });
-          if (expectedShipping !== null) {
-            const settings = await getSettings().catch(() => null);
-            const feeNow = settings ? shippingFee(now, input.zone, settings.shipping, cartShipsFree(input.items, quote.free)) : null;
-            if (feeNow !== null && feeNow > expectedShipping) return fail(lang, "shipping_changed", { free: [...quote.free] });
-          }
+          const feeNow = shippingNow ? shippingFee(now, input.zone, shippingNow, cartShipsFree(input.items, quote.free)) : null;
+          const code = guardVerdict({ expected, expectedShipping, subtotal: now, fee: feeNow });
+          if (code) return fail(lang, code, refreshData(quote, shippingNow));
         }
       }
       const phone = normPhone(input.customer.phone);
@@ -240,6 +279,29 @@ export async function POST(request: Request) {
       }
       const row: unknown = Array.isArray(data) ? data[0] : data;
       if (!isPlacedRow(row)) return fail(lang, "server_error");
+
+      // Filet Z2 : la base a facturé PLUS que le total affiché (règle SQL différente du code, retour arrière, lecture du
+      // catalogue ou des réglages en échec ci-dessus) → commande annulée (stock restitué) AVANT la clé d'idempotence, les
+      // e-mails et toute transaction de paiement, puis 409 avec les valeurs à jour.
+      const overCode = guardVerdict({ expected, expectedShipping, subtotal: row.subtotal, fee: row.shipping_fee });
+      if (overCode) {
+        try {
+          const { data: done, error: cancelErr } = await admin.rpc("cancel_order", { p_order: row.order_id });
+          if (cancelErr || done === false) reportMoneyError("checkout", "overcharge_cancel_failed", { order: row.order_id, code: cancelErr?.code ?? undefined });
+        } catch (e) {
+          reportMoneyError("checkout", e, { order: row.order_id, code: "overcharge_cancel_failed" });
+        }
+        // Données à jour : relues si la première lecture a échoué. Frais facturés par la base → aucun article « offert » pour
+        // ce panier (le navigateur affiche alors le tarif, comme la base).
+        try {
+          if (!quote?.prices) quote = (await currentQuote(lang, input.items)) ?? quote;
+          if (!shippingNow) shippingNow = (await getSettings()).shipping ?? null;
+        } catch {
+          /* valeurs partielles : la commande reste annulée et le 409 part quand même */
+        }
+        return fail(lang, overCode, refreshData(quote, shippingNow, row.shipping_fee > 0));
+      }
+
       placed = { orderId: row.order_id, number: row.order_number, subtotal: row.subtotal, shippingFee: row.shipping_fee, total: row.total };
 
       // Langue de la commande (e-mails) et clé d'idempotence : colonnes de 0007_payments.sql ; absentes = sans effet.

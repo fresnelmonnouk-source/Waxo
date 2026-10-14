@@ -238,6 +238,8 @@ export const packFormSchema = z.object({
   active: z.boolean(),
   imageUrl: z.string().max(500).nullable(),
   items: z.array(z.object({ productId: z.uuid(), qty: z.number().int().min(1).max(50) })).max(MAX_PACK_ITEMS),
+  // Facultatif : un formulaire ouvert avant la mise en ligne (sans la case) s'enregistre « non coché » (choix prudent).
+  freeShipping: z.boolean().optional(),
 });
 
 export type PackInput = {
@@ -249,6 +251,8 @@ export type PackInput = {
   active: boolean;
   imageUrl: string | null;
   items: PackItem[];
+  /** Case « Livraison gratuite à Cotonou & Calavi » du pack (0026). */
+  freeShipping: boolean;
 };
 
 export function validatePackForm(f: PackFormValues): ValidationResult<PackInput> {
@@ -293,6 +297,7 @@ export function validatePackForm(f: PackFormValues): ValidationResult<PackInput>
       active: f.active,
       imageUrl: f.imageUrl,
       items: f.items.map((i) => ({ productId: i.productId, qty: i.qty })),
+      freeShipping: f.freeShipping === true,
     },
   };
 }

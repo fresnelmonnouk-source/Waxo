@@ -13,6 +13,18 @@ export type PayConfig = Record<PayMethod, boolean>;
 export const DEFAULT_SHIPPING: ShippingConfig = { cotonou: 1000, autre: 2500, freeFrom: 15000, cutoff: 20, returnDays: 7 };
 export const DEFAULT_PAY: PayConfig = { momo: true, moov: true, celtiis: true, carte: true, cod: true };
 
+/**
+ * Réglages de livraison renvoyés par le serveur (409 `shipping_changed` / `price_changed`, Z1) : acceptés seulement s'ils sont
+ * complets et numériques, sinon null (le navigateur garde ses réglages).
+ */
+export function parseShippingConfig(x: unknown): ShippingConfig | null {
+  if (!x || typeof x !== "object") return null;
+  const r = x as Record<string, unknown>;
+  const keys = ["cotonou", "autre", "freeFrom", "cutoff", "returnDays"] as const;
+  if (!keys.every((k) => typeof r[k] === "number" && Number.isFinite(r[k]))) return null;
+  return { cotonou: r.cotonou as number, autre: r.autre as number, freeFrom: r.freeFrom as number, cutoff: r.cutoff as number, returnDays: r.returnDays as number };
+}
+
 /** Mobile Money : demande un numéro à valider sur le téléphone. */
 export const isMobileMoney = (m: PayMethod): boolean => m === "momo" || m === "moov" || m === "celtiis";
 

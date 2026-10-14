@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { createProduct, deleteProduct, updateProduct } from "@/app/admin/(panel)/produits/actions";
 import { fmtXof } from "@/lib/money";
 import { FIELD_ERR, FIELD_LABEL, Drawer, Switch, inputClass } from "./ui";
 import { PhotosField } from "./PhotosField";
+import { AiWriterPanel } from "./AiWriterPanel";
+import { applyDraft, type DraftField, type DraftTarget, type DraftWarnings, type ProductDraft } from "@/lib/admin/ai/product-draft";
+import { publishGate } from "@/lib/admin/ai/product-writer-gate";
 import { DETAIL_LABELS, SWATCHES, detailErrorKey, marginOf, parseAmount, validateProductForm } from "./logic";
 import { DETAIL_KEYS, EMPTY_DETAILS, hasAnyDetail, type DetailKey, type ProductDetails } from "@/lib/catalog/details";
 import type { AdminCategory, AdminProduct, ProductFormValues } from "./types";
@@ -71,18 +74,40 @@ const DETAIL_PLACEHOLDERS: Record<DetailKey, string> = {
   care: "Ex.\nLaver à la main à l'eau tiède\nNe pas passer au micro-ondes",
 };
 
+/** Ce que l'IA signale sous un champ qu'elle a rempli : lien lu (à vérifier) et avertissements de contrôle. */
+type AiMarks = { fromLink: ReadonlySet<DraftField>; warnings: DraftWarnings };
+
+/** Mentions sous un champ rempli par l'IA : « à vérifier » (lien lu) et avertissements (phrase recopiée, marque…). */
+function AiHints({ field, marks }: { field: DraftField; marks: AiMarks }) {
+  const warnings = marks.warnings[field] ?? [];
+  if (!marks.fromLink.has(field) && !warnings.length) return null;
+  return (
+    <>
+      {marks.fromLink.has(field) && <span className="text-xs font-normal text-[#8A5A00]">Vient du lien, à vérifier.</span>}
+      {warnings.map((w) => (
+        <span key={w} className="text-xs font-medium text-[#9A3412]">
+          {w}
+        </span>
+      ))}
+    </>
+  );
+}
+
 /** Les six rubriques facultatives (couleur et matériaux sur une ligne, les autres en zone de texte). */
 function DetailFields({
   values,
   labels,
   en = false,
   errors,
+  marks,
   onChange,
 }: {
   values: ProductDetails;
   labels: Record<DetailKey, string>;
   en?: boolean;
   errors: Record<string, string>;
+  /** Mentions de l'IA (lien lu, avertissements). */
+  marks: AiMarks;
   onChange: (k: DetailKey, value: string) => void;
 }) {
   return (
@@ -109,6 +134,7 @@ function DetailFields({
                 className={`${inputClass(err)} resize-y leading-normal`}
               />
             )}
+            <AiHints field={`${en ? "en" : "fr"}.${k}`} marks={marks} />
             <span className={FIELD_ERR}>{err}</span>
           </label>
         );
@@ -123,6 +149,7 @@ export function ProductDrawer({
   categories,
   maxPhotos,
   detailsReady = true,
+  aiReady = false,
   onClose,
   onSaved,
 }: {
@@ -132,6 +159,8 @@ export function ProductDrawer({
   maxPhotos?: number;
   /** Migration 0025 appliquée (rubriques + livraison gratuite enregistrables). */
   detailsReady?: boolean;
+  /** IA de l'admin configurée (clé DeepSeek) : active « Rédiger avec l'IA ». */
+  aiReady?: boolean;
   onClose: () => void;
   onSaved: (message: string, id: string | null) => void;
 }) {
@@ -142,16 +171,35 @@ export function ProductDrawer({
   const [confirmDel, setConfirmDel] = useState(false);
   const [delError, setDelError] = useState("");
   const [pending, start] = useTransition();
+  /** Mentions de l'IA : champs « à vérifier » (lien lu) et avertissements de contrôle par champ. */
+  const [marks, setMarks] = useState<AiMarks>(() => ({ fromLink: new Set(), warnings: {} }));
+  // Valeurs COURANTES pour l'IA : la rédaction dure jusqu'à 48 s et la saisie continue pendant ce temps (audit Victor W1).
+  const vRef = useRef(v);
+  useEffect(() => {
+    vRef.current = v;
+  }, [v]);
+  const getCurrent = useCallback((): DraftTarget => vRef.current, []);
+
+  /** Un avertissement de l'IA disparaît dès que l'admin modifie le champ concerné. */
+  const clearWarning = (f: DraftField) =>
+    setMarks((m) => {
+      if (!m.warnings[f]) return m;
+      const warnings = { ...m.warnings };
+      delete warnings[f];
+      return { ...m, warnings };
+    });
 
   const set = <K extends keyof ProductFormValues>(k: K, value: ProductFormValues[K]) => {
     setV((s) => ({ ...s, [k]: value }));
     setErrors((e) => ({ ...e, [k]: "" }));
     setFormError("");
+    if (k === "name" || k === "nameEn" || k === "description" || k === "descriptionEn" || k === "keyword") clearWarning(k as DraftField);
   };
   const setDetail = (k: DetailKey, value: string, en = false) => {
     setV((s) => (en ? { ...s, detailsEn: { ...s.detailsEn, [k]: value } } : { ...s, details: { ...s.details, [k]: value } }));
     setErrors((e) => ({ ...e, [detailErrorKey(k, en)]: "", ...(en ? { nameEn: "" } : {}) }));
     setFormError("");
+    clearWarning(`${en ? "en" : "fr"}.${k}`);
   };
   const detailError = DETAIL_KEYS.some((k) => errors[detailErrorKey(k)]);
   const detailEnError = DETAIL_KEYS.some((k) => errors[detailErrorKey(k, true)]);
@@ -164,11 +212,38 @@ export function ProductDrawer({
   const cost = v.cost.trim() === "" ? null : parseAmount(v.cost);
   const margin = price ? marginOf(price, cost) : null;
   const word = v.keyword.trim() || v.name.trim().split(/\s+/)[0]?.toLowerCase() || "";
+  const rayon = categories.find((c) => c.id === v.categoryId)?.label ?? "";
+
+  /**
+   * Proposition de l'IA → formulaire (rien n'est enregistré). Appliquée sur l'état COURANT (setter fonctionnel) : le prix,
+   * le stock, les photos ou un texte saisis pendant la rédaction sont gardés (audit Victor W1). Les panneaux concernés
+   * s'ouvrent pour la relecture.
+   */
+  const applyAi = (draft: ProductDraft, mode: "replace" | "fill-empty"): DraftField[] => {
+    const { filled } = applyDraft(vRef.current, draft, mode);
+    setV((s) => applyDraft(s, draft, mode).values);
+    setMarks({
+      fromLink: new Set(draft.fromLink.filter((f) => filled.includes(f))),
+      warnings: Object.fromEntries(filled.filter((f) => draft.warnings?.[f]?.length).map((f) => [f, draft.warnings![f]!])),
+    });
+    setErrors({});
+    setFormError("");
+    if (filled.some((f) => f.startsWith("fr."))) setDetailsOpen(true);
+    if (filled.some((f) => f === "nameEn" || f === "descriptionEn" || f.startsWith("en."))) setEnOpen(true);
+    return filled;
+  };
 
   const save = () => {
     const check = validateProductForm(v);
     if (!check.ok) {
       setErrors(check.errors as Record<string, string>);
+      return;
+    }
+    // Produit visible en boutique : aucun « [à confirmer] » ne doit rester (même règle côté serveur).
+    const gate = publishGate(check.value);
+    if (gate) {
+      setErrors(gate.fields);
+      setFormError(gate.message);
       return;
     }
     setFormError("");
@@ -178,6 +253,12 @@ export function ProductDrawer({
         const newId = "id" in res && typeof res.id === "string" ? res.id : null;
         onSaved(isNew ? "Produit ajouté et visible en boutique." : "Produit enregistré.", isNew ? newId : product.id);
       } else {
+        // Conflit de stock : la fiche reste ouverte, le stock et sa référence sont mis à jour sur place ; rubriques et
+        // texte de l'IA sont gardés (audit Zoé Z5).
+        if (res.code === "conflict" && typeof res.currentStock === "number") {
+          const now = String(res.currentStock);
+          setV((s) => ({ ...s, stock: now, stockAtOpen: now }));
+        }
         setErrors(res.fields ?? {});
         setFormError(res.message);
       }
@@ -199,9 +280,12 @@ export function ProductDrawer({
       <div className="flex flex-col gap-3.5 p-5">
         <PhotosField images={v.images} bg={v.bg} word={word} max={maxPhotos} error={errors.images} onChange={(list) => set("images", list)} />
 
+        <AiWriterPanel ready={aiReady} rayon={rayon} getCurrent={getCurrent} onApply={applyAi} />
+
         <label className={FIELD_LABEL}>
           Nom du produit
           <input value={v.name} onChange={(e) => set("name", e.target.value)} maxLength={120} className={inputClass(errors.name)} />
+          <AiHints field="name" marks={marks} />
           <span className={FIELD_ERR}>{errors.name}</span>
         </label>
 
@@ -271,7 +355,7 @@ export function ProductDrawer({
           <span className="flex flex-col gap-0.5">
             <span className="text-sm font-medium">Livraison gratuite à Cotonou &amp; Calavi</span>
             <span className="text-xs text-[#4A443C]">
-              Offerte quand tout le panier est composé de produits cochés. Avec un produit non coché, le tarif habituel s&apos;applique.
+              Offerte quand tout le panier est composé d&apos;articles cochés (produits ou packs). Avec un article non coché, le tarif habituel s&apos;applique.
             </span>
           </span>
         </label>
@@ -285,6 +369,7 @@ export function ProductDrawer({
             maxLength={2000}
             className={`${inputClass(errors.description)} resize-y leading-normal`}
           />
+          <AiHints field="description" marks={marks} />
           <span className={FIELD_ERR}>{errors.description}</span>
         </label>
 
@@ -298,7 +383,7 @@ export function ProductDrawer({
             <span className="text-xs text-[#4A443C]">
               Une information par ligne. Une rubrique laissée vide n&apos;apparaît pas sur la fiche, ni son titre.
             </span>
-            <DetailFields values={v.details} labels={DETAIL_LABELS} errors={errors} onChange={(k, value) => setDetail(k, value)} />
+            <DetailFields values={v.details} labels={DETAIL_LABELS} errors={errors} marks={marks} onChange={(k, value) => setDetail(k, value)} />
           </div>
         </details>
 
@@ -310,7 +395,7 @@ export function ProductDrawer({
 
         <details
           className="rounded-[14px] border border-[#E2DCCF] bg-white px-3.5 py-1"
-          open={enOpen || detailEnError || Boolean(errors.nameEn)}
+          open={enOpen || detailEnError || Boolean(errors.nameEn) || Boolean(errors.descriptionEn)}
           onToggle={(e) => setEnOpen(e.currentTarget.open)}
         >
           <summary className="flex min-h-11 cursor-pointer items-center text-sm font-medium">Version anglaise (facultative)</summary>
@@ -318,6 +403,7 @@ export function ProductDrawer({
             <label className={FIELD_LABEL}>
               Product name
               <input value={v.nameEn} onChange={(e) => set("nameEn", e.target.value)} maxLength={120} className={inputClass(errors.nameEn)} lang="en" />
+              <AiHints field="nameEn" marks={marks} />
               <span className={FIELD_ERR}>{errors.nameEn}</span>
             </label>
             <label className={FIELD_LABEL}>
@@ -330,9 +416,10 @@ export function ProductDrawer({
                 lang="en"
                 className={`${inputClass(errors.descriptionEn)} resize-y leading-normal`}
               />
+              <AiHints field="descriptionEn" marks={marks} />
               <span className={FIELD_ERR}>{errors.descriptionEn}</span>
             </label>
-            <DetailFields values={v.detailsEn} labels={DETAIL_LABELS_EN} en errors={errors} onChange={(k, value) => setDetail(k, value, true)} />
+            <DetailFields values={v.detailsEn} labels={DETAIL_LABELS_EN} en errors={errors} marks={marks} onChange={(k, value) => setDetail(k, value, true)} />
             <span className="text-xs text-[#4A443C]">
               Sans nom anglais, la boutique affiche la version française. Une rubrique anglaise vide reprend la rubrique française.
             </span>
@@ -346,9 +433,12 @@ export function ProductDrawer({
             onChange={(e) => set("keyword", e.target.value)}
             placeholder="Ex. gourde"
             maxLength={40}
-            className={inputClass()}
+            className={inputClass(errors.keyword)}
           />
-          <span className="text-xs font-normal text-[#4A443C]">Visible seulement tant que le produit n&apos;a aucune photo.</span>
+          <AiHints field="keyword" marks={marks} />
+          <span className={errors.keyword ? FIELD_ERR : "text-xs font-normal text-[#4A443C]"}>
+            {errors.keyword || "Visible seulement tant que le produit n'a aucune photo."}
+          </span>
         </label>
 
         <div className="flex flex-col gap-2 text-sm font-medium">
