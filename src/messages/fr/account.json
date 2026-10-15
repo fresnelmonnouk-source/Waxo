@@ -272,7 +272,7 @@
     "q1": "Combien de temps prend la livraison ?",
     "a1": "À Cotonou et Calavi, avec la Livraison Express, vous êtes livré le jour même pour toute commande passée avant {cutoff} h (heure du Bénin), sinon le lendemain, 7 j/7, dimanche compris. Si vous payez à la réception, l'heure limite s'applique à l'heure de votre confirmation sur WhatsApp. Dans les autres villes du Bénin, comptez 48 à 72 h.",
     "q2": "Combien coûte la livraison ?",
-    "a2": "{cotonou} à Cotonou et Calavi, offerte dès {freeShip} d'achat. {autre} dans les autres villes du Bénin.",
+    "a2": "{cotonou} à Cotonou et Calavi, offerte dès {freeShip} d'achat, ou quand tous les articles du panier portent la mention « livraison offerte ». {autre} dans les autres villes du Bénin.",
     "q3": "Comment puis-je payer ?",
     "a3": "Selon les moyens affichés au moment de la commande : Mobile Money en ligne (MTN MoMo, Moov Money, Celtiis Cash) lorsqu'il est proposé{cod}. Nous ne vous demanderons jamais votre code secret.",
     "cod": ", ou à la livraison, en espèces ou par Mobile Money",
@@ -325,7 +325,7 @@
       },
       "s6": {
         "h": "6. Livraison",
-        "p": "Cotonou et Calavi (Livraison Express) : livraison le jour même pour toute commande passée avant {cutoff} h (heure du Bénin), sinon le lendemain, 7 j/7, dimanche compris (paiement à la livraison : l'heure limite s'applique à l'heure de la confirmation WhatsApp), pour {cotonou}, offerte dès {freeShip} d'achat. Autres villes du Bénin : sous 48 à 72 h, pour {autre}. Le livreur appelle le client avant son arrivée. En cas d'absence, une nouvelle livraison est proposée ; après deux tentatives sans succès, la commande peut être annulée. Pas de livraison hors du Bénin pour le moment."
+        "p": "Cotonou et Calavi (Livraison Express) : livraison le jour même pour toute commande passée avant {cutoff} h (heure du Bénin), sinon le lendemain, 7 j/7, dimanche compris (paiement à la livraison : l'heure limite s'applique à l'heure de la confirmation WhatsApp), pour {cotonou}, offerte dès {freeShip} d'achat. Elle est aussi offerte lorsque tous les articles de la commande portent la mention « livraison offerte », affichée sur leur fiche et dans le panier ; si un seul article ne la porte pas, le tarif habituel s'applique. Un seul frais de livraison est compté par commande. La mention d'un pack s'applique au pack, et non aux produits qu'il contient achetés séparément. Cette mention ne concerne que Cotonou et Calavi. Autres villes du Bénin : sous 48 à 72 h, pour {autre}. Le livreur appelle le client avant son arrivée. En cas d'absence, une nouvelle livraison est proposée ; après deux tentatives sans succès, la commande peut être annulée. Pas de livraison hors du Bénin pour le moment."
       },
       "s7": {
         "h": "7. Échange et remboursement",
@@ -444,13 +444,17 @@
       "colFee": "Frais",
       "r1z": "Cotonou et Calavi",
       "r1d": "Le jour même avant {cutoff} h, sinon le lendemain, 7 j/7",
-      "r1f": "{cotonou}, offerte dès {freeShip}",
+      "r1f": "{cotonou}, offerte dès {freeShip} d'achat, ou si tous les articles du panier sont à livraison offerte (voir ci-dessous)",
       "r2z": "Autres villes du Bénin",
       "r2d": "48 à 72 h",
       "r2f": "{autre}",
       "r3z": "Hors du Bénin",
       "r3d": "Pas encore disponible",
       "r3f": "–",
+      "freeH": "Livraison offerte à Cotonou et Calavi",
+      "freeP1": "Un article ou un pack peut porter la mention « livraison offerte ». Vous la voyez sur sa fiche et dans votre panier.",
+      "freeP2": "À Cotonou et Calavi, la livraison est offerte quand tous les articles de votre panier portent cette mention. Si un seul article ne la porte pas, le tarif habituel s'applique : {cotonou}, offerte dès {freeShip} d'achat. Il n'y a qu'un seul frais de livraison par commande, quel que soit le nombre d'articles.",
+      "freeP3": "Un pack a sa propre mention : elle ne s'applique pas aux produits du pack achetés séparément, et la mention d'un produit ne s'applique pas au pack. Hors de Cotonou et Calavi, cette mention ne change rien : le tarif habituel s'applique ({autre}). Le total, livraison comprise, s'affiche toujours avant que vous validiez votre commande.",
       "dayH": "Le jour de la livraison",
       "dayP": "Vous recevez une confirmation par WhatsApp avec le créneau de livraison. Le livreur vous appelle avant d'arriver. {cod}",
       "returnH": "Retourner un produit",

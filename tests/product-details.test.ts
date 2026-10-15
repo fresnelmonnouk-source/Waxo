@@ -133,13 +133,13 @@ describe("livraison offerte par produit (même règle que place_order)", () => {
     const props = { cotonou: 1000, autre: 2500, freeFrom: 15000, cod: true, freeShipping: true };
     const fr = render("fr", createElement(DeliveryNote, props));
     expect(fr.errors).toEqual([]);
-    expect(fr.html).toContain("livraison offerte pour cet article");
-    expect(fr.html).toContain("Offerte si tous les articles du panier le sont aussi.");
+    expect(fr.html).toContain("article à livraison offerte");
+    expect(fr.html).toContain("La livraison est offerte si tous les articles de votre panier ont cette mention. Sinon, le tarif habituel s&#x27;applique.");
     const en = render("en", createElement(DeliveryNote, props));
     expect(en.errors).toEqual([]);
-    expect(en.html).toContain("free delivery on this item");
+    expect(en.html).toContain("free-delivery item");
     const plain = render("fr", createElement(DeliveryNote, { ...props, freeShipping: false }));
-    expect(plain.html).not.toContain("pour cet article");
+    expect(plain.html).not.toContain("article à livraison offerte");
   });
 });
 

@@ -75,7 +75,7 @@
       "noneBudget": "I have nothing in stock at that price. Shall I look a bit higher, or try another idea?",
       "productInfo": "{desc} Tell me what you need it for and I'll tell you if it suits you.",
       "productOut": "“{name}” is sold out for now. Here are alternatives in stock:",
-      "delivery": "Express Delivery in Cotonou and Calavi: same day for any order placed before {cutoff}:00 (Benin time), otherwise the next day, 7 days a week including Sundays, for {cotonou}, free from {free}. With pay on delivery, the cut-off time applies to the time the order is confirmed on WhatsApp. Elsewhere in Benin, allow 48 to 72 hours for {autre}.",
+      "delivery": "Express Delivery in Cotonou and Calavi: same day for any order placed before {cutoff}:00 (Benin time), otherwise the next day, 7 days a week including Sundays, for {cotonou}, free from {free} of purchases. It is also free when every item in your cart carries the “free delivery” mention, shown on the item page and in your cart. With pay on delivery, the cut-off time applies to the time the order is confirmed on WhatsApp. Elsewhere in Benin, allow 48 to 72 hours for {autre}.",
       "payment": "You can pay by {methods}.",
       "payMomo": "MTN MoMo",
       "payMoov": "Moov Money",

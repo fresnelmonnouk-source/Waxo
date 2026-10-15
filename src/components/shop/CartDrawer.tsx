@@ -131,6 +131,9 @@ function DrawerContent() {
   // Tout le panier en « livraison offerte » (0025) : offerte à Cotonou & Calavi quel que soit le montant.
   const allFree = cartShipsFree(lines, config.free);
   const remaining = allFree ? 0 : freeShippingRemaining(subtotal, shipping);
+  // Panier mixte : au moins un article « livraison offerte » et au moins un qui ne l'est pas, avec des frais encore dus.
+  const freeSet = new Set(config.free);
+  const mixedFree = !allFree && lines.some((l) => freeSet.has(l.id)) && (!freeShippingEnabled(shipping) || remaining > 0);
   const payLine = enabledPayMethods(pay)
     .map((m) => t(PAY_KEYS[m]))
     .join(" · ");
@@ -189,6 +192,7 @@ function DrawerContent() {
               </div>
             </div>
             ) : null}
+            {mixedFree ? <p className="m-0 border-b border-border px-[22px] py-3 text-[13px] text-muted">{t("mixedFree")}</p> : null}
 
             <div className="flex flex-1 flex-col overflow-y-auto px-[22px] py-1.5">
               {lines.map((l) => {

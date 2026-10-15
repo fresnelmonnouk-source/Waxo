@@ -5,6 +5,7 @@
     "close": "Fermer le panier",
     "shipRemaining": "Plus que {amount} pour la livraison offerte à Cotonou et Calavi",
     "shipFree": "Livraison offerte à Cotonou et Calavi",
+    "mixedFree": "Un article de votre panier n'est pas à livraison offerte : le tarif habituel s'applique.",
     "decrease": "Diminuer",
     "increase": "Augmenter",
     "remove": "Retirer",
