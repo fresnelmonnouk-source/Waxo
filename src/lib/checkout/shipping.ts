@@ -39,7 +39,7 @@ export function shippingFee(subtotal: number, zone: Zone, cfg: ShippingConfig, a
 
 /**
  * Tout le panier est-il en « livraison offerte à Cotonou & Calavi » (0025) ? Panier vide = non. `freeIds` = identifiants
- * (produits et packs) livrés gratuitement, fournis par le serveur. Même règle que place_order (pack : tous ses produits cochés).
+ * (produits et packs) livrés gratuitement, fournis par le serveur. Même règle que place_order (0026 : un pack compte par SA propre case, jamais par celles de ses produits).
  */
 export function cartShipsFree(lines: readonly { id: string }[], freeIds: ReadonlySet<string> | readonly string[]): boolean {
   const set = freeIds instanceof Set ? freeIds : new Set(freeIds as readonly string[]);

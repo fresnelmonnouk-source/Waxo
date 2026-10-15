@@ -75,7 +75,7 @@
       "noneBudget": "Je n'ai rien en stock à ce prix. Voulez-vous que je regarde un peu plus haut, ou une autre idée ?",
       "productInfo": "{desc} Dites-moi à quoi il doit servir et je vous dis s'il vous convient.",
       "productOut": "« {name} » est épuisé pour le moment. Voici des alternatives en stock :",
-      "delivery": "Livraison Express à Cotonou et Calavi : le jour même pour toute commande passée avant {cutoff} h (heure du Bénin), sinon le lendemain, 7 j/7 dimanche compris, pour {cotonou}, offerte dès {free}. Avec le paiement à la livraison, l'heure limite s'applique à l'heure de la confirmation de la commande sur WhatsApp. Ailleurs au Bénin, comptez 48 à 72 h pour {autre}.",
+      "delivery": "Livraison Express à Cotonou et Calavi : le jour même pour toute commande passée avant {cutoff} h (heure du Bénin), sinon le lendemain, 7 j/7 dimanche compris, pour {cotonou}, offerte dès {free} d'achat. Elle est aussi offerte quand tous les articles de votre panier portent la mention « livraison offerte », visible sur leur fiche et dans votre panier. Avec le paiement à la livraison, l'heure limite s'applique à l'heure de la confirmation de la commande sur WhatsApp. Ailleurs au Bénin, comptez 48 à 72 h pour {autre}.",
       "payment": "Vous pouvez payer par {methods}.",
       "payMomo": "MTN MoMo",
       "payMoov": "Moov Money",

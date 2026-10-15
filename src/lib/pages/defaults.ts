@@ -52,9 +52,17 @@ WhatsApp confirmation, home delivery, and an exchange or refund within {{shippin
       title: "Livraison et retours",
       body: `| Zone | Délai | Frais |
 |---|---|---|
-| Cotonou et Calavi (Livraison Express) | Le jour même si vous commandez avant {{shipping.cutoff}} h, sinon le lendemain. 7 j/7, dimanche compris | {{shipping.cotonou}}, offerte dès {{shipping.freeFrom}} |
+| Cotonou et Calavi (Livraison Express) | Le jour même si vous commandez avant {{shipping.cutoff}} h, sinon le lendemain. 7 j/7, dimanche compris | {{shipping.cotonou}}, offerte dès {{shipping.freeFrom}} d'achat, ou si tous les articles du panier sont à livraison offerte (voir ci-dessous) |
 | Autres villes du Bénin | 48 à 72 h | {{shipping.autre}} |
 | Hors du Bénin | Pas encore disponible | Sans objet |
+
+## Livraison offerte à Cotonou et Calavi
+
+Un article ou un pack peut porter la mention « livraison offerte ». Vous la voyez sur sa fiche et dans votre panier.
+
+À Cotonou et Calavi, la livraison est offerte quand tous les articles de votre panier portent cette mention. Si un seul article ne la porte pas, le tarif habituel s'applique : {{shipping.cotonou}}, offerte dès {{shipping.freeFrom}} d'achat. Il n'y a qu'un seul frais de livraison par commande, quel que soit le nombre d'articles.
+
+Un pack a sa propre mention : elle ne s'applique pas aux produits du pack achetés séparément, et la mention d'un produit ne s'applique pas au pack. Hors de Cotonou et Calavi, cette mention ne change rien : le tarif habituel s'applique ({{shipping.autre}}). Le total, livraison comprise, s'affiche toujours avant que vous validiez votre commande.
 
 ## Le jour de la livraison
 
@@ -76,9 +84,17 @@ Le produit doit être non utilisé, complet et dans son emballage d'origine. Les
       title: "Delivery and returns",
       body: `| Zone | Lead time | Fee |
 |---|---|---|
-| Cotonou and Calavi (Express Delivery) | Same day if you order before {{shipping.cutoff}}:00, otherwise the next day. 7 days a week, Sundays included | {{shipping.cotonou}}, free from {{shipping.freeFrom}} |
+| Cotonou and Calavi (Express Delivery) | Same day if you order before {{shipping.cutoff}}:00, otherwise the next day. 7 days a week, Sundays included | {{shipping.cotonou}}, free from {{shipping.freeFrom}} of purchases, or if every item in your cart is marked free delivery (see below) |
 | Other cities in Benin | 48 to 72 hours | {{shipping.autre}} |
 | Outside Benin | Not available yet | N/A |
+
+## Free delivery in Cotonou and Calavi
+
+An item or a pack can carry the “free delivery” mention. You can see it on its page and in your cart.
+
+In Cotonou and Calavi, delivery is free when every item in your cart carries this mention. If a single item does not, the usual fee applies: {{shipping.cotonou}}, free from {{shipping.freeFrom}} of purchases. There is only one delivery fee per order, however many items it contains.
+
+A pack has its own mention: it does not apply to the products of the pack bought separately, and a product's mention does not apply to the pack. Outside Cotonou and Calavi, this mention changes nothing: the usual fee applies ({{shipping.autre}}). The total, delivery included, is always shown before you confirm your order.
 
 ## On delivery day
 
@@ -124,7 +140,7 @@ Nous acceptons MTN MoMo, Moov Money, Celtiis Cash et les cartes bancaires Visa o
 
 ## 6. Livraison
 
-Cotonou et Calavi (Livraison Express) : nous livrons tous les jours, dimanche compris. Une commande passée avant {{shipping.cutoff}} h (heure du Bénin) est livrée le jour même, sinon le lendemain. Si vous payez à la livraison, l'heure limite s'applique à l'heure à laquelle nous confirmons votre commande sur WhatsApp. La livraison coûte {{shipping.cotonou}} et elle est offerte dès {{shipping.freeFrom}} d'achat.
+Cotonou et Calavi (Livraison Express) : nous livrons tous les jours, dimanche compris. Une commande passée avant {{shipping.cutoff}} h (heure du Bénin) est livrée le jour même, sinon le lendemain. Si vous payez à la livraison, l'heure limite s'applique à l'heure à laquelle nous confirmons votre commande sur WhatsApp. La livraison coûte {{shipping.cotonou}} et elle est offerte dès {{shipping.freeFrom}} d'achat. Elle est aussi offerte lorsque tous les articles de votre commande portent la mention « livraison offerte », affichée sur leur fiche et dans votre panier. Si un seul article ne porte pas cette mention, le tarif habituel s'applique. Un seul frais de livraison est compté par commande, quel que soit le nombre d'articles. La mention d'un pack s'applique au pack, et non aux produits qu'il contient lorsqu'ils sont achetés séparément. Cette mention ne concerne que Cotonou et Calavi.
 
 Autres villes du Bénin : livraison sous 48 à 72 h, pour {{shipping.autre}}.
 
@@ -178,7 +194,7 @@ We accept MTN MoMo, Moov Money, Celtiis Cash and Visa or Mastercard bank cards{{
 
 ## 6. Delivery
 
-Cotonou and Calavi (Express Delivery): we deliver every day, Sundays included. An order placed before {{shipping.cutoff}}:00 (Benin time) is delivered the same day, otherwise the next day. If you pay on delivery, the cut-off time applies to the time we confirm your order on WhatsApp. Delivery costs {{shipping.cotonou}} and is free from {{shipping.freeFrom}} of purchases.
+Cotonou and Calavi (Express Delivery): we deliver every day, Sundays included. An order placed before {{shipping.cutoff}}:00 (Benin time) is delivered the same day, otherwise the next day. If you pay on delivery, the cut-off time applies to the time we confirm your order on WhatsApp. Delivery costs {{shipping.cotonou}} and is free from {{shipping.freeFrom}} of purchases. It is also free when every item in your order carries the “free delivery” mention, shown on the item page and in your cart. If a single item does not carry this mention, the usual fee applies. One delivery fee is charged per order, however many items it contains. A pack's mention applies to the pack, not to the products it contains when they are bought separately. This mention only applies in Cotonou and Calavi.
 
 Other cities in Benin: delivery within 48 to 72 hours, for {{shipping.autre}}.
 

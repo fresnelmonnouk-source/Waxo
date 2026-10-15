@@ -272,7 +272,7 @@
     "q1": "How long does delivery take?",
     "a1": "In Cotonou and Calavi, with Express Delivery, you are delivered the same day for any order placed before {cutoff}:00 (Benin time), otherwise the next day, 7 days a week, Sundays included. If you pay on delivery, the cut-off time applies to the time of your WhatsApp confirmation. In other cities in Benin, allow 48 to 72 hours.",
     "q2": "How much does delivery cost?",
-    "a2": "{cotonou} in Cotonou and Calavi, free from {freeShip} of purchases. {autre} in other cities in Benin.",
+    "a2": "{cotonou} in Cotonou and Calavi, free from {freeShip} of purchases, or when every item in the cart carries the “free delivery” mention. {autre} in other cities in Benin.",
     "q3": "How can I pay?",
     "a3": "Depending on the methods shown when you order: online Mobile Money (MTN MoMo, Moov Money, Celtiis Cash) when offered{cod}. We will never ask for your secret code.",
     "cod": ", or on delivery, in cash or by Mobile Money",
@@ -325,7 +325,7 @@
       },
       "s6": {
         "h": "6. Delivery",
-        "p": "Cotonou and Calavi (Express Delivery): same-day delivery for any order placed before {cutoff}:00 (Benin time), otherwise the next day, 7 days a week, Sundays included (pay on delivery: the cut-off time applies to the time of the WhatsApp confirmation), for {cotonou}, free from {freeShip} of purchases. Other cities in Benin: within 48 to 72 hours, for {autre}. The courier calls the customer before arriving. If the customer is absent, a new delivery is offered; after two unsuccessful attempts, the order may be cancelled. No delivery outside Benin for now."
+        "p": "Cotonou and Calavi (Express Delivery): same-day delivery for any order placed before {cutoff}:00 (Benin time), otherwise the next day, 7 days a week, Sundays included (pay on delivery: the cut-off time applies to the time of the WhatsApp confirmation), for {cotonou}, free from {freeShip} of purchases. It is also free when every item in the order carries the “free delivery” mention, shown on the item page and in the cart; if a single item does not carry it, the usual fee applies. One delivery fee is charged per order. A pack's mention applies to the pack, not to the products it contains when bought separately. This mention only applies in Cotonou and Calavi. Other cities in Benin: within 48 to 72 hours, for {autre}. The courier calls the customer before arriving. If the customer is absent, a new delivery is offered; after two unsuccessful attempts, the order may be cancelled. No delivery outside Benin for now."
       },
       "s7": {
         "h": "7. Exchange and refund",
@@ -444,13 +444,17 @@
       "colFee": "Fee",
       "r1z": "Cotonou and Calavi",
       "r1d": "Same day before {cutoff}:00, otherwise the next day, 7 days a week",
-      "r1f": "{cotonou}, free from {freeShip}",
+      "r1f": "{cotonou}, free from {freeShip} of purchases, or if every item in your cart is marked free delivery (see below)",
       "r2z": "Other cities in Benin",
       "r2d": "48 to 72 hours",
       "r2f": "{autre}",
       "r3z": "Outside Benin",
       "r3d": "Not available yet",
       "r3f": "–",
+      "freeH": "Free delivery in Cotonou and Calavi",
+      "freeP1": "An item or a pack can carry the “free delivery” mention. You can see it on its page and in your cart.",
+      "freeP2": "In Cotonou and Calavi, delivery is free when every item in your cart carries this mention. If a single item does not, the usual fee applies: {cotonou}, free from {freeShip} of purchases. There is only one delivery fee per order, however many items it contains.",
+      "freeP3": "A pack has its own mention: it does not apply to the products of the pack bought separately, and a product's mention does not apply to the pack. Outside Cotonou and Calavi, this mention changes nothing: the usual fee applies ({autre}). The total, delivery included, is always shown before you confirm your order.",
       "dayH": "On delivery day",
       "dayP": "You receive a WhatsApp confirmation with the delivery time slot. The courier calls you before arriving. {cod}",
       "returnH": "Returning a product",

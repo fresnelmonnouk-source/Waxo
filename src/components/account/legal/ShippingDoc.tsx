@@ -40,6 +40,11 @@ export function ShippingDoc({ settings }: { settings: ShopSettings }) {
           </div>
         </div>
 
+        <h2 className={DOC_H2}>{t("freeH")}</h2>
+        <p className="m-0">{t("freeP1")}</p>
+        <p className="m-0">{t("freeP2", values)}</p>
+        <p className="m-0">{t("freeP3", values)}</p>
+
         <h2 className={DOC_H2}>{t("dayH")}</h2>
         <p className="m-0">{t("dayP", values)}</p>
 
