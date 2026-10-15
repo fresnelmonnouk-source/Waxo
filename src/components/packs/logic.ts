@@ -30,6 +30,8 @@ export type Pack = {
   saving: number; // économie en XOF (0 si le pack n'est pas moins cher)
   savingPercent: number; // arrondi, 0 si pas d'économie
   stock: number;
+  /** Case « Livraison gratuite à Cotonou & Calavi » DU PACK (0026), indépendante des cases de ses produits. */
+  freeShipping: boolean;
 };
 
 /** Somme des produits achetés séparément : Σ prix × quantité. */
@@ -54,7 +56,7 @@ export function packStock(items: readonly Pick<PackItem, "stock" | "qty">[], exp
 
 /** Assemble un pack complet à partir de ses éléments résolus. */
 export function buildPack(
-  base: { id: string; slug: string; name: string; description: string; price: number; imageUrl: string | null },
+  base: { id: string; slug: string; name: string; description: string; price: number; imageUrl: string | null; freeShipping?: boolean },
   items: PackItem[],
   expectedItems = items.length,
 ): Pack {
@@ -62,6 +64,7 @@ export function buildPack(
   const { saving, percent } = packSaving(base.price, total);
   return {
     ...base,
+    freeShipping: base.freeShipping === true,
     bg: items.find((i) => i.bg)?.bg ?? null,
     items,
     itemsTotal: total,

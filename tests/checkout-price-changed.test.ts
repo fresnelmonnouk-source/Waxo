@@ -21,7 +21,7 @@ vi.mock("@/lib/email", () => ({ sendOrderEmail: async () => undefined }));
 vi.mock("@/lib/email/shop", () => ({ sendShopNewOrderEmail: async () => ({ sent: true }) }));
 vi.mock("@/lib/payment", () => ({ getPaymentProvider: () => ({ name: "test", createCheckout: vi.fn() }) }));
 vi.mock("@/lib/catalog", () => ({ getProductsByIds: (...a: unknown[]) => getProductsByIds(...a) }));
-vi.mock("@/lib/catalog/packs", () => ({ getPacks: async () => [], getPacksEnabled: async () => true }));
+vi.mock("@/lib/catalog/packs", () => ({ getPacks: async () => [], getAllPacks: async () => [], getPacksEnabled: async () => true }));
 
 import { POST } from "@/app/api/checkout/route";
 import { resetRateLimit } from "@/lib/checkout/rate-limit";
@@ -78,5 +78,12 @@ describe("POST /api/checkout — prix changé depuis l'affichage", () => {
     getProductsByIds.mockResolvedValue([]);
     await call(body(1));
     expect(rpc).toHaveBeenCalled();
+  });
+  it("filet Z2 : la base facture un sous-total plus élevé que l'affiché → commande annulée, 409 price_changed", async () => {
+    getProductsByIds.mockResolvedValue([]); // catalogue sans l'article : le garde avant place_order ne peut rien vérifier
+    const res = await call(body(2 * 9730));
+    expect(res.status).toBe(409);
+    expect((await res.json()).code).toBe("price_changed");
+    expect(rpc).toHaveBeenCalledWith("cancel_order", { p_order: "o-1" });
   });
 });

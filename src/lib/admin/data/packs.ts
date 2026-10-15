@@ -1,5 +1,7 @@
 import "server-only";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import demo from "@/lib/demo/catalog.json";
+import { isMissingColumn } from "@/lib/supabase/missing-column";
 import type { AdminPack, PackProductRef, PacksData } from "@/components/admin/products/types";
 import { ADMIN_LIST_LIMIT, adminDb, withTimeout } from "./products";
 
@@ -11,6 +13,8 @@ type PackRow = {
   price: number;
   image_url: string | null;
   active: boolean;
+  /** Absente tant que la migration 0026 n'est pas appliquée. */
+  free_shipping?: boolean | null;
   created_at: string;
   pack_translations: TrRow[] | null;
   pack_items: { product_id: string; qty: number }[] | null;
@@ -39,22 +43,31 @@ function demoPacks(): AdminPack[] {
       fr: { name: pk.name, slug: pk.slug, description: `Les indispensables du rayon ${pk.cat}, réunis à prix réduit.` },
       en: null,
       items: prods.map((p) => ({ productId: p.id, qty: 1 })),
+      freeShipping: false,
     };
   });
 }
 
+const PACK_COLUMNS = "id,price,image_url,active,created_at,pack_translations(locale,name,slug,description),pack_items(product_id,qty)";
+
+/** Packs avec la case « livraison offerte » (0026) si la colonne existe, sinon lecture d'origine (case décochée). */
+async function readAdminPackRows(sb: SupabaseClient): Promise<{ rows: PackRow[]; freeShippingColumn: boolean }> {
+  const read = (columns: string) =>
+    withTimeout(sb.from("packs").select(columns).order("created_at", { ascending: false }).range(0, ADMIN_LIST_LIMIT - 1));
+  const full = await read(`${PACK_COLUMNS},free_shipping`);
+  if (!full.error) return { rows: (full.data ?? []) as unknown as PackRow[], freeShippingColumn: true };
+  if (!isMissingColumn(full.error)) throw full.error;
+  const legacy = await read(PACK_COLUMNS);
+  if (legacy.error) throw legacy.error;
+  return { rows: (legacy.data ?? []) as unknown as PackRow[], freeShippingColumn: false };
+}
+
 export async function getAdminPacks(): Promise<PacksData> {
   const sb = adminDb();
-  if (!sb) return { source: "demo", packs: demoPacks(), products: demoProductRefs(), truncated: false, menuEnabled: true };
+  if (!sb) return { source: "demo", packs: demoPacks(), products: demoProductRefs(), truncated: false, menuEnabled: true, freeShippingColumn: true };
   try {
     const [packs, prods, features] = await Promise.all([
-      withTimeout(
-        sb
-          .from("packs")
-          .select("id,price,image_url,active,created_at,pack_translations(locale,name,slug,description),pack_items(product_id,qty)")
-          .order("created_at", { ascending: false })
-          .range(0, ADMIN_LIST_LIMIT - 1),
-      ),
+      readAdminPackRows(sb),
       withTimeout(
         sb
           .from("products")
@@ -64,9 +77,8 @@ export async function getAdminPacks(): Promise<PacksData> {
       ),
       withTimeout(sb.from("settings").select("value").eq("key", "features").maybeSingle()),
     ]);
-    if (packs.error) throw packs.error;
     if (prods.error) throw prods.error;
-    const rows = (packs.data ?? []) as unknown as PackRow[];
+    const { rows, freeShippingColumn } = packs;
     const products: PackProductRef[] = (prods.data ?? []).map((p) => {
       const tr = (p.product_translations as { locale: string; name: string }[] | null) ?? [];
       return {
@@ -94,14 +106,16 @@ export async function getAdminPacks(): Promise<PacksData> {
           fr: fr ? { name: fr.name, slug: fr.slug, description: fr.description } : { name: "(sans nom)", slug: "", description: "" },
           en: en ? { name: en.name, slug: en.slug, description: en.description } : null,
           items: (r.pack_items ?? []).map((i) => ({ productId: i.product_id, qty: i.qty })),
+          freeShipping: r.free_shipping === true,
         };
       }),
       products,
       truncated: rows.length >= ADMIN_LIST_LIMIT || products.length >= ADMIN_LIST_LIMIT,
       // Seul `false` explicite désactive (comme côté boutique).
       menuEnabled: (features.data?.value as { packs?: unknown } | null | undefined)?.packs !== false,
+      freeShippingColumn,
     };
   } catch {
-    return { source: "error", packs: [], products: [], truncated: false, menuEnabled: true };
+    return { source: "error", packs: [], products: [], truncated: false, menuEnabled: true, freeShippingColumn: true };
   }
 }

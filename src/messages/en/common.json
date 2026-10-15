@@ -32,6 +32,8 @@
     "noteZone": "Cotonou & Calavi · {price}, free from {free}",
     "noteZoneNoFree": "Cotonou & Calavi · {price}",
     "noteOther": "Other cities in Benin: 48 to 72 h, {price}.",
-    "noteCod": "Pay on delivery available."
+    "noteCod": "Pay on delivery available.",
+    "noteZoneFreeProduct": "Cotonou & Calavi · free delivery on this item",
+    "noteFreeProductCond": "Free when every item in your cart qualifies too."
   }
 }

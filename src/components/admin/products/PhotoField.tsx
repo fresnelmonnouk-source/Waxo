@@ -35,7 +35,7 @@ export function PhotoField({
         className="relative flex h-[120px] w-[120px] flex-none items-center justify-center overflow-hidden rounded-[18px]"
         style={{ background: bg }}
       >
-        <span className="font-display text-[15px] font-semibold opacity-75">{word}</span>
+        {imageUrl ? null : <span className="font-display text-[15px] font-semibold opacity-75">{word}</span>}
         {imageUrl && (
           <div
             role="img"

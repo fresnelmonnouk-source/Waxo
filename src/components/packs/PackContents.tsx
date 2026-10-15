@@ -24,12 +24,13 @@ export function PackContents({ items }: { items: PackItem[] }) {
               className="relative flex h-[72px] w-[72px] flex-none items-center justify-center overflow-hidden rounded-[16px]"
               style={{ background: it.bg ?? "#E9E2D3" }}
             >
-              <span aria-hidden="true" className="font-display px-1 text-center text-[11px] font-semibold tracking-[-0.03em] opacity-75">
-                {it.keyword}
-              </span>
               {it.imageUrl ? (
                 <span aria-hidden="true" className="absolute inset-0 block" style={{ background: `${cssUrl(it.imageUrl)} center/cover no-repeat` }} />
-              ) : null}
+              ) : (
+                <span aria-hidden="true" className="font-display px-1 text-center text-[11px] font-semibold tracking-[-0.03em] opacity-75">
+                  {it.keyword}
+                </span>
+              )}
             </Link>
             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
               <Link href={`/produit/${it.slug}`} className="text-ink! hover:text-ink! text-[15px] leading-[1.3] font-medium no-underline">

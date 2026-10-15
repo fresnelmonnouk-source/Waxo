@@ -9,7 +9,7 @@ import { MAX_PACK_ITEMS, packSavings, packStock, parseAmount, validatePackForm }
 import type { AdminPack, PackFormValues, PackProductRef } from "../products/types";
 
 function initialValues(p: AdminPack | null): PackFormValues {
-  if (!p) return { name: "", nameEn: "", description: "", descriptionEn: "", price: "", active: true, imageUrl: null, items: [] };
+  if (!p) return { name: "", nameEn: "", description: "", descriptionEn: "", price: "", active: true, imageUrl: null, items: [], freeShipping: false };
   return {
     name: p.fr.name,
     nameEn: p.en?.name ?? "",
@@ -19,6 +19,7 @@ function initialValues(p: AdminPack | null): PackFormValues {
     active: p.active,
     imageUrl: p.imageUrl,
     items: p.items.map((i) => ({ productId: i.productId, qty: i.qty })),
+    freeShipping: p.freeShipping,
   };
 }
 
@@ -26,11 +27,14 @@ function initialValues(p: AdminPack | null): PackFormValues {
 export function PackDrawer({
   pack,
   products,
+  freeShippingReady = true,
   onClose,
   onSaved,
 }: {
   pack: AdminPack | null;
   products: PackProductRef[];
+  /** Migration 0026 appliquée (case « livraison gratuite » du pack enregistrable). */
+  freeShippingReady?: boolean;
   onClose: () => void;
   onSaved: (message: string) => void;
 }) {
@@ -222,6 +226,29 @@ export function PackDrawer({
             {hidden.length > 0 && <span style={{ color: "#9A3412" }}>Attention : {hidden.length} produit(s) du pack sont masqués de la boutique.</span>}
             {sav.missing > 0 && <span style={{ color: "#9A3412" }}>Attention : {sav.missing} produit(s) introuvables.</span>}
           </div>
+        )}
+
+        <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-[14px] border border-[#E2DCCF] bg-white px-3.5 py-3">
+          <input
+            type="checkbox"
+            checked={v.freeShipping}
+            onChange={(e) => set("freeShipping", e.target.checked)}
+            className="mt-0.5 h-5 w-5 flex-none cursor-pointer accent-[#1F6B4A]"
+          />
+          <span className="flex flex-col gap-0.5">
+            <span className="text-sm font-medium">Livraison gratuite à Cotonou &amp; Calavi</span>
+            <span className="text-xs text-[#4A443C]">
+              Offerte quand tout le panier est composé d&apos;articles cochés (ce pack, d&apos;autres packs ou produits cochés). Ne
+              concerne que le pack : ses produits achetés séparément gardent leur propre réglage.
+            </span>
+            {errors.freeShipping && <span className={FIELD_ERR}>{errors.freeShipping}</span>}
+          </span>
+        </label>
+
+        {!freeShippingReady && (
+          <span role="status" className="rounded-[12px] bg-[#FBF1D9] px-3.5 py-2.5 text-xs leading-[1.45] text-[#141210]">
+            La livraison gratuite du pack sera enregistrable après la migration 0026 (éditeur SQL Supabase).
+          </span>
         )}
 
         <Switch checked={v.active} onChange={(a) => set("active", a)} label={v.active ? "Visible en boutique" : "Masqué de la boutique"} />

@@ -133,6 +133,14 @@ export function PacksView({ data }: { data: PacksData }) {
               >
                 {sav.saving > 0 ? `Économie ${fmtXof(sav.saving)} (${sav.pct} %)` : "Aucune économie"}
               </span>
+              {p.freeShipping && (
+                <span
+                  title="Livraison gratuite à Cotonou & Calavi (si tout le panier l'est)"
+                  className="rounded-full border border-[#1F6B4A] bg-white px-2.5 py-1 text-xs font-semibold text-[#1F6B4A]"
+                >
+                  Livraison offerte
+                </span>
+              )}
               <span className="min-w-[84px] text-xs" style={{ color: stock <= 0 ? "#9A3412" : stock <= 5 ? "#C2410C" : "#4A443C" }}>
                 {stock <= 0 ? "Indisponible" : `${stock} vendable${stock > 1 ? "s" : ""}`}
               </span>
@@ -164,6 +172,7 @@ export function PacksView({ data }: { data: PacksData }) {
           key={editing.pack?.id ?? "new"}
           pack={editing.pack}
           products={data.products}
+          freeShippingReady={data.freeShippingColumn}
           onClose={() => setEditing(null)}
           onSaved={(message) => {
             setEditing(null);

@@ -5,6 +5,7 @@ import type { Locale } from "@/i18n/routing";
 import { buildPack, type Pack, type PackItem } from "@/components/packs/logic";
 import { createPublicClient } from "@/lib/supabase/public";
 import { supabasePublicEnv } from "@/lib/supabase/env";
+import { isMissingColumn } from "@/lib/supabase/missing-column";
 import { getProducts, getSettings, isBuildPhase, slugForLocale, type LocaleSlugs, type Product } from "./index";
 
 export type { Pack, PackItem };
@@ -151,10 +152,45 @@ type DbPackRow = {
   id: string;
   price: number;
   image_url: string | null;
+  /** Absente tant que la migration 0026 n'est pas appliquée (case alors considérée décochée). */
+  free_shipping?: boolean | null;
   created_at: string;
   pack_translations: { locale: string; name: string; slug: string; description: string }[];
   pack_items: { product_id: string; qty: number }[];
 };
+
+const PACK_COLUMNS = "id,price,image_url,created_at,pack_translations(locale,name,slug,description),pack_items(product_id,qty)";
+/** Lecture avec la case « livraison offerte » du pack (0026), sinon lecture d'origine (case considérée décochée). */
+const PACK_TIERS = [`${PACK_COLUMNS},free_shipping`, PACK_COLUMNS] as const;
+/** Colonne constatée absente : pas de nouvel essai avant ce délai (même mécanique que le catalogue produits). */
+const PACK_COLUMNS_RECHECK_MS = 10 * 60_000;
+let packTier = 0;
+let packTierUntil = 0;
+
+/** Tests uniquement : oublie la colonne constatée absente. */
+export function resetPackColumnProbe() {
+  packTier = 0;
+  packTierUntil = 0;
+}
+
+/** Packs actifs, avec la colonne 0026 si elle existe. Toute erreur autre qu'une colonne absente reste une erreur. */
+async function readPackRowsTiered(sb: ReturnType<typeof createPublicClient>): Promise<DbPackRow[]> {
+  const read = (columns: string) => withTimeout(sb.from("packs").select(columns).eq("active", true).order("created_at", { ascending: true }));
+  if (Date.now() >= packTierUntil) packTier = 0;
+  for (let i = packTier; i < PACK_TIERS.length; i++) {
+    const { data, error } = await read(PACK_TIERS[i]);
+    if (!error) {
+      if (i !== packTier) {
+        packTier = i;
+        packTierUntil = Date.now() + PACK_COLUMNS_RECHECK_MS;
+        console.warn("[packs] colonne free_shipping absente : lecture sans livraison offerte (migration 0026 à vérifier)");
+      }
+      return (data ?? []) as unknown as DbPackRow[];
+    }
+    if (!isMissingColumn(error)) throw new Error("packs_unavailable");
+  }
+  throw new Error("packs_unavailable");
+}
 
 /**
  * Packs actifs, lecture brute commune aux deux langues. `null` sans Supabase (démo). Base lente ou en erreur = exception
@@ -163,15 +199,7 @@ type DbPackRow = {
 const readPackRows = cache(async (): Promise<DbPackRow[] | null> => {
   if (!supabasePublicEnv()) return null;
   try {
-    const { data, error } = await withTimeout(
-      createPublicClient()
-        .from("packs")
-        .select("id,price,image_url,created_at,pack_translations(locale,name,slug,description),pack_items(product_id,qty)")
-        .eq("active", true)
-        .order("created_at", { ascending: true }),
-    );
-    if (error) throw new Error("packs_unavailable");
-    return (data ?? []) as unknown as DbPackRow[];
+    return await readPackRowsTiered(createPublicClient());
   } catch (e) {
     if (isBuildPhase()) return [];
     throw e;
@@ -189,7 +217,15 @@ function dbPacks(rows: DbPackRow[], locale: Locale, products: Product[]): Pack[]
     });
     return [
       buildPack(
-        { id: row.id, slug: tr.slug, name: tr.name, description: tr.description, price: row.price, imageUrl: row.image_url },
+        {
+          id: row.id,
+          slug: tr.slug,
+          name: tr.name,
+          description: tr.description,
+          price: row.price,
+          imageUrl: row.image_url,
+          freeShipping: row.free_shipping === true,
+        },
         items,
         row.pack_items.length,
       ),
@@ -198,12 +234,18 @@ function dbPacks(rows: DbPackRow[], locale: Locale, products: Product[]): Pack[]
 }
 
 // ───────────────────────── API publique ─────────────────────────
-/** Tous les packs actifs, localisés. Démo seulement sans base (développement) : jamais de packs fictifs en production. */
-export const getPacks = cache(async (locale: Locale): Promise<Pack[]> => {
+/**
+ * TOUS les packs actifs, localisés, y compris ceux masqués par `hasRealSaving` : `place_order` les accepte, donc
+ * l'estimation des frais (`free` de l'API panier, garde-fou de /api/checkout) doit les connaître (décision V8 « a »).
+ * Démo seulement sans base (développement) : jamais de packs fictifs en production.
+ */
+export const getAllPacks = cache(async (locale: Locale): Promise<Pack[]> => {
   const products = await getProducts(locale);
-  const packs = supabasePublicEnv() ? dbPacks((await readPackRows()) ?? [], locale, products) : buildDemoPacks(locale, products);
-  return packs.filter(hasRealSaving);
+  return supabasePublicEnv() ? dbPacks((await readPackRows()) ?? [], locale, products) : buildDemoPacks(locale, products);
 });
+
+/** Packs affichés en boutique : actifs ET réellement moins chers que leurs produits séparés. */
+export const getPacks = cache(async (locale: Locale): Promise<Pack[]> => (await getAllPacks(locale)).filter(hasRealSaving));
 
 /**
  * « Moins cher que séparément » doit être vrai pour CHAQUE pack affiché (audit Helena C2) : un pack qui ne coûte pas moins

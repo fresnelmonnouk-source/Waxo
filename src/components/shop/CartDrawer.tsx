@@ -7,6 +7,7 @@ import { cart, useCartLines, useCartSubtotal, type CartLine } from "@/lib/cart/s
 import {
   DEFAULT_PAY,
   DEFAULT_SHIPPING,
+  cartShipsFree,
   enabledPayMethods,
   freeShippingEnabled,
   freeShippingPercent,
@@ -21,9 +22,10 @@ import { askAssistant } from "@/components/product/assistant";
 import { cssImage, FALLBACK_BG } from "@/components/product/media";
 
 type Upsell = { id: string; slug: string; name: string; price: number; bg: string | null; imageUrl: string | null };
-type Config = { shipping: ShippingConfig; pay: PayConfig; stock: Record<string, number>; upsell: Upsell[] };
+/** `free` : articles du panier en « livraison offerte à Cotonou & Calavi » (0025), selon le serveur. */
+type Config = { shipping: ShippingConfig; pay: PayConfig; stock: Record<string, number>; upsell: Upsell[]; free: string[] };
 
-const FALLBACK: Config = { shipping: DEFAULT_SHIPPING, pay: DEFAULT_PAY, stock: {}, upsell: [] };
+const FALLBACK: Config = { shipping: DEFAULT_SHIPPING, pay: DEFAULT_PAY, stock: {}, upsell: [], free: [] };
 const PAY_KEYS: Record<PayMethod, "payMomo" | "payMoov" | "payCeltiis" | "payCarte" | "payCod"> = {
   momo: "payMomo",
   moov: "payMoov",
@@ -84,7 +86,7 @@ function DrawerContent() {
       .then((r) => r.json())
       .then((j: Partial<Config> & { ok?: boolean }) => {
         if (j.ok && j.shipping && j.pay) {
-          setConfig({ shipping: j.shipping, pay: j.pay, stock: j.stock ?? {}, upsell: j.upsell ?? [] });
+          setConfig({ shipping: j.shipping, pay: j.pay, stock: j.stock ?? {}, upsell: j.upsell ?? [], free: Array.isArray(j.free) ? j.free : [] });
         }
       })
       .catch(() => {
@@ -126,7 +128,9 @@ function DrawerContent() {
   }, []);
 
   const { shipping, pay, stock } = config;
-  const remaining = freeShippingRemaining(subtotal, shipping);
+  // Tout le panier en « livraison offerte » (0025) : offerte à Cotonou & Calavi quel que soit le montant.
+  const allFree = cartShipsFree(lines, config.free);
+  const remaining = allFree ? 0 : freeShippingRemaining(subtotal, shipping);
   const payLine = enabledPayMethods(pay)
     .map((m) => t(PAY_KEYS[m]))
     .join(" · ");
@@ -172,7 +176,7 @@ function DrawerContent() {
 
         {count > 0 ? (
           <>
-            {freeShippingEnabled(shipping) ? (
+            {allFree || freeShippingEnabled(shipping) ? (
             <div className="flex flex-col gap-2 border-b border-border px-[22px] py-3.5">
               <span className="text-[14px]">
                 {remaining > 0 ? t("shipRemaining", { amount: fmt(remaining) }) : t("shipFree")}
@@ -180,7 +184,7 @@ function DrawerContent() {
               <div className="h-1.5 overflow-hidden rounded-full bg-border">
                 <div
                   className="h-full rounded-full bg-leaf transition-[width] duration-[400ms]"
-                  style={{ width: `${freeShippingPercent(subtotal, shipping)}%` }}
+                  style={{ width: `${allFree ? 100 : freeShippingPercent(subtotal, shipping)}%` }}
                 />
               </div>
             </div>

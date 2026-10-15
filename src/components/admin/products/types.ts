@@ -1,4 +1,5 @@
 // Types partagés produits + packs du back-office (client ET serveur ; aucun import serveur ici).
+import type { ProductDetails } from "@/lib/catalog/details";
 
 export type AdminCategory = { id: string; label: string; bg: string; sort: number };
 
@@ -23,6 +24,10 @@ export type AdminProduct = {
   cost: number | null;
   fr: Translation;
   en: Translation | null;
+  /** Rubriques facultatives (0025) par langue ; vides avant la migration. */
+  details: { fr: ProductDetails; en: ProductDetails };
+  /** Case « Livraison gratuite à Cotonou & Calavi » (0025). */
+  freeShipping: boolean;
   rating: { average: number; count: number };
 };
 
@@ -37,6 +42,8 @@ export type ProductsData = {
   truncated: boolean;
   /** Colonne `products.images` présente (migration 0024) : sinon une seule photo par produit. */
   imagesColumn: boolean;
+  /** Rubriques + livraison offerte présentes (migration 0025) : sinon ces champs sont signalés indisponibles. */
+  detailsColumns: boolean;
 };
 
 /** Valeurs du formulaire produit (chaînes, comme saisies). Le serveur re-valide tout. */
@@ -55,6 +62,13 @@ export type ProductFormValues = {
   active: boolean;
   /** Photos (URL du bucket `products`), la première est la photo principale. 8 au plus. */
   images: string[];
+  /** Rubriques facultatives (0025), une information par ligne. Vide = rubrique absente de la fiche. */
+  details: ProductDetails;
+  detailsEn: ProductDetails;
+  /** Livraison gratuite à Cotonou & Calavi (si tout le panier l'est). */
+  freeShipping: boolean;
+  /** Stock affiché à l'ouverture (modification) : le stock n'est réécrit que s'il a été changé, et sans écraser une vente. */
+  stockAtOpen?: string;
 };
 
 export type PackItem = { productId: string; qty: number };
@@ -68,6 +82,8 @@ export type AdminPack = {
   fr: Translation;
   en: Translation | null;
   items: PackItem[];
+  /** Case « Livraison gratuite à Cotonou & Calavi » DU PACK (0026) ; false tant que la migration n'est pas appliquée. */
+  freeShipping: boolean;
 };
 
 /** Produit minimal proposé dans le sélecteur de contenu d'un pack. */
@@ -88,6 +104,8 @@ export type PacksData = {
   truncated: boolean;
   /** Menu « Packs » affiché sur la boutique (réglage public `features.packs`). */
   menuEnabled: boolean;
+  /** Colonne `packs.free_shipping` présente (migration 0026) : sinon la case du pack ne peut pas être enregistrée cochée. */
+  freeShippingColumn: boolean;
 };
 
 export type PackFormValues = {
@@ -99,6 +117,8 @@ export type PackFormValues = {
   active: boolean;
   imageUrl: string | null;
   items: PackItem[];
+  /** Livraison gratuite à Cotonou & Calavi pour ce pack (si tout le panier l'est), indépendante de ses produits. */
+  freeShipping: boolean;
 };
 
 export type ActionCode =
@@ -114,6 +134,13 @@ export type ActionCode =
 /** Retour de toute server action : jamais d'erreur SQL brute, uniquement un message FR et des erreurs par champ. */
 export type ActionResult<T extends object = object> =
   | ({ ok: true } & T)
-  | { ok: false; code: ActionCode; message: string; fields?: Record<string, string> };
+  | {
+      ok: false;
+      code: ActionCode;
+      message: string;
+      fields?: Record<string, string>;
+      /** Conflit de stock (`updateProduct`) : stock actuel en base, pour mettre la fiche à jour sans la fermer. */
+      currentStock?: number;
+    };
 
 export const UNAVAILABLE_MESSAGE = "Base non connectée (mode démo) : modification impossible.";

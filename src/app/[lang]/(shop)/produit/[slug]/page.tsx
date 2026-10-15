@@ -11,6 +11,7 @@ import {
   findProductSlug,
   getCategories,
   getProductBySlug,
+  getProductDetails,
   getProductSlugs,
   getProducts,
   getRealRating,
@@ -24,6 +25,7 @@ import { discountPercent } from "@/lib/money";
 import { AskAssistantButton, SuggestAlternativeButton } from "@/components/product/AssistantButtons";
 import { FALLBACK_BG } from "@/components/product/media";
 import { ProductGallery } from "@/components/product/ProductGallery";
+import { ProductDetailsSection, ProductInlineDetails, type DetailLabels } from "@/components/product/ProductDetailsSection";
 import { ProductBuy } from "@/components/product/ProductBuy";
 import { RatingLink } from "@/components/product/RatingLink";
 import { RelatedItem } from "@/components/product/RelatedItem";
@@ -105,14 +107,16 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
     notFound();
   }
 
-  const [t, all, categories, related, reviewRows, settings, realRating] = await Promise.all([
+  const [t, td, all, categories, related, reviewRows, settings, realRating, details] = await Promise.all([
     getTranslations({ locale: lang, namespace: "Product" }),
+    getTranslations({ locale: lang, namespace: "ProductDetails" }),
     getProducts(lang),
     getCategories(lang),
     getRelatedProducts(lang, product, 8),
     getReviews(product.id),
     getSettings(),
     getRealRating(product.id),
+    getProductDetails(product.id, lang),
   ]);
   const online = await onlinePayAvailable(settings.pay);
 
@@ -145,6 +149,15 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
     verified: r.verified,
   }));
   const question = t("assistantQuestion", { name: product.name });
+  const detailLabels: DetailLabels = {
+    title: td("title"),
+    color: td("color"),
+    materials: td("materials"),
+    specs: td("specs"),
+    highlights: td("highlights"),
+    uses: td("uses"),
+    care: td("care"),
+  };
   const tc = await getTranslations({ locale: lang, namespace: "Catalog" });
   // JSON-LD Product (productID = sku = UUID, offre XOF, disponibilité) + fil d'Ariane ; note = vrais avis seulement.
   const ld = productPageJsonLd(
@@ -198,6 +211,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
             </div>
           </div>
           <p className="m-0 text-[16px] leading-[1.6] text-text text-pretty">{product.description}</p>
+          <ProductInlineDetails details={details} labels={detailLabels} />
           <StockPromise label={stockText} color={stockColor} cutoff={cutoff} soldOut={soldOut} />
 
           {soldOut ? (
@@ -223,6 +237,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
               autre={settings.shipping.autre}
               freeFrom={settings.shipping.freeFrom}
               cod={settings.pay.cod}
+              freeShipping={product.freeShipping}
             />
           )}
 
@@ -236,6 +251,8 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
           <AskAssistantButton question={question} />
         </div>
       </div>
+
+      <ProductDetailsSection details={details} labels={detailLabels} />
 
       {alsoBought.length > 0 ? (
         <section aria-label={t("alsoBought")} className="mt-14 flex flex-col gap-4">

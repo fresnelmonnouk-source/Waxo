@@ -2,6 +2,7 @@
 // Partagée par les formulaires (messages d'erreur immédiats) ET par les server actions (revalidation serveur). Testée.
 import { z } from "zod";
 import { MAX_PRODUCT_IMAGES } from "@/lib/media/product-images";
+import { DETAIL_KEYS, DETAIL_MAX, cleanDetail, hasAnyDetail, type DetailKey, type ProductDetails } from "@/lib/catalog/details";
 import type { PackFormValues, PackItem, PackProductRef, ProductFormValues } from "./types";
 
 // ───────────────────────── Constantes ─────────────────────────
@@ -77,6 +78,26 @@ export function isStorageImageUrl(url: string, supabaseUrl: string | undefined):
 }
 
 // ───────────────────────── Validation produit ─────────────────────────
+// Marge large (×2) : la longueur exacte est vérifiée par validateProductForm, avec un message par rubrique.
+const detailsSchema = z.object(Object.fromEntries(DETAIL_KEYS.map((k) => [k, z.string().max(DETAIL_MAX[k] * 2)])) as Record<DetailKey, z.ZodString>);
+
+/** Libellés des rubriques (back-office, FR seul). */
+export const DETAIL_LABELS: Record<DetailKey, string> = {
+  color: "Couleur",
+  materials: "Matériaux",
+  specs: "Caractéristiques techniques",
+  highlights: "Points forts",
+  uses: "Utilisations possibles",
+  care: "Conseils d'utilisation et d'entretien",
+};
+
+/** Clé d'erreur d'une rubrique dans le formulaire : `d_color` (français), `en_color` (anglais). */
+export const detailErrorKey = (k: DetailKey, en = false) => `${en ? "en" : "d"}_${k}`;
+
+function cleanDetails(d: ProductDetails): ProductDetails {
+  return Object.fromEntries(DETAIL_KEYS.map((k) => [k, cleanDetail(d[k])])) as ProductDetails;
+}
+
 export const productFormSchema = z.object({
   name: z.string().max(300),
   nameEn: z.string().max(300),
@@ -92,6 +113,10 @@ export const productFormSchema = z.object({
   active: z.boolean(),
   // Marge au-delà de 8 : la limite est vérifiée par validateProductForm (message clair plutôt que « formulaire invalide »).
   images: z.array(z.string().max(500)).max(MAX_PRODUCT_IMAGES * 2),
+  details: detailsSchema,
+  detailsEn: detailsSchema,
+  freeShipping: z.boolean(),
+  stockAtOpen: z.string().max(30).optional(),
 });
 
 export type ProductInput = {
@@ -109,7 +134,17 @@ export type ProductInput = {
   active: boolean;
   /** Photos sans doublon ni vide, la première est la photo principale (`image_url`). */
   images: string[];
+  details: ProductDetails;
+  /** Version anglaise des rubriques (enregistrée seulement avec un nom anglais). */
+  detailsEn: ProductDetails;
+  freeShipping: boolean;
+  /** Stock à l'ouverture du formulaire (modification), null à la création ou si illisible. */
+  stockAtOpen: number | null;
 };
+
+/** Le formulaire utilise-t-il les champs de la migration 0025 ? (sinon il s'enregistre aussi sans elle) */
+export const usesMigration0025 = (i: Pick<ProductInput, "details" | "detailsEn" | "freeShipping">) =>
+  i.freeShipping || hasAnyDetail(i.details) || hasAnyDetail(i.detailsEn);
 
 export type ProductFieldKey =
   | "name"
@@ -156,7 +191,19 @@ export function validateProductForm(f: ProductFormValues): ValidationResult<Prod
   const images = [...new Set((f.images ?? []).map((u) => u.trim()).filter(Boolean))];
   if (images.length > MAX_PRODUCT_IMAGES) errors.images = `${MAX_PRODUCT_IMAGES} photos au maximum.`;
 
-  if (Object.keys(errors).length || price === null || stock === null) return { ok: false, errors };
+  const details = cleanDetails(f.details);
+  const detailsEn = cleanDetails(f.detailsEn);
+  const detailErrors: Record<string, string> = {};
+  for (const k of DETAIL_KEYS) {
+    const tooLong = `${DETAIL_LABELS[k]} : ${DETAIL_MAX[k].toLocaleString("fr-FR")} caractères maximum.`;
+    if (details[k].length > DETAIL_MAX[k]) detailErrors[detailErrorKey(k)] = tooLong;
+    if (detailsEn[k].length > DETAIL_MAX[k]) detailErrors[detailErrorKey(k, true)] = tooLong;
+  }
+  if (nameEn === "" && hasAnyDetail(detailsEn)) errors.nameEn = "Ajoutez aussi le nom anglais.";
+
+  if (Object.keys(errors).length || Object.keys(detailErrors).length || price === null || stock === null) {
+    return { ok: false, errors: { ...errors, ...detailErrors } };
+  }
   return {
     ok: true,
     value: {
@@ -173,6 +220,10 @@ export function validateProductForm(f: ProductFormValues): ValidationResult<Prod
       bg: f.bg.toUpperCase(),
       active: f.active,
       images,
+      details,
+      detailsEn,
+      freeShipping: f.freeShipping,
+      stockAtOpen: f.stockAtOpen === undefined ? null : parseAmount(f.stockAtOpen),
     },
   };
 }
@@ -187,6 +238,8 @@ export const packFormSchema = z.object({
   active: z.boolean(),
   imageUrl: z.string().max(500).nullable(),
   items: z.array(z.object({ productId: z.uuid(), qty: z.number().int().min(1).max(50) })).max(MAX_PACK_ITEMS),
+  // Facultatif : un formulaire ouvert avant la mise en ligne (sans la case) s'enregistre « non coché » (choix prudent).
+  freeShipping: z.boolean().optional(),
 });
 
 export type PackInput = {
@@ -198,6 +251,8 @@ export type PackInput = {
   active: boolean;
   imageUrl: string | null;
   items: PackItem[];
+  /** Case « Livraison gratuite à Cotonou & Calavi » du pack (0026). */
+  freeShipping: boolean;
 };
 
 export function validatePackForm(f: PackFormValues): ValidationResult<PackInput> {
@@ -242,6 +297,7 @@ export function validatePackForm(f: PackFormValues): ValidationResult<PackInput>
       active: f.active,
       imageUrl: f.imageUrl,
       items: f.items.map((i) => ({ productId: i.productId, qty: i.qty })),
+      freeShipping: f.freeShipping === true,
     },
   };
 }

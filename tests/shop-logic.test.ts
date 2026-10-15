@@ -38,6 +38,7 @@ const base: Product = {
   images: [],
   createdAt: "2026-01-01",
   rating: { average: 4.5, count: 10 },
+  freeShipping: false,
 };
 const p = (o: Partial<Product>): Product => ({ ...base, slug: o.id ?? base.slug, ...o });
 

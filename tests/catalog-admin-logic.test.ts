@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   isStorageImageUrl,
   marginOf,
+  packFormSchema,
   packSavings,
   packStock,
   parseAmount,
@@ -29,6 +30,9 @@ const base: ProductFormValues = {
   bg: "#f3e3a6",
   active: true,
   images: [],
+  details: { color: "", materials: "", specs: "", highlights: "", uses: "", care: "" },
+  detailsEn: { color: "", materials: "", specs: "", highlights: "", uses: "", care: "" },
+  freeShipping: false,
 };
 
 describe("slugs", () => {
@@ -129,6 +133,7 @@ describe("packs", () => {
       { productId: A, qty: 1 },
       { productId: B, qty: 1 },
     ],
+    freeShipping: false,
   };
   it("calcule l'économie", () => {
     expect(packSavings(form.items, 13500, products)).toEqual({ total: 14900, saving: 1400, pct: 9, missing: 0 });
@@ -150,6 +155,14 @@ describe("packs", () => {
     const qty = validatePackForm({ ...form, items: [{ productId: A, qty: 99 }] });
     expect(qty.ok).toBe(false);
     expect(validatePackForm({ ...form, price: "" }).ok).toBe(false);
+  });
+  it("case « livraison offerte » du pack (0026) : transmise telle quelle ; absente (ancien formulaire) = non cochée", () => {
+    const on = validatePackForm({ ...form, freeShipping: true });
+    expect(on.ok && on.value.freeShipping).toBe(true);
+    const old = validatePackForm({ ...form, freeShipping: undefined as unknown as boolean });
+    expect(old.ok && old.value.freeShipping).toBe(false);
+    expect(packFormSchema.safeParse({ ...form, freeShipping: undefined }).success).toBe(true);
+    expect(packFormSchema.safeParse({ ...form, freeShipping: "oui" }).success).toBe(false);
   });
 });
 

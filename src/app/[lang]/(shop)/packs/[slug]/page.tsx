@@ -175,6 +175,7 @@ export default async function PackPage({ params }: { params: Promise<Params> }) 
               autre={settings.shipping.autre}
               freeFrom={settings.shipping.freeFrom}
               cod={settings.pay.cod}
+              freeShipping={pack.freeShipping}
             />
           )}
 

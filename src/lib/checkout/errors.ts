@@ -15,6 +15,7 @@ export type ApiErrorCode =
   | "login_required"
   | "already_reviewed"
   | "price_changed"
+  | "shipping_changed"
   | "not_eligible"
   | "server_error";
 
@@ -31,6 +32,7 @@ export const API_STATUS: Record<ApiErrorCode, number> = {
   login_required: 401,
   already_reviewed: 409,
   price_changed: 409,
+  shipping_changed: 409,
   not_eligible: 403,
   server_error: 500,
 };
@@ -50,6 +52,7 @@ const MESSAGES: Record<ApiLang, Record<ApiErrorCode, string>> = {
     already_reviewed: "Vous avez déjà donné votre avis sur ce produit.",
     not_eligible: "Les avis sur la boutique sont réservés aux clients qui ont déjà reçu une commande.",
     price_changed: "Un prix a changé depuis l'ouverture de cette page (fin d'une promotion). Votre panier est à jour : vérifiez le total puis validez à nouveau.",
+    shipping_changed: "Les frais de livraison ont changé depuis l'ouverture de cette page. Le total est à jour : vérifiez-le puis validez à nouveau.",
     server_error: "Une erreur est survenue. Réessayez dans quelques instants.",
   },
   en: {
@@ -66,6 +69,7 @@ const MESSAGES: Record<ApiLang, Record<ApiErrorCode, string>> = {
     already_reviewed: "You have already reviewed this product.",
     not_eligible: "Shop reviews are reserved for customers who have already received an order.",
     price_changed: "A price changed since this page was opened (a promotion ended). Your cart is updated: check the total and confirm again.",
+    shipping_changed: "Delivery fees changed since this page was opened. The total is updated: check it and confirm again.",
     server_error: "Something went wrong. Please try again in a moment.",
   },
 };

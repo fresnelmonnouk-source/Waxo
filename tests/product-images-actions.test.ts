@@ -21,7 +21,9 @@ vi.mock("@/lib/admin/data/products", () => {
       if (pending) {
         if (state.missingColumn && "images" in pending.values) return { data: null, error: missing };
         state.writes.push(pending);
-        return { data: { id: "11111111-1111-4111-8111-111111111111" }, error: null };
+        // Comme PostgREST : insert().single() → un objet ; update().select() → la liste des lignes modifiées.
+        const row = { id: "11111111-1111-4111-8111-111111111111" };
+        return { data: pending.op === "update" ? [row] : row, error: null };
       }
       if (state.missingColumn && columns.includes("images")) return { data: null, error: { code: "42703", message: "column products.images does not exist" } };
       const { images, ...legacy } = state.current;
@@ -66,6 +68,9 @@ const form = (images: string[]): ProductFormValues => ({
   bg: "#F3E3A6",
   active: true,
   images,
+  details: { color: "", materials: "", specs: "", highlights: "", uses: "", care: "" },
+  detailsEn: { color: "", materials: "", specs: "", highlights: "", uses: "", care: "" },
+  freeShipping: false,
 });
 const productWrite = () => state.writes.find((w) => "category_id" in w.values)?.values;
 

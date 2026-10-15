@@ -104,6 +104,7 @@ describe("0021_kb_seed : recherche", () => {
       images: p.imageUrl ? [p.imageUrl] : [],
       createdAt: p.createdAt,
       rating: { average: p.ratingSeed, count: p.ratingSeedCount },
+      freeShipping: false,
     }));
     const shipping = { ...DEFAULT_SETTINGS.shipping, cotonou: 1500 };
     const p = plan({
