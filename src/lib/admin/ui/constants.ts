@@ -40,6 +40,17 @@ export const CATEGORY_COLOR: Record<string, string> = {
   tech: "#4B3A8C",
   bureau: "#8A5A00",
   voyage: "#1F6B4A",
+  sport: "#2F6FA3",
+  jeux: "#7A4FB0",
+  jouets: "#D98A1B",
+  "auto-moto": "#5B5B55",
+  bebe: "#D96C8B",
+  sante: "#2E8B6E",
+  mode: "#B04F9A",
+  bricolage: "#8C6A3C",
+  jardin: "#5E8C2E",
+  animaux: "#B5793F",
+  cadeaux: "#C2453A",
 };
 export const CATEGORY_LABEL: Record<string, string> = {
   maison: "Maison",
@@ -48,6 +59,17 @@ export const CATEGORY_LABEL: Record<string, string> = {
   tech: "Tech",
   bureau: "Bureau",
   voyage: "Voyage",
+  sport: "Sport",
+  jeux: "Jeux",
+  jouets: "Jouets enfants",
+  "auto-moto": "Auto & moto",
+  bebe: "Bébé & puériculture",
+  sante: "Santé & bien-être",
+  mode: "Mode & accessoires",
+  bricolage: "Bricolage & outils",
+  jardin: "Jardin & extérieur",
+  animaux: "Animaux",
+  cadeaux: "Cadeaux & fêtes",
 };
 
 /** Catégories de dépenses du carnet : id → [libellé, fond, texte] (CHECK SQL de `ledger.cat`). */

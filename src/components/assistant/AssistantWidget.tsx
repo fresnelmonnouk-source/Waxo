@@ -63,7 +63,7 @@ function ProductRow({ p }: { p: CardProduct }) {
         className="relative h-[52px] w-[52px] flex-none overflow-hidden rounded-[10px]"
         style={{ background: p.bg ?? "#E9E2D3" }}
       >
-        {p.imageUrl ? <span aria-hidden="true" className="absolute inset-0 block" style={{ background: `${cssUrl(p.imageUrl)} center/cover no-repeat` }} /> : null}
+        {p.imageUrl ? <span aria-hidden="true" className="absolute inset-0 block" style={{ background: `${cssUrl(p.imageUrl, 320)} center/cover no-repeat` }} /> : null}
       </Link>
       <Link href={`/produit/${p.slug}`} onClick={leave} className="text-ink! hover:text-ink! flex min-w-0 flex-1 flex-col gap-[2px] no-underline">
         <span className="text-[13.5px] leading-tight">{p.name}</span>

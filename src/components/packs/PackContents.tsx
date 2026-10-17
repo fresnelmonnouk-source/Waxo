@@ -25,7 +25,7 @@ export function PackContents({ items }: { items: PackItem[] }) {
               style={{ background: it.bg ?? "#E9E2D3" }}
             >
               {it.imageUrl ? (
-                <span aria-hidden="true" className="absolute inset-0 block" style={{ background: `${cssUrl(it.imageUrl)} center/cover no-repeat` }} />
+                <span aria-hidden="true" className="absolute inset-0 block" style={{ background: `${cssUrl(it.imageUrl, 320)} center/cover no-repeat` }} />
               ) : (
                 <span aria-hidden="true" className="font-display px-1 text-center text-[11px] font-semibold tracking-[-0.03em] opacity-75">
                   {it.keyword}

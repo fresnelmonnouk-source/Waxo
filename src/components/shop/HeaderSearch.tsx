@@ -96,7 +96,7 @@ export function HeaderSearch({ entries }: { entries: SearchEntry[] }) {
             >
               <span className="h-11 w-11 flex-none overflow-hidden rounded-[10px]" style={{ background: g.bg ?? "#E9E2D3" }}>
                 {g.imageUrl ? (
-                  <span aria-hidden="true" className="block h-full w-full" style={{ background: `${cssUrl(g.imageUrl)} center/cover no-repeat` }} />
+                  <span aria-hidden="true" className="block h-full w-full" style={{ background: `${cssUrl(g.imageUrl, 320)} center/cover no-repeat` }} />
                 ) : null}
               </span>
               <span className="flex-1 text-[14px] leading-[1.3]">{g.name}</span>

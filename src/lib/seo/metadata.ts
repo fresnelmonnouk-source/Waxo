@@ -6,6 +6,7 @@
 //     return seoPageMetadata(lang, "faq", "/faq");
 //   }
 import type { Metadata } from "next";
+import { watermarkedSrc } from "@/lib/media/product-images";
 import { DEFAULT_LOCALE, absoluteUrl, languageAlternates, siteUrl } from "./site";
 
 /** Graphie des titres Google (décision de Fresnel) : « Waxo ». Le logo et le texte visible gardent « Wá xɔ ». */
@@ -59,8 +60,10 @@ export function pageMetadata(input: PageMetaInput): Metadata {
   }
   // Une page qui pose `openGraph` REMPLACE celui du layout (Next ne fusionne pas) : sans photo, on remet donc
   // explicitement l'image de partage générée de la langue, sinon l'aperçu WhatsApp/Facebook n'aurait plus d'image.
-  const images = image
-    ? [{ url: image.startsWith("http") ? image : `${base}${image}` }]
+  // Photo du bucket public : la version filigranée (/api/img, 1 200 px) sert aussi d'image de partage (Open Graph, Twitter).
+  const shared = image ? watermarkedSrc(image, 1200) : null;
+  const images = shared
+    ? [{ url: shared.startsWith("http") ? shared : `${base}${shared}` }]
     : [{ url: `${base}/${lang === "en" ? "en" : "fr"}/opengraph-image`, width: 1200, height: 630, alt: SITE_NAME }];
   const shareTitle = title ? (absoluteTitle ? title : `${title} | ${brand}`) : undefined;
   return {

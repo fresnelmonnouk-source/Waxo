@@ -15,5 +15,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   // Exclut les fichiers statiques et meta (robots, sitemap, manifest, images OG…) : sinon next-intl les réécrit en /fr/… (404).
-  matcher: ["/((?!_next|_vercel|.*\\..*).*)"],
+  // /api/img (photos filigranées, cache CDN d'un an) est exclu aussi : ni rafraîchissement de session (un Set-Cookie
+  // empêcherait la mise en cache) ni appel Supabase par image.
+  matcher: ["/((?!_next|_vercel|api/img|.*\\..*).*)"],
 };

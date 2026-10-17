@@ -1,5 +1,6 @@
 import type { Product } from "@/lib/catalog/types";
 import { discountPercent } from "@/lib/money";
+import { watermarkedSrc } from "@/lib/media/product-images";
 
 /**
  * Logique pure de la boutique (tri, filtres, sélection, étiquettes, recherche).
@@ -254,9 +255,14 @@ export function filterCatalog(all: Product[], f: CatalogFilters, ctx: CatalogCon
 }
 
 // ───────────────────────── Divers ─────────────────────────
-/** URL d'image sûre pour un `background` CSS (encode guillemets, parenthèses, barre oblique inverse ; retire les retours à la ligne). */
-export function cssUrl(url: string): string {
-  const safe = url
+/**
+ * URL d'image sûre pour un `background` CSS (encode guillemets, parenthèses, barre oblique inverse ; retire les retours à
+ * la ligne). Une photo du bucket public est servie filigranée par /api/img, à la plus petite largeur de la liste blanche
+ * qui couvre `width` (défaut 480 : cartes) ; toute autre URL est inchangée.
+ */
+export function cssUrl(url: string, width = 480): string {
+  const safe = watermarkedSrc(url, width)
+    
     .replace(/[\n\r]/g, "")
     .replace(/["'()\\]/g, (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase());
   return `url("${safe}")`;

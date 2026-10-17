@@ -32,7 +32,7 @@ export function PackVisual({
       style={{ borderRadius: radius, background: FALLBACK_BG }}
     >
       {pack.imageUrl ? (
-        <div className="absolute inset-0" style={{ background: `${cssUrl(pack.imageUrl)} center/cover no-repeat` }} />
+        <div className="absolute inset-0" style={{ background: `${cssUrl(pack.imageUrl, 720)} center/cover no-repeat` }} />
       ) : (
         <div className="grid h-full w-full grid-cols-2 gap-[3px]" style={{ gridAutoRows: "1fr" }}>
           {shown.map((it, i) => (
@@ -43,7 +43,7 @@ export function PackVisual({
               style={{ background: it.bg ?? FALLBACK_BG }}
             >
               {it.imageUrl ? (
-                <div className="absolute inset-0" style={{ background: `${cssUrl(it.imageUrl)} center/cover no-repeat` }} />
+                <div className="absolute inset-0" style={{ background: `${cssUrl(it.imageUrl, 480)} center/cover no-repeat` }} />
               ) : (
                 <span className="font-display px-1 text-center font-semibold tracking-[-0.04em] opacity-75" style={{ fontSize: font }}>
                   {it.keyword}

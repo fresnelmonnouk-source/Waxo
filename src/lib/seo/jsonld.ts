@@ -1,5 +1,6 @@
 // Données structurées schema.org (JSON-LD) : fonctions PURES (tests/seo-sitemap-jsonld.test.ts, tests/seo-lot2.test.ts).
 // `safeJsonLd` neutralise `<` pour qu'une valeur ne puisse jamais fermer la balise <script>.
+import { watermarkedSrc } from "@/lib/media/product-images";
 import { absoluteUrl, siteUrl } from "./site";
 
 export type JsonLdObject = Record<string, unknown>;
@@ -106,7 +107,8 @@ export function productJsonLd(p: ProductLdInput, lang: string, opts: ProductLdOp
   const url = absoluteUrl(lang, `/${section}/${encodeURIComponent(p.slug)}`, base);
   const abs = (u: string) => (u.startsWith("http") ? u : `${base}${u}`);
   const sources = p.images?.length ? p.images : p.imageUrl ? [p.imageUrl] : [];
-  const image = [...new Set(sources.filter(Boolean).map(abs))];
+  // Photos du bucket public : versions filigranées (/api/img, 1 200 px), comme sur la boutique.
+  const image = [...new Set(sources.filter(Boolean).map((u) => abs(watermarkedSrc(u, 1200))))];
   return {
     "@context": "https://schema.org",
     "@type": "Product",
