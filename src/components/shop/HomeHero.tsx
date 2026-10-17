@@ -10,8 +10,9 @@ import { TAG_STYLE, cssUrl, fmtRating, heroProducts, productTag, promoLabel, sto
 
 const STAR = "M12 2.6l2.8 6 6.6.6-5 4.5 1.5 6.5L12 16.9l-5.9 3.3 1.5-6.5-5-4.5 6.6-.6z";
 
-function HeroImage({ url }: { url: string | null }) {
-  return url ? <div aria-hidden="true" className="absolute inset-0" style={{ background: `${cssUrl(url)} center/cover no-repeat` }} /> : null;
+// Photo filigranée par /api/img (cssUrl) : `width` = largeur servie (grande carte 1080, petites cartes 480).
+function HeroImage({ url, width }: { url: string | null; width: number }) {
+  return url ? <div aria-hidden="true" className="absolute inset-0" style={{ background: `${cssUrl(url, width)} center/cover no-repeat` }} /> : null;
 }
 
 /** Héro de l'accueil (maquette lignes 147-206), avec la carte « Dites à l'assistant ce dont vous avez besoin » (J3). */
@@ -99,7 +100,7 @@ export function HomeHero({
                   className="text-ink! hover:text-ink! relative row-span-2 flex min-h-[340px] flex-col justify-between overflow-hidden rounded-[24px] p-[18px] no-underline transition-transform duration-200 hover:-translate-y-1"
                   style={{ background: feat.bg ?? "#E9E2D3" }}
                 >
-                  <HeroImage url={feat.imageUrl} />
+                  <HeroImage url={feat.imageUrl} width={1080} />
                   <span
                     className="relative self-start rounded-full px-3 py-[6px] text-[13px] font-semibold"
                     style={{ background: TAG_STYLE[tagOf(feat)].bg, color: TAG_STYLE[tagOf(feat)].color }}
@@ -130,7 +131,7 @@ export function HomeHero({
                       className="text-ink! hover:text-ink! relative flex min-h-[164px] flex-col justify-between overflow-hidden rounded-[24px] p-[14px] no-underline transition-transform duration-200 hover:-translate-y-1"
                       style={{ background: p.bg ?? "#E9E2D3" }}
                     >
-                      <HeroImage url={p.imageUrl} />
+                      <HeroImage url={p.imageUrl} width={480} />
                       <span
                         className="relative self-start rounded-full px-[10px] py-1 text-[12px] font-semibold"
                         style={{ background: TAG_STYLE[k].bg, color: TAG_STYLE[k].color }}

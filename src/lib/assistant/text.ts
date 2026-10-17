@@ -78,6 +78,17 @@ const SYNONYMS: [RegExp, string][] = [
   [/\b(barbe|beard|shave|raser)/, "tondeuse barbe"],
   [/\b(lumiere|light|lamp|eclair)/, "lampe"],
   [/\b(ranger|organi[sz]|storage|rangement)/, "organiseurs boites cables"],
+  [/\b(sport|fitness|gym|muscu|yoga|running|football|ballon)/, "sport"],
+  [/\b(jeu\b|jeux|game|games|puzzle|societe|board ?game)/, "jeux"],
+  [/\b(jouet|toy|toys|poupee|peluche|lego)/, "jouets"],
+  [/\b(auto\b|voiture|moto|scooter|vehicule|motorbike|zem)/, "auto moto"],
+  [/\b(bebe|baby|biberon|poussette|couche)/, "bebe"],
+  [/\b(sante|health|bien.?etre|wellness|massage)/, "sante"],
+  [/\b(mode\b|fashion|bijou|accessoire|montre|lunettes)/, "mode"],
+  [/\b(bricol|outil|tool|diy|tournevis|perceuse)/, "bricolage outils"],
+  [/\b(jardin|garden|arrosoir|outdoor)/, "jardin"],
+  [/\b(animal|animaux|chien|dog|pets?\b)/, "animaux"],
+  [/\b(anniversaire|birthday|party|fete)/, "cadeaux"],
 ];
 
 export function expandSynonyms(text: string): string {

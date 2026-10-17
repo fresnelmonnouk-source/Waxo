@@ -13,7 +13,7 @@ type Props = { id: string; slug: string; name: string; price: number; bg: string
 export function RelatedItem({ id, slug, name, price, bg, imageUrl }: Props) {
   const fmt = usePrice();
   const t = useTranslations("Product");
-  const img = cssImage(imageUrl);
+  const img = cssImage(imageUrl, 320);
   return (
     <div className="flex items-center gap-3 rounded-[18px] bg-card p-2.5">
       <Link
