@@ -53,6 +53,8 @@ Un pack a sa propre mention : elle ne s''applique pas aux produits du pack ache
 
 Nous vous envoyons une confirmation sur WhatsApp avec le créneau de livraison. Si vous payez à la réception, l''heure limite s''applique à l''heure de cette confirmation. Le livreur vous appelle avant d''arriver. {{pay.codShip}}
 
+Vous pouvez ouvrir le colis et vérifier vos produits devant le livreur. Si un produit est abîmé, défectueux ou n''est pas le bon, dites-le-lui avant qu''il ne parte. Écrivez-nous aussi sur WhatsApp le jour même, avec une photo si possible. Voir « Un défaut ou une erreur ? » plus bas.
+
 ## Retourner un produit
 
 1. Écrivez-nous au plus tard {{shipping.returnDays}} après la réception, sur WhatsApp ou via le [formulaire de contact](/contact), en indiquant votre numéro de commande.
@@ -61,7 +63,19 @@ Nous vous envoyons une confirmation sur WhatsApp avec le créneau de livraison. 
 
 ## Conditions
 
-Le produit doit être non utilisé, complet et dans son emballage d''origine. Les produits d''hygiène ne sont plus repris une fois descellés, sauf s''ils ont un défaut. Si le produit a un défaut ou si l''erreur vient de nous, le retour est gratuit. Pour un simple changement d''avis hors de Cotonou et Calavi, les frais de retour sont à votre charge.
+Le produit doit être non utilisé, complet et dans son emballage d''origine. Les produits d''hygiène ne sont plus repris une fois descellés, sauf s''ils ont un défaut. Pour un simple changement d''avis hors de Cotonou et Calavi, les frais de retour sont à votre charge.
+
+## Un défaut ou une erreur ?
+
+Remarqué devant le livreur : nous reprenons le produit et nous l''échangeons ou nous vous remboursons, frais de livraison payés compris.
+
+Découvert après le départ du livreur : écrivez-nous dans les 48 h qui suivent la réception, avec une photo et votre numéro de commande. Nous échangeons le produit ou nous vous remboursons son prix, mais les frais de retour et de livraison restent à votre charge.
+
+Défaut qui n''apparaît qu''à l''usage : écrivez-nous dès que vous le constatez, avec une photo ou une vidéo. L''équipe examine votre demande ; les frais de retour et de livraison restent à votre charge.
+
+Nous vérifions chaque produit avant de l''expédier. Un défaut causé par le client (chute, choc, mauvaise utilisation, contact avec l''eau ou un liquide, produit ouvert, démonté ou modifié) n''est pas pris en charge : il ne donne droit ni à un échange ni à un remboursement.
+
+Ces règles ne limitent pas les droits que la loi vous reconnaît.
 
 [Écrire au service client](/contact){button}'),
 ('livraison-retours', 'en', 'Delivery and returns', '| Zone | Lead time | Fee |
@@ -82,6 +96,8 @@ A pack has its own mention: it does not apply to the products of the pack bought
 
 We send you a WhatsApp confirmation with your delivery time slot. If you pay on delivery, the cut-off time applies to the time of that confirmation. The courier calls you before arriving. {{pay.codShip}}
 
+You can open the parcel and check your products in front of the courier. If a product is damaged, faulty or is not the right one, tell the courier before they leave. Please also write to us on WhatsApp the same day, with a photo if possible. See “A defect or a mistake?” below.
+
 ## Returning a product
 
 1. Write to us no later than {{shipping.returnDays}} after you receive it, on WhatsApp or through the [contact form](/contact), and include your order number.
@@ -90,7 +106,19 @@ We send you a WhatsApp confirmation with your delivery time slot. If you pay on 
 
 ## Conditions
 
-The product must be unused, complete and in its original packaging. Hygiene products can''t be returned once unsealed, unless they''re faulty. If the product is faulty or the mistake is ours, the return is free. For a simple change of mind outside Cotonou and Calavi, the return costs are paid by you.
+The product must be unused, complete and in its original packaging. Hygiene products can''t be returned once unsealed, unless they''re faulty. For a simple change of mind outside Cotonou and Calavi, the return costs are paid by you.
+
+## A defect or a mistake?
+
+Noticed in front of the courier: we take the product back and we exchange it or refund you, delivery fees you paid included.
+
+Found after the courier has left: write to us within 48 hours of receipt, with a photo and your order number. We exchange the product or refund its price, but the return and delivery fees remain at your charge.
+
+Defect that only appears with use: write to us as soon as you notice it, with a photo or a video. The team will look at your request; the return and delivery fees remain at your charge.
+
+We check every product before shipping it. A defect caused by the customer (drop, impact, misuse, contact with water or liquid, opened, dismantled or modified product) is not covered: it gives no right to an exchange or a refund.
+
+These rules do not limit the rights the law gives you.
 
 [Write to customer service](/contact){button}'),
 ('cgv', 'fr', 'Conditions générales de vente', '## 1. Qui vend, qui achète
@@ -135,7 +163,15 @@ Nous vous remboursons sous {{shipping.returnDays}} après avoir reçu le produit
 
 ## 8. Produit défectueux ou non conforme
 
-Si un produit a un défaut ou ne correspond pas à votre commande, signalez-le dans les 48 h qui suivent la réception, avec une photo. Nous l''échangeons ou nous vous le remboursons, et les frais de retour sont à notre charge.
+À la réception, vous pouvez ouvrir le colis et vérifier vos produits devant le livreur. Si un produit est abîmé, défectueux ou ne correspond pas à votre commande, dites-le au livreur avant qu''il ne parte. Il reprend le produit et nous l''échangeons ou nous vous remboursons, frais de livraison payés compris. Écrivez-nous aussi sur WhatsApp le jour même, avec une photo si possible.
+
+Si vous vous en apercevez seulement après le départ du livreur, signalez-le dans les 48 h qui suivent la réception, avec une photo et votre numéro de commande. Nous échangeons le produit ou nous vous remboursons son prix, mais les frais de retour et de livraison restent à votre charge.
+
+Un défaut qui n''apparaît qu''à l''usage peut aussi nous être signalé, dès que vous le constatez, avec une photo ou une vidéo. L''équipe examine votre demande ; les frais de retour et de livraison restent à votre charge.
+
+Nous vérifions chaque produit avant de l''expédier. Un défaut causé par le client (chute, choc, mauvaise utilisation, contact avec l''eau ou un liquide, produit ouvert, démonté ou modifié) n''est pas pris en charge : il ne donne droit ni à un échange ni à un remboursement. Pour traiter une demande, nous pouvons demander une photo ou une vidéo et examiner le produit.
+
+Ces règles ne limitent pas les droits que la loi vous reconnaît.
 
 ## 9. Données personnelles
 
@@ -186,7 +222,15 @@ We refund you within {{shipping.returnDays}} of receiving the returned product, 
 
 ## 8. Faulty or non-conforming product
 
-If a product is faulty or doesn''t match your order, let us know within 48 hours of receipt, with a photo. We exchange it or refund you, and we cover the return costs.
+When you receive your order, you can open the parcel and check your products in front of the courier. If a product is damaged, faulty or does not match your order, tell the courier before they leave. The courier takes the product back and we exchange it or refund you, delivery fees you paid included. Please also write to us on WhatsApp the same day, with a photo if possible.
+
+If you only notice it after the courier has left, report it within 48 hours of receipt, with a photo and your order number. We exchange the product or refund its price, but the return and delivery fees remain at your charge.
+
+A defect that only appears with use can also be reported to us, as soon as you notice it, with a photo or a video. The team will look at your request; the return and delivery fees remain at your charge.
+
+We check every product before shipping it. A defect caused by the customer (drop, impact, misuse, contact with water or liquid, opened, dismantled or modified product) is not covered: it gives no right to an exchange or a refund. To handle a request, we may ask for a photo or a video and examine the product.
+
+These rules do not limit the rights the law gives you.
 
 ## 9. Personal data
 
