@@ -329,11 +329,11 @@
       },
       "s7": {
         "h": "7. Échange et remboursement",
-        "p": "Le client dispose de {days, plural, one {# jour} other {# jours}} à compter de la réception pour demander un échange ou un remboursement, sans avoir à se justifier, pour un produit non utilisé, complet et dans son emballage d'origine. Les produits d'hygiène ou de soin descellés (brosse visage, tondeuse, pinceaux de maquillage, par exemple) ne sont ni repris ni échangés, sauf défaut. Le remboursement est fait par le moyen de paiement initial, ou par Mobile Money pour un paiement à la livraison, sous {days, plural, one {# jour} other {# jours}} après réception du produit retourné. La procédure figure sur la page <shipping>Livraison et retours</shipping>."
+        "p": "Le client dispose de {days, plural, one {# jour} other {# jours}} à compter de la réception pour demander un échange ou un remboursement, sans avoir à se justifier, pour un produit non utilisé, complet et dans son emballage d'origine. Les produits d'hygiène ou de soin descellés (brosse visage, tondeuse, pinceaux de maquillage, par exemple) ne sont ni repris ni échangés, sauf défaut. Le remboursement est fait par le moyen de paiement initial, ou par Mobile Money pour un paiement à la livraison, sous {days, plural, one {# jour} other {# jours}} après réception du produit retourné. Pour un simple changement d'avis hors de Cotonou et Calavi, les frais de retour sont à la charge du client. La procédure figure sur la page <shipping>Livraison et retours</shipping>."
       },
       "s8": {
         "h": "8. Produit défectueux ou non conforme",
-        "p": "Tout défaut ou erreur de produit est à signaler dans les 48 h suivant la réception, photo à l'appui. Wá xɔ échange ou rembourse le produit et prend en charge les frais de retour."
+        "p": "À la réception, le client peut ouvrir le colis devant le livreur. Un produit abîmé, défectueux ou erroné signalé au livreur à la remise est repris, et Wá xɔ l'échange ou le rembourse, frais de livraison payés compris ; le client le confirme aussi sur WhatsApp le jour même. Si le défaut ou l'erreur n'est constaté qu'après le départ du livreur, il est à signaler dans les 48 h suivant la réception, photo à l'appui : Wá xɔ échange le produit ou en rembourse le prix, mais les frais de retour et de livraison restent à la charge du client. Un défaut qui n'apparaît qu'à l'usage peut aussi être signalé dès sa découverte ; l'équipe examine la demande et les frais de retour et de livraison restent à la charge du client. Wá xɔ vérifie chaque produit avant de l'expédier ; un défaut causé par le client (chute, choc, mauvaise utilisation, contact avec un liquide, produit ouvert, démonté ou modifié) n'est pas pris en charge. Ces règles ne limitent pas les droits que la loi reconnaît au client."
       },
       "s9": {
         "h": "9. Données personnelles",
@@ -457,12 +457,19 @@
       "freeP3": "Un pack a sa propre mention : elle ne s'applique pas aux produits du pack achetés séparément, et la mention d'un produit ne s'applique pas au pack. Hors de Cotonou et Calavi, cette mention ne change rien : le tarif habituel s'applique ({autre}). Le total, livraison comprise, s'affiche toujours avant que vous validiez votre commande.",
       "dayH": "Le jour de la livraison",
       "dayP": "Vous recevez une confirmation par WhatsApp avec le créneau de livraison. Le livreur vous appelle avant d'arriver. {cod}",
+      "dayCheck": "Vous pouvez ouvrir le colis et vérifier vos produits devant le livreur. Si un produit est abîmé, défectueux ou n'est pas le bon, dites-le-lui avant qu'il ne parte. Écrivez-nous aussi sur WhatsApp le jour même, avec une photo si possible. Voir « Un défaut ou une erreur ? » plus bas.",
       "returnH": "Retourner un produit",
       "step1": "Écrivez-nous dans les {days, plural, one {# jour} other {# jours}} suivant la réception, par WhatsApp ou par le <contact>formulaire de contact</contact>, avec votre numéro de commande.",
       "step2": "À Cotonou et Calavi, notre livreur reprend le produit chez vous. Ailleurs au Bénin, nous vous indiquons comment nous l'envoyer.",
       "step3": "Après vérification, nous échangeons le produit ou vous remboursons sous {days, plural, one {# jour} other {# jours}}.",
       "condH": "Conditions",
-      "condP": "Produit non utilisé, complet et dans son emballage d'origine. Les produits d'hygiène descellés sont exclus, sauf défaut. Le retour est gratuit en cas de défaut ou d'erreur de notre part. <tbc>[Préciser qui paie le retour pour un changement d'avis hors de Cotonou.]</tbc>",
+      "condP": "Produit non utilisé, complet et dans son emballage d'origine. Les produits d'hygiène descellés sont exclus, sauf défaut. Pour un simple changement d'avis hors de Cotonou et Calavi, les frais de retour sont à votre charge.",
+      "defH": "Un défaut ou une erreur ?",
+      "def1": "Remarqué devant le livreur : nous reprenons le produit et nous l'échangeons ou nous vous remboursons, frais de livraison payés compris.",
+      "def2": "Découvert après le départ du livreur : écrivez-nous dans les 48 h qui suivent la réception, avec une photo et votre numéro de commande. Nous échangeons le produit ou nous vous remboursons son prix, mais les frais de retour et de livraison restent à votre charge.",
+      "def3": "Défaut qui n'apparaît qu'à l'usage : écrivez-nous dès que vous le constatez, avec une photo ou une vidéo. L'équipe examine votre demande ; les frais de retour et de livraison restent à votre charge.",
+      "defCause": "Nous vérifions chaque produit avant de l'expédier. Un défaut causé par le client (chute, choc, mauvaise utilisation, contact avec l'eau ou un liquide, produit ouvert, démonté ou modifié) n'est pas pris en charge : il ne donne droit ni à un échange ni à un remboursement.",
+      "defLaw": "Ces règles ne limitent pas les droits que la loi vous reconnaît.",
       "cta": "Contacter le service client"
     }
   }

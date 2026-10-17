@@ -40,7 +40,9 @@ describe("pages : migration 0005_pages_seed.sql", () => {
   it("est idempotente et n'écrase jamais une page éditée", () => {
     expect(sql).toMatch(/insert into public\.pages \(slug, locale, title, body_md\) values/);
     expect(sql).toMatch(/on conflict \(slug, locale\) do nothing;\s*$/);
-    expect(sql).not.toMatch(/\bdo update\b|\bdelete\b|\btruncate\b|\bdrop\b/i);
+    // Seul le SQL compte : les mots « drop », « delete »… peuvent apparaître DANS les textes des pages (littéraux et commentaires retirés).
+    const code = sql.replace(/^--.*$/gm, "").replace(/'(?:[^']|'')*'/g, "''");
+    expect(code).not.toMatch(/\bdo update\b|\bdelete\b|\btruncate\b|\bdrop\b/i);
   });
   it("contient exactement les 6 pages x 2 langues de DEFAULT_PAGES, apostrophes SQL comprises (fichier = source)", () => {
     const lits = literals(sql);

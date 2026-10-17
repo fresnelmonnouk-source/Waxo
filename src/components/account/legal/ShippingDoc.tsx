@@ -47,6 +47,7 @@ export function ShippingDoc({ settings }: { settings: ShopSettings }) {
 
         <h2 className={DOC_H2}>{t("dayH")}</h2>
         <p className="m-0">{t("dayP", values)}</p>
+        <p className="m-0">{t("dayCheck")}</p>
 
         <h2 className={DOC_H2}>{t("returnH")}</h2>
         <ol className="m-0 flex list-decimal flex-col gap-2 pl-[22px]">
@@ -57,6 +58,13 @@ export function ShippingDoc({ settings }: { settings: ShopSettings }) {
 
         <h2 className={DOC_H2}>{t("condH")}</h2>
         <p className="m-0">{t.rich("condP", richTags)}</p>
+
+        <h2 className={DOC_H2}>{t("defH")}</h2>
+        <p className="m-0">{t("def1")}</p>
+        <p className="m-0">{t("def2")}</p>
+        <p className="m-0">{t("def3")}</p>
+        <p className="m-0">{t("defCause")}</p>
+        <p className="m-0">{t("defLaw")}</p>
 
         <Link
           href="/contact"

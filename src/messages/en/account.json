@@ -329,11 +329,11 @@
       },
       "s7": {
         "h": "7. Exchange and refund",
-        "p": "The customer has {days, plural, one {# day} other {# days}} from receipt to request an exchange or a refund, without having to give a reason, for an unused, complete product in its original packaging. Unsealed hygiene or care products (face brush, trimmer, makeup brushes, for example) are neither taken back nor exchanged, unless faulty. The refund is made to the original payment method, or by Mobile Money for a payment on delivery, within {days, plural, one {# day} other {# days}} of receiving the returned product. The procedure is on the <shipping>Delivery and returns</shipping> page."
+        "p": "The customer has {days, plural, one {# day} other {# days}} from receipt to request an exchange or a refund, without having to give a reason, for an unused, complete product in its original packaging. Unsealed hygiene or care products (face brush, trimmer, makeup brushes, for example) are neither taken back nor exchanged, unless faulty. The refund is made to the original payment method, or by Mobile Money for a payment on delivery, within {days, plural, one {# day} other {# days}} of receiving the returned product. For a simple change of mind outside Cotonou and Calavi, the return costs are paid by the customer. The procedure is on the <shipping>Delivery and returns</shipping> page."
       },
       "s8": {
         "h": "8. Faulty or non-conforming product",
-        "p": "Any defect or product error must be reported within 48 hours of receipt, with a photo. Wá xɔ exchanges or refunds the product and covers the return costs."
+        "p": "On receipt, the customer can open the parcel in front of the courier. A damaged, faulty or wrong product reported to the courier on handover is taken back, and Wá xɔ exchanges or refunds it, delivery fees paid included; the customer also confirms it on WhatsApp the same day. If the defect or error is only noticed after the courier has left, it must be reported within 48 hours of receipt, with a photo: Wá xɔ exchanges the product or refunds its price, but the return and delivery fees remain at the customer's charge. A defect that only appears with use can also be reported as soon as it is discovered; the team examines the request and the return and delivery fees remain at the customer's charge. Wá xɔ checks every product before shipping it; a defect caused by the customer (drop, impact, misuse, contact with a liquid, opened, dismantled or modified product) is not covered. These rules do not limit the rights the law gives the customer."
       },
       "s9": {
         "h": "9. Personal data",
@@ -457,12 +457,19 @@
       "freeP3": "A pack has its own mention: it does not apply to the products of the pack bought separately, and a product's mention does not apply to the pack. Outside Cotonou and Calavi, this mention changes nothing: the usual fee applies ({autre}). The total, delivery included, is always shown before you confirm your order.",
       "dayH": "On delivery day",
       "dayP": "You receive a WhatsApp confirmation with the delivery time slot. The courier calls you before arriving. {cod}",
+      "dayCheck": "You can open the parcel and check your products in front of the courier. If a product is damaged, faulty or is not the right one, tell the courier before they leave. Please also write to us on WhatsApp the same day, with a photo if possible. See “A defect or a mistake?” below.",
       "returnH": "Returning a product",
       "step1": "Write to us within {days, plural, one {# day} other {# days}} of receipt, on WhatsApp or via the <contact>contact form</contact>, with your order number.",
       "step2": "In Cotonou and Calavi, our courier collects the product from you. Elsewhere in Benin, we tell you how to send it to us.",
       "step3": "After checking, we exchange the product or refund you within {days, plural, one {# day} other {# days}}.",
       "condH": "Conditions",
-      "condP": "Unused product, complete and in its original packaging. Unsealed hygiene products are excluded, unless faulty. The return is free in case of a defect or an error on our side. <tbc>[State who pays for the return on a change of mind outside Cotonou.]</tbc>",
+      "condP": "Unused product, complete and in its original packaging. Unsealed hygiene products are excluded, unless faulty. For a simple change of mind outside Cotonou and Calavi, the return costs are paid by you.",
+      "defH": "A defect or a mistake?",
+      "def1": "Noticed in front of the courier: we take the product back and we exchange it or refund you, delivery fees you paid included.",
+      "def2": "Found after the courier has left: write to us within 48 hours of receipt, with a photo and your order number. We exchange the product or refund its price, but the return and delivery fees remain at your charge.",
+      "def3": "Defect that only appears with use: write to us as soon as you notice it, with a photo or a video. The team will look at your request; the return and delivery fees remain at your charge.",
+      "defCause": "We check every product before shipping it. A defect caused by the customer (drop, impact, misuse, contact with water or liquid, opened, dismantled or modified product) is not covered: it gives no right to an exchange or a refund.",
+      "defLaw": "These rules do not limit the rights the law gives you.",
       "cta": "Contact customer service"
     }
   }

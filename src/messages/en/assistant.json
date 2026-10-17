@@ -83,7 +83,7 @@
       "payCarte": "bank card",
       "payCod": "cash on delivery",
       "or": "or",
-      "returns": "You have {days} days after delivery to ask for an exchange or a refund, for an unused, complete product in its original packaging (opened hygiene products excluded, unless faulty). Outside Cotonou and Calavi, you pay the return cost for a simple change of mind; we pay it if the product is faulty or the mistake is ours.",
+      "returns": "You have {days} days after delivery to ask for an exchange or a refund, for an unused, complete product in its original packaging (opened hygiene products excluded, unless faulty). Outside Cotonou and Calavi, you pay the return cost for a simple change of mind. For a defect or a mistake, tell the courier on delivery: the product is taken back and the delivery fees you paid are refunded. If you find it afterwards, report it within 48 hours with a photo: the return and delivery fees remain at your charge. We check every product before shipping it. A defect caused by the customer (drop, impact, liquid, misuse) is neither exchanged nor refunded.",
       "ask": "Tell me a bit more: is it for you or a gift, and what budget do you have in mind?"
     }
   }

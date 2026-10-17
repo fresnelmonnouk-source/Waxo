@@ -83,7 +83,7 @@
       "payCarte": "carte bancaire",
       "payCod": "paiement à la livraison",
       "or": "ou",
-      "returns": "Vous avez {days} jours après réception pour demander un échange ou un remboursement, pour un produit non utilisé, complet et dans son emballage d'origine (produits d'hygiène descellés exclus, sauf défaut). Hors de Cotonou et Calavi, le renvoi est à votre charge pour un simple changement d'avis ; il est à nos frais en cas de défaut ou d'erreur de notre part.",
+      "returns": "Vous avez {days} jours après réception pour demander un échange ou un remboursement, pour un produit non utilisé, complet et dans son emballage d'origine (produits d'hygiène descellés exclus, sauf défaut). Hors de Cotonou et Calavi, le renvoi est à votre charge pour un simple changement d'avis. En cas de défaut ou d'erreur, dites-le au livreur à la remise : le produit est repris et les frais de livraison payés sont remboursés. Si vous le découvrez après, signalez-le sous 48 h avec une photo : les frais de retour et de livraison restent à votre charge. Nous vérifions chaque produit avant l'envoi. Un défaut causé par le client (chute, choc, liquide, mauvaise utilisation) n'est ni échangé ni remboursé.",
       "ask": "Dites-m'en un peu plus : c'est pour vous ou pour offrir, et quel budget avez-vous en tête ?"
     }
   }

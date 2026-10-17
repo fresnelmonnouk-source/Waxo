@@ -39,7 +39,9 @@ describe("pages légales : rendu avec les vrais messages et réglages", () => {
         const { html, errors } = await render(doc, locale);
         expect(errors).toEqual([]);
         expect(html).not.toMatch(/\{[a-zA-Z]+\}/); // aucun paramètre non résolu
-        expect(html).toContain("<mark");
+        // La page Livraison et retours n'a plus de point « à compléter » : la règle défaut/erreur est tranchée (2026-10-17).
+        if (doc === "shipping") expect(html).not.toContain("<mark");
+        else expect(html).toContain("<mark");
       });
     }
   }
